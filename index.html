@@ -169,6 +169,20 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .ppage .pnotice{margin-top:12px;font-size:9.5px;color:#999;text-align:center}
 .ppage .phr{border:none;border-top:1px solid #ccc;margin:18px 0}
 .ppage .enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px}
+
+.share-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:.9rem 1rem;background:var(--bg2);border-radius:var(--r2);margin-bottom:1.5rem;border:0.5px solid var(--border)}
+.share-label{font-size:12px;color:var(--text2);margin-right:4px;white-space:nowrap}
+.sbtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;border:none;text-decoration:none;transition:opacity .15s;white-space:nowrap;line-height:1}
+.sbtn:hover{opacity:.82}
+.sbtn svg{width:15px;height:15px;flex-shrink:0}
+.sbtn-x{background:#000;color:#fff}
+.sbtn-line{background:#06C755;color:#fff}
+.sbtn-fb{background:#1877F2;color:#fff}
+.sbtn-mail{background:#555;color:#fff}
+.sbtn-copy{background:var(--bg);color:var(--text);border:0.5px solid var(--border2)}
+.sbtn-copy.copied{background:var(--teal3);color:var(--teal2);border-color:var(--teal)}
+.share-result-wrap{margin-top:1.2rem;padding-top:1.2rem;border-top:0.5px solid var(--border)}
+.share-result-title{font-size:12px;font-weight:600;color:var(--text2);text-align:center;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -288,7 +302,28 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <ul class="alist" id="alist"></ul>
   <div class="shl">専門家のご紹介</div>
   <div class="explist" id="explist"></div>
-  <button class="print-btn" onclick="showPV()">財産目録・エンディングノートを印刷プレビュー</button>
+  
+<div class="share-result-wrap">
+  <div class="share-result-title">このサービスを知人・ご家族にシェアする</div>
+  <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px">
+    <a class="sbtn sbtn-x" href="https://twitter.com/intent/tweet?url=https://directfuneral.github.io/dai8legalclinic/&text=終活に必要な手続きを無料でチェックできます。財産目録・エンディングノート・相続人関係図を自動作成。" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.629L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>X
+    </a>
+    <a class="sbtn sbtn-line" href="https://social-plugins.line.me/lineit/share?url=https://directfuneral.github.io/dai8legalclinic/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>LINE
+    </a>
+    <a class="sbtn sbtn-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://directfuneral.github.io/dai8legalclinic/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook
+    </a>
+    <a class="sbtn sbtn-mail" href="mailto:?subject=第八終活リーガルクリニック｜終活・相続の無料チェックツール&body=終活に必要な手続きを無料でチェックできます。財産目録・エンディングノート・相続人関係図を自動作成。%0A%0Ahttps://directfuneral.github.io/dai8legalclinic/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>メール
+    </a>
+    <button class="sbtn sbtn-copy" onclick="copyURL(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>URLコピー
+    </button>
+  </div>
+</div>
+<button class="print-btn" onclick="showPV()">財産目録・エンディングノートを印刷プレビュー</button>
   <div style="font-size:12px;color:#888;text-align:center;margin-top:7px">Ctrl+P（⌘+P）で印刷できます</div>
   <button class="btn-prev" style="margin-top:8px" onclick="go(4)">← 入力内容を修正する</button>
 </div>
@@ -541,6 +576,25 @@ function buildPrintHTML(){
   h+='</tbody></table>';
   h+='<div class="pnotice">第八行政書士事務所　TEL：052-653-3215　※本書類は定期的に内容を見直してください。</div>';
   return h;
+}
+function copyURL(btn){
+  navigator.clipboard.writeText('https://directfuneral.github.io/dai8legalclinic/').then(function(){
+    btn.textContent='✓ コピーしました';
+    btn.classList.add('copied');
+    setTimeout(function(){
+      btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><rect x=\"9\" y=\"9\" width=\"13\" height=\"13\" rx=\"2\"/><path d=\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\"/></svg> URLをコピー';
+      btn.classList.remove('copied');
+    },2000);
+  }).catch(function(){
+    var ta=document.createElement('textarea');
+    ta.value='https://directfuneral.github.io/dai8legalclinic/';
+    document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent='✓ コピーしました';
+    btn.classList.add('copied');
+    setTimeout(function(){btn.textContent='URLをコピー';btn.classList.remove('copied');},2000);
+  });
 }
 function showPV(){document.getElementById('pvpage').innerHTML=buildPrintHTML();var pp=document.getElementById('pvpanel');pp.style.display='block';pp.scrollIntoView({behavior:'smooth',block:'start'});}
 function closePV(){document.getElementById('pvpanel').style.display='none';}
