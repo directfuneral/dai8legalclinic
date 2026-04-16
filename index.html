@@ -527,20 +527,20 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     </button>
   </div>
 </div>
-<button class="print-btn" onclick="showPV()">財産目録・エンディングノートを印刷プレビュー</button>
-  <div style="font-size:12px;color:#888;text-align:center;margin-top:7px">Ctrl+P（⌘+P）で印刷できます</div>
+<button class="print-btn" onclick="printDirect()">財産目録・エンディングノートを印刷する</button>
+  <div style="font-size:12px;color:#888;text-align:center;margin-top:7px">クリックすると印刷ダイアログが開きます（ポップアップ許可が必要です）</div>
   <button class="pdf-btn" onclick="downloadPDF(this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
     PDFでダウンロード
   </button>
-  <div style="font-size:11px;color:#888;text-align:center;margin-top:5px">PDFは印刷プレビューを開いてから生成されます</div>
+  <div style="font-size:11px;color:#888;text-align:center;margin-top:5px">印刷プレビューを表示してからPDF生成できます</div>
   <button class="btn-prev" style="margin-top:8px" onclick="go(4)">← 入力内容を修正する</button>
 </div>
 </div>
 
 </div><!-- /main-screen -->
 <div class="pvpanel" id="pvpanel">
-  <div class="pvtb"><span class="pvtbtit">印刷プレビュー（財産目録 ＋ エンディングノート）</span><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#555">Ctrl+P（⌘+P）で印刷</span><button onclick="downloadPDF(this)" style="padding:4px 12px;background:#534AB7;color:white;border:none;border-radius:var(--r);font-size:12px;cursor:pointer">PDF保存</button><button class="closebtn" onclick="closePV()">× 閉じる</button></div></div>
+  <div class="pvtb"><span class="pvtbtit">印刷プレビュー（財産目録 ＋ エンディングノート）</span><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#555">プレビュー確認用（印刷はボタンから）</span><button onclick="downloadPDF(this)" style="padding:4px 12px;background:#534AB7;color:white;border:none;border-radius:var(--r);font-size:12px;cursor:pointer">PDF保存</button><button class="closebtn" onclick="closePV()">× 閉じる</button></div></div>
   <div class="ppage" id="pvpage"></div>
 </div>
 
@@ -1123,7 +1123,63 @@ function copyURL(btn){
     setTimeout(function(){btn.textContent='URLをコピー';btn.classList.remove('copied');},2000);
   });
 }
-function showPV(){document.getElementById('pvpage').innerHTML=buildPrintHTML();var pp=document.getElementById('pvpanel');pp.style.display='block';pp.scrollIntoView({behavior:'smooth',block:'start'});}
+function showPV(){
+  var html=buildPrintHTML();
+  document.getElementById('pvpage').innerHTML=html;
+  var pp=document.getElementById('pvpanel');
+  pp.style.display='block';
+  pp.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function printDirect(){
+  var html=buildPrintHTML();
+  var name=document.getElementById('en-name')&&document.getElementById('en-name').value||'終活診断';
+  var date=document.getElementById('en-date')&&document.getElementById('en-date').value||'';
+  var win=window.open('','_blank','width=900,height=700');
+  if(!win){alert('ポップアップがブロックされています。ブラウザのポップアップ許可設定を確認してください。');return;}
+  win.document.write('<!DOCTYPE html><html lang="ja"><head>'
+    +'<meta charset="UTF-8">'
+    +'<title>'+name+' 終活診断結果</title>'
+    +'<style>'
+    +'*{box-sizing:border-box;margin:0;padding:0}'
+    +'body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}'
+    +'.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px}'
+    +'.pmeta,.enmeta{text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px}'
+    +'.psec{margin-bottom:13px}'
+    +'.psh{font-size:12px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}'
+    +'.enbsh{font-size:12px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}'
+    +'.ptbl{width:100%;border-collapse:collapse;font-size:11px}'
+    +'.ptbl th{background:#f7f7f7;border:0.5px solid #ccc;padding:4px 7px;font-weight:bold;text-align:left}'
+    +'.ptbl td{border:0.5px solid #ccc;padding:4px 7px}'
+    +'.ptbl .num{text-align:right}'
+    +'.ptbl .sub td{background:#f0faf5;font-weight:bold}'
+    +'.ptbl .empty td{color:#aaa;font-style:italic}'
+    +'.entbl{width:100%;border-collapse:collapse;font-size:11px}'
+    +'.entbl td{border:0.5px solid #ccc;padding:4px 8px;vertical-align:top}'
+    +'.entbl .el{width:30%;background:#f7f7f7;font-weight:bold;color:#333}'
+    +'.cttbl{width:100%;border-collapse:collapse;font-size:10px}'
+    +'.cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:4px 6px;font-weight:bold;color:#0c447c;text-align:left}'
+    +'.cttbl td{border:0.5px solid #ccc;padding:4px 6px;color:#111;vertical-align:top}'
+    +'.cttbl tr:nth-child(even) td{background:#fafafa}'
+    +'.cttbl .tp{font-weight:bold;background:#f0f6ff!important}'
+    +'.pfooter{margin-top:14px;border-top:2px solid #555;padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}'
+    +'.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center}'
+    +'.pfl{font-size:10px;color:#666;margin-bottom:2px}'
+    +'.pfv{font-size:15px;font-weight:bold}'
+    +'.pnotice{margin-top:12px;font-size:9.5px;color:#999;text-align:center}'
+    +'.phr{border:none;border-top:1px solid #ccc;margin:18px 0}'
+    +'.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px}'
+    +'@page{size:A4;margin:15mm 10mm}'
+    +'@media print{body{padding:0}}'
+    +'</style>'
+    +'</head><body>'
+    +'<div style="padding:20px 24px">'
+    +html
+    +'</div>'
+    +'</body></html>');
+  win.document.close();
+  win.focus();
+  setTimeout(function(){win.print();},500);
+}
 function closePV(){document.getElementById('pvpanel').style.display='none';}
 rRadio('r-mar',['未婚','既婚','離婚','死別'],'mar',renderProxy);
 rRadio('r-par',['両方存命','一方存命','両方故人'],'par',renderProxy);
