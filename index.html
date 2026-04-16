@@ -244,16 +244,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .zip-msg.ok{color:var(--teal2)}
 .zip-msg.err{color:var(--red)}
 
-/* ===== 銀行ピッカー ===== */
-.bank-picker-wrap{position:relative}
-.bank-quick-list{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
-.bqbtn{padding:4px 9px;border:0.5px solid var(--border);border-radius:14px;font-size:11px;cursor:pointer;background:var(--bg2);color:var(--text2);transition:all .12s;white-space:nowrap}
-.bqbtn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue3)}
-.bqbtn.selected{background:var(--blue3);border-color:var(--blue);color:var(--blue2);font-weight:600}
-.bank-manual-inp{width:100%;font-size:12px;padding:5px 6px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);margin-top:4px}
-.bank-manual-inp:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,.12)}
-.bank-manual-inp.hidden{display:none}
-.bank-manual-label{font-size:10px;color:var(--text3);margin-top:3px}
+
 </style>
 
 <script type="application/ld+json">
@@ -529,9 +520,9 @@ var WORRY_OPTS=['遺産の行き先が心配','相続税が心配','認知症に
 var NONE_DONE='特に対策は何もしていない';
 var ASECS=[
   {id:'re',t:'不動産',c:'#1D9E75',debt:false,cols:[{k:'addr',l:'所在地',tp:'text',ph:'例：名古屋市中区…',w:'33%'},{k:'use',l:'用途',tp:'sel',opts:['自宅','収益物件','駐車場','その他'],w:'15%'},{k:'owner',l:'名義人',tp:'text',ph:'本人',w:'18%'},{k:'val',l:'評価額(万円)',tp:'num',ph:'0',w:'18%',amt:true}]},
-  {id:'bk',t:'預貯金',c:'#185FA5',debt:false,cols:[{k:'bank',l:'金融機関',tp:'bank',ph:'例：三菱UFJ銀行',w:'24%'},{k:'br',l:'支店',tp:'text',ph:'名古屋支店',w:'19%'},{k:'ac',l:'種別',tp:'sel',opts:['普通預金','定期預金','当座','その他'],w:'15%'},{k:'no',l:'末尾4桁',tp:'text',ph:'****',w:'12%'},{k:'val',l:'残高(万円)',tp:'num',ph:'0',w:'13%',amt:true}]},
-  {id:'sc',t:'有価証券',c:'#534AB7',debt:false,cols:[{k:'co',l:'証券会社',tp:'sec',ph:'例：野村証券',w:'28%'},{k:'br',l:'支店',tp:'text',ph:'名古屋支店',w:'22%'},{k:'tp',l:'種別',tp:'sel',opts:['株式','投資信託','債券','外貨建','その他'],w:'20%'},{k:'val',l:'評価額(万円)',tp:'num',ph:'0',w:'20%',amt:true}]},
-  {id:'ins',t:'生命保険・保険',c:'#BA7517',debt:false,cols:[{k:'co',l:'保険会社',tp:'ins',ph:'例：日本生命',w:'24%'},{k:'tp',l:'種別',tp:'sel',opts:['生命保険','医療保険','個人年金','損害保険','その他'],w:'20%'},{k:'ben',l:'受取人',tp:'text',ph:'例：配偶者',w:'18%'},{k:'val',l:'保険金額(万円)',tp:'num',ph:'0',w:'18%',amt:true}]},
+  {id:'bk',t:'預貯金',c:'#185FA5',debt:false,cols:[{k:'bank',l:'金融機関',tp:'text',ph:'例：三菱UFJ銀行',w:'24%'},{k:'br',l:'支店',tp:'text',ph:'名古屋支店',w:'19%'},{k:'ac',l:'種別',tp:'sel',opts:['普通預金','定期預金','当座','その他'],w:'15%'},{k:'no',l:'末尾4桁',tp:'text',ph:'****',w:'12%'},{k:'val',l:'残高(万円)',tp:'num',ph:'0',w:'13%',amt:true}]},
+  {id:'sc',t:'有価証券',c:'#534AB7',debt:false,cols:[{k:'co',l:'証券会社',tp:'text',ph:'例：野村証券',w:'28%'},{k:'br',l:'支店',tp:'text',ph:'名古屋支店',w:'22%'},{k:'tp',l:'種別',tp:'sel',opts:['株式','投資信託','債券','外貨建','その他'],w:'20%'},{k:'val',l:'評価額(万円)',tp:'num',ph:'0',w:'20%',amt:true}]},
+  {id:'ins',t:'生命保険・保険',c:'#BA7517',debt:false,cols:[{k:'co',l:'保険会社',tp:'text',ph:'例：日本生命',w:'24%'},{k:'tp',l:'種別',tp:'sel',opts:['生命保険','医療保険','個人年金','損害保険','その他'],w:'20%'},{k:'ben',l:'受取人',tp:'text',ph:'例：配偶者',w:'18%'},{k:'val',l:'保険金額(万円)',tp:'num',ph:'0',w:'18%',amt:true}]},
   {id:'vc',t:'車両・動産',c:'#888780',debt:false,cols:[{k:'md',l:'車種・品名',tp:'text',ph:'例：トヨタ プリウス',w:'40%'},{k:'pl',l:'ナンバー',tp:'text',ph:'愛知300 あ1234',w:'28%'},{k:'val',l:'評価額(万円)',tp:'num',ph:'0',w:'22%',amt:true}]},
   {id:'ot',t:'その他財産（貴金属・骨董等）',c:'#D4537E',debt:false,cols:[{k:'desc',l:'品目',tp:'text',ph:'例：金の延べ棒',w:'50%'},{k:'loc',l:'保管場所',tp:'text',ph:'例：自宅金庫',w:'26%'},{k:'val',l:'評価額(万円)',tp:'num',ph:'0',w:'16%',amt:true}]},
   {id:'db',t:'負債・借入金',c:'#E24B4A',debt:true,cols:[{k:'tp',l:'種別',tp:'sel',opts:['住宅ローン','カードローン','消費者金融','事業借入','その他'],w:'22%'},{k:'cr',l:'借入先',tp:'text',ph:'例：三菱UFJ銀行',w:'26%'},{k:'pur',l:'目的',tp:'text',ph:'例：自宅購入',w:'22%'},{k:'val',l:'残債額(万円)',tp:'num',ph:'0',w:'20%',amt:true}]}
@@ -569,7 +560,7 @@ function aRows(sid){
     var tr=document.createElement('tr');
     s.cols.forEach(function(col){
       var td=document.createElement('td');
-      if(col.tp==='bank'||col.tp==='sec'||col.tp==='ins'){var pDiv=document.createElement('div');pDiv.className='bank-picker-wrap';var lst=col.tp==='bank'?BANK_LIST:col.tp==='sec'?SEC_LIST:INS_LIST;var curVal=row[col.k]||'';makePicker(pDiv,lst,curVal,(function(si2,ri2,k2){return function(v){D.ar[si2][ri2][k2]=v;upd();};})(sid,ri,col.k));td.style.verticalAlign='top';td.style.paddingTop='4px';td.appendChild(pDiv);}else if(col.tp==='sel'){var sel=document.createElement('select');col.opts.forEach(function(o){var op=document.createElement('option');op.value=o;op.textContent=o;if(row[col.k]===o)op.selected=true;sel.appendChild(op);});sel.onchange=(function(si,ri2,k){return function(e){D.ar[si][ri2][k]=e.target.value;upd();}})(sid,ri,col.k);td.appendChild(sel);}
+      if(col.tp==='sel'){var sel=document.createElement('select');col.opts.forEach(function(o){var op=document.createElement('option');op.value=o;op.textContent=o;if(row[col.k]===o)op.selected=true;sel.appendChild(op);});sel.onchange=(function(si,ri2,k){return function(e){D.ar[si][ri2][k]=e.target.value;upd();}})(sid,ri,col.k);td.appendChild(sel);}
       else{var inp=document.createElement('input');inp.type=col.tp==='num'?'number':col.tp;inp.value=row[col.k]||'';if(col.ph)inp.placeholder=col.ph;if(col.tp==='num'){inp.min='0';inp.style.textAlign='right';}inp.oninput=(function(si,ri2,k){return function(e){D.ar[si][ri2][k]=e.target.value;upd();}})(sid,ri,col.k);td.appendChild(inp);}
       tr.appendChild(td);
     });
@@ -717,51 +708,6 @@ function lookupZip(){
     });
 }
 
-/* ===== 銀行・証券・保険ピッカー ===== */
-var BANK_LIST=["ゆうちょ銀行", "三菱UFJ銀行", "三井住友銀行", "みずほ銀行", "りそな銀行", "三菱UFJ信託", "三井住友信託", "中央労金", "愛知銀行", "名古屋銀行", "中京銀行", "大垣共立銀行", "十六銀行", "百五銀行", "静岡銀行", "七十七銀行", "北陸銀行", "楽天銀行", "住信SBIネット銀行", "PayPay銀行", "auじぶん銀行", "イオン銀行", "セブン銀行", "その他"];
-var SEC_LIST=["野村証券", "大和証券", "SMBC日興証券", "三菱UFJモルガン", "みずほ証券", "SBI証券", "楽天証券", "マネックス証券", "松井証券", "auカブコム証券", "その他"];
-var INS_LIST=["日本生命", "第一生命", "住友生命", "明治安田生命", "富国生命", "かんぽ生命", "JAこうさい", "全労済", "東京海上日動", "損保ジャパン", "AIG損保", "アフラック", "メットライフ生命", "プルデンシャル生命", "その他"];
-
-function makePicker(container, list, currentVal, onChange){
-  container.innerHTML='';
-  var qwrap=document.createElement('div');
-  qwrap.className='bank-quick-list';
-  list.forEach(function(name){
-    var btn=document.createElement('button');
-    btn.className='bqbtn'+(currentVal===name?' selected':'');
-    btn.textContent=name;
-    btn.type='button';
-    btn.onclick=function(){
-      qwrap.querySelectorAll('.bqbtn').forEach(function(b){b.classList.remove('selected');});
-      btn.classList.add('selected');
-      if(name==='その他'){
-        inp.classList.remove('hidden');inp.focus();
-        onChange('');
-      }else{
-        inp.classList.add('hidden');
-        inp.value='';
-        onChange(name);
-      }
-    };
-    qwrap.appendChild(btn);
-  });
-  container.appendChild(qwrap);
-  var inp=document.createElement('input');
-  inp.type='text';
-  inp.className='bank-manual-inp'+(list.indexOf(currentVal)>-1&&currentVal!==''&&currentVal!=='その他'?' hidden':'');
-  inp.placeholder='金融機関名を入力';
-  inp.value=(list.indexOf(currentVal)===-1)?currentVal:'';
-  inp.oninput=function(){
-    qwrap.querySelectorAll('.bqbtn').forEach(function(b){b.classList.remove('selected');});
-    qwrap.querySelectorAll('.bqbtn').forEach(function(b){if(b.textContent==='その他')b.classList.add('selected');});
-    onChange(inp.value);
-  };
-  container.appendChild(inp);
-  var lbl=document.createElement('div');
-  lbl.className='bank-manual-label';
-  lbl.textContent='一覧にない場合は直接入力してください';
-  container.appendChild(lbl);
-}
 
 function startDiagnosis(){
   document.getElementById('intro-screen').style.display='none';
