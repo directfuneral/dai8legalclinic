@@ -202,6 +202,38 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .footer-tel a:hover{color:#fff}
 .footer-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(29,158,117,.15);border:0.5px solid rgba(29,158,117,.3);border-radius:20px;padding:3px 10px;font-size:11px;color:#7ec8a4;margin-top:6px}
 @media(max-width:520px){.footer-top{flex-direction:column}.footer-nav{text-align:left}.footer-bottom{flex-direction:column;align-items:flex-start}}
+
+/* ===== Intro / Landing screen ===== */
+.intro-wrap{max-width:680px;margin:0 auto}
+.intro-hero{text-align:center;padding:1.5rem 1rem 1.2rem;margin-bottom:1.2rem}
+.intro-icon{width:70px;height:70px;background:var(--teal3);border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
+.intro-title{font-size:22px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px}
+.intro-lead{font-size:14px;color:var(--text2);line-height:1.8;max-width:480px;margin:0 auto}
+.intro-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1.2rem}
+.intro-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r2);padding:1rem .9rem;text-align:center}
+.intro-card-icon{font-size:24px;margin-bottom:8px;line-height:1}
+.intro-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.intro-card-desc{font-size:11px;color:var(--text2);line-height:1.6}
+.intro-target{background:var(--teal3);border:0.5px solid #5DCAA5;border-radius:var(--r2);padding:1rem 1.2rem;margin-bottom:1.2rem}
+.intro-target-title{font-size:13px;font-weight:600;color:var(--teal2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.intro-target-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.intro-target-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#085041;line-height:1.5}
+.intro-target-list li::before{content:"✓";color:var(--teal);font-weight:600;flex-shrink:0;margin-top:1px}
+.intro-print{background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:var(--r2);padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:flex-start;gap:12px}
+.intro-print-icon{flex-shrink:0;margin-top:2px}
+.intro-print-body{flex:1}
+.intro-print-title{font-size:13px;font-weight:600;color:#0C447C;margin-bottom:4px}
+.intro-print-desc{font-size:12px;color:#185FA5;line-height:1.7}
+.intro-notice{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r2);padding:1rem 1.2rem;margin-bottom:1.5rem}
+.intro-notice-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.intro-notice-body{font-size:12px;color:var(--text2);line-height:1.8}
+.intro-notice-body a{color:var(--teal2);text-decoration:none;border-bottom:0.5px solid rgba(15,110,86,.3)}
+.intro-notice-body a:hover{color:var(--teal)}
+.intro-start-btn{width:100%;padding:16px;background:var(--teal);color:white;border:none;border-radius:var(--r);font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .15s}
+.intro-start-btn:hover{background:var(--teal2)}
+.intro-start-btn svg{width:20px;height:20px;flex-shrink:0}
+.intro-sub-note{text-align:center;font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6}
+@media(max-width:520px){.intro-cards{grid-template-columns:1fr}}
 </style>
 
 <script type="application/ld+json">
@@ -235,6 +267,77 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="chtit">第八 終活リーガルクリニック</div>
   <div class="chsub">問診票に記入して、あなたに必要な終活手続きを確認しましょう</div>
 </div>
+
+<div id="intro-screen" class="intro-wrap">
+  <div class="intro-hero">
+    <div class="intro-icon">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
+    </div>
+    <div class="intro-title">第八 終活リーガルクリニック</div>
+    <div class="intro-lead">終活に必要な手続きを、病院の問診票形式でわかりやすくご案内します。<br>入力するだけで、あなた専用の財産目録・エンディングノート・相続人関係図を無料で作成できます。</div>
+  </div>
+
+  <div class="intro-cards">
+    <div class="intro-card">
+      <div class="intro-card-icon">📋</div>
+      <div class="intro-card-title">相続人関係図</div>
+      <div class="intro-card-desc">家族構成から法定相続人と相続分を自動で図示します</div>
+    </div>
+    <div class="intro-card">
+      <div class="intro-card-icon">💰</div>
+      <div class="intro-card-title">財産目録</div>
+      <div class="intro-card-desc">不動産・預貯金・保険など7カテゴリで総資産を整理</div>
+    </div>
+    <div class="intro-card">
+      <div class="intro-card-icon">📓</div>
+      <div class="intro-card-title">エンディングノート</div>
+      <div class="intro-card-desc">医療・葬儀希望から契約一覧まで一括で記録・印刷</div>
+    </div>
+  </div>
+
+  <div class="intro-target">
+    <div class="intro-target-title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      こんな方におすすめです
+    </div>
+    <ul class="intro-target-list">
+      <li>遺言書やエンディングノートをそろそろ準備したいと思っている方</li>
+      <li>自分の財産がどれくらいあるか整理しておきたい方</li>
+      <li>相続が発生したとき、誰が相続人になるかを確認したい方</li>
+      <li>老後・介護・葬儀について家族に伝えておきたいことがある方</li>
+      <li>死後に必要な手続きを家族に負担かけずに済ませたい方</li>
+    </ul>
+  </div>
+
+  <div class="intro-print">
+    <div class="intro-print-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    </div>
+    <div class="intro-print-body">
+      <div class="intro-print-title">診断結果は印刷して専門家へのご相談時に持参できます</div>
+      <div class="intro-print-desc">入力完了後、財産目録・エンディングノート・生前契約一覧をまとめて印刷できます。専門家へのご相談時の持参資料としてそのままご活用いただけます。</div>
+    </div>
+  </div>
+
+  <div class="intro-notice">
+    <div class="intro-notice-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      ご利用にあたってのお願い
+    </div>
+    <div class="intro-notice-body">
+      本ツールはあくまで<strong>参考資料の作成</strong>を目的としたものです。出力された内容は法的効力を持ちません。相続・遺言書の作成・任意後見契約など具体的な手続きにつきましては、必ず<strong>専門家（司法書士・行政書士・弁護士・税理士）にご相談ください</strong>。<br>
+      ご相談は、運営元の<a href="https://ihinseiri-dai8.jp/" target="_blank" rel="noopener">第八行政書士事務所（052-653-3215）</a>でも承っております。
+    </div>
+  </div>
+
+  <button class="intro-start-btn" onclick="startDiagnosis()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
+    診断を開始する
+  </button>
+  <div class="intro-sub-note">入力内容はすべてブラウザ内のみで処理されます。サーバーへの送信は一切行いません。</div>
+</div>
+
+<div id="main-screen" style="display:none">
 <div class="pb"><div class="ps active" id="p0" onclick="goTab(0)" title="家族構成へ移動">家族構成</div><div class="ps" id="p1" onclick="goTab(1)" title="財産目録へ移動">財産目録</div><div class="ps" id="p2" onclick="goTab(2)" title="対策状況へ移動">対策状況</div><div class="ps" id="p3" onclick="goTab(3)" title="お悩みへ移動">お悩み</div><div class="ps" id="p4" onclick="goTab(4)" title="ノートへ移動">ノート</div><div class="ps" id="p5" onclick="goTab(5)" title="診察結果へ移動">診察結果</div></div>
 
 <div id="s0" class="sc">
@@ -382,6 +485,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 </div>
 </div>
 
+</div><!-- /main-screen -->
 <div class="pvpanel" id="pvpanel">
   <div class="pvtb"><span class="pvtbtit">印刷プレビュー（財産目録 ＋ エンディングノート）</span><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#555">Ctrl+P（⌘+P）で印刷</span><button class="closebtn" onclick="closePV()">× 閉じる</button></div></div>
   <div class="ppage" id="pvpage"></div>
@@ -555,6 +659,11 @@ function buildHeirSVG(){
   } else{W=260;H=80;p.push(bx(130,40,'本人','','self'));p.push('<text x="130" y="74" text-anchor="middle" font-size="10" fill="#A32D2D">法定相続人がいない可能性があります</text>');}
   if(note)p.push('<text x="'+(W/2)+'" y="'+(H-5)+'" text-anchor="middle" font-size="9.5" fill="#888">'+note+'</text>');
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;max-width:'+W+'px;margin:0 auto" xmlns="http://www.w3.org/2000/svg">'+p.join('')+'</svg>';
+}
+function startDiagnosis(){
+  document.getElementById('intro-screen').style.display='none';
+  document.getElementById('main-screen').style.display='';
+  window.scrollTo(0,0);
 }
 function goTab(n){
   // Allow direct navigation - if going forward, allow; if going back, always allow
