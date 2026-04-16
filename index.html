@@ -318,6 +318,16 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     <div class="ct-wrap"><table class="ct-tbl"><thead><tr><th style="width:16%">契約種類</th><th style="width:22%">契約会社名・機関名</th><th style="width:18%">連絡先（電話番号）</th><th style="width:18%">お客様番号等</th><th style="width:20%">書類の保管場所</th><th style="width:26px"></th></tr></thead><tbody id="ct-tbody"></tbody></table></div>
     <button class="addbtn" onclick="ctAdd()">＋ 行を追加</button>
   </div>
+  <div class="en-sec"><div class="en-sh">訃報をお伝えしたい方（連絡先一覧）</div>
+    <div style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">亡くなった際に連絡していただきたい方の情報をまとめておきましょう。</div>
+    <div id="obit-list"></div>
+    <button class="addbtn" style="margin-top:8px" onclick="addObit()">＋ 連絡先を追加</button>
+  </div>
+  <div class="en-sec"><div class="en-sh">ペットについて</div>
+    <div style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">ペットを飼っている方は、万が一の際の引き取り先などをまとめておきましょう。</div>
+    <div id="pet-list"></div>
+    <button class="addbtn" style="margin-top:8px" onclick="addPet()">＋ ペットを追加</button>
+  </div>
   <div class="en-sec"><div class="en-sh">大切な人へのメッセージ</div>
     <div class="en-fw"><textarea id="en-msg" style="min-height:90px" placeholder="家族・友人への感謝やお願い事など、自由にお書きください。"></textarea></div>
   </div>
@@ -380,10 +390,10 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 <script>
 var D={mar:'既婚',ch:0,par:'両方故人',si:0,deadSib:0,nephews:0,done:[],worry:[],ar:{}};
 var EN={};
-var CT_DEF=['電気','ガス','水道','ＮＨＫ','新聞','牛乳（配達弁当）','定期購入物','固定電話','携帯電話','車・バイク','インターネット','ＣＡＴＶ・ＢＳ・ＣＳ','クレジットカード','土地等の権利書','年金手帳','保険・共済契約等','証券会社','免許証','健康保険証','印鑑手帳','リース品','ＪＡＦ','出資金関係','マイナンバーカード','パスポート','敬老パス','会員権等'];
+var CT_DEF=['電気','ガス','水道','ＮＨＫ','新聞','牛乳（配達弁当）','定期購入物','固定電話','携帯電話','車・バイク','インターネット','ＣＡＴＶ・ＢＳ・ＣＳ','クレジットカード','土地等の権利書','年金手帳','保険・共済契約等','証券会社','免許証','健康保険証','印鑑手帳','リース品','ＪＡＦ','出資金関係','マイナンバーカード','パスポート','敬老パス','会員権等','Amazonプライム','Netflix（ネットフリックス）','Disney+（ディズニープラス）','Hulu（フールー）','U-NEXT','Apple TV+','YouTube Premium','Spotify','Apple Music','ＬＩＮＥミュージック','楽天マガジン・dマガジン','その他サブスク①','その他サブスク②'];
 var D_CT=CT_DEF.map(function(t){return{t:t,co:'',tel:'',num:'',loc:''}});
 var DONE_OPTS=['遺言書（自筆）を作成済','遺言書（公正証書）を作成済','エンディングノートを作成済','任意後見契約を締結済','死後事務委任契約を締結済','家族信託を設定済','相続税対策（生前贈与等）を実施済','特に対策は何もしていない'];
-var WORRY_OPTS=['遺産の行き先が心配','相続税が心配','認知症になった場合が心配','葬儀・納骨などの死後手続','身元保証人がいない','遺品整理をどうするか','特定の家族への手当てをしたい','借金を相続させたくない','兄妹へ財産を渡したくない','死後の手続で兄妹を頼りたくない'];
+var WORRY_OPTS=['遺産の行き先が心配','相続税が心配','認知症になった場合が心配','葬儀・納骨などの死後手続','身元保証人がいない','遺品整理をどうするか','特定の家族への手当てをしたい','借金を相続させたくない','兄妹へ財産を渡したくない','死後の手続で兄妹を頼りたくない','自分の死後のペットのこと'];
 var NONE_DONE='特に対策は何もしていない';
 var ASECS=[
   {id:'re',t:'不動産',c:'#1D9E75',debt:false,cols:[{k:'addr',l:'所在地',tp:'text',ph:'例：名古屋市中区…',w:'33%'},{k:'use',l:'用途',tp:'sel',opts:['自宅','収益物件','駐車場','その他'],w:'15%'},{k:'owner',l:'名義人',tp:'text',ph:'本人',w:'18%'},{k:'val',l:'評価額(万円)',tp:'num',ph:'0',w:'18%',amt:true}]},
@@ -575,6 +585,7 @@ function buildAdvice(){
   if(worry.indexOf('兄妹へ財産を渡したくない')>-1)adv.push({t:'兄弟姉妹への相続を避けたい場合は遺言書の作成が有効です。兄弟姉妹に遺留分はないため、遺言書で意思を明確にできます。',p:'phi',l:'優先度高'});
   if(worry.indexOf('死後の手続で兄妹を頼りたくない')>-1)adv.push({t:'死後事務委任契約を締結することで、葬儀・納骨・行政手続きを専門家に一任でき、兄弟姉妹に頼らない仕組みを作ることができます。',p:'phi',l:'優先度高'});
   if(done.indexOf('エンディングノートを作成済')===-1)adv.push({t:'エンディングノートの作成をお勧めします。財産・連絡先・医療希望などをまとめておくと、万が一の際の家族の負担を大きく軽減できます。',p:'plo',l:'確認推奨'});
+  if(worry.indexOf('自分の死後のペットのこと')>-1)adv.push({t:'ペットの行く末については、死後事務委任契約や遺言書に「ペットの世話を誰に託すか」を明記する方法があります。信頼できる引き取り先を事前に相談・確認しておくことが重要です。',p:'phi',l:'優先度高'});
   if(adv.length===0)adv.push({t:'現在の対策は十分に整っています。定期的な内容の見直しと更新をお勧めします。',p:'plo',l:'良好'});
   return adv;
 }
@@ -610,6 +621,28 @@ function buildPrintHTML(){
     {t:'専門家・重要連絡先',rows:[['かかりつけ医',gv('en-doc')+(gv('en-doc-tel')?' TEL:'+gv('en-doc-tel'):'')],['弁護士・司法書士等',gv('en-law')+(gv('en-law-tel')?' TEL:'+gv('en-law-tel'):'')],['税理士',gv('en-tax')+(gv('en-tax-tel')?' TEL:'+gv('en-tax-tel'):'')] ]}
   ];
   enSecs.forEach(function(sec){h+='<div class="psec"><div class="enbsh">■ '+sec.t+'</div><table class="entbl"><tbody>'+sec.rows.map(function(r){return '<tr><td class="el">'+r[0]+'</td><td>'+(r[1]||'　')+'</td></tr>';}).join('')+'</tbody></table></div>';});
+  if(D_OBIT.length>0){
+    h+='<div class="psec"><div class="enbsh">■ 訃報をお伝えしたい方</div>';
+    h+='<table class="cttbl"><thead><tr>'
+      +'<th style="width:25%">氏名</th>'
+      +'<th style="width:15%">関係性</th>'
+      +'<th style="width:30%">電話番号 / メール</th>'
+      +'<th style="width:28%">備考</th>'
+      +'</tr></thead><tbody>';
+    D_OBIT.forEach(function(o){
+      h+='<tr><td>'+esc(o.name)+'</td><td>'+esc(o.rel)+'</td><td>'+esc(o.tel)+'</td><td>'+esc(o.note)+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+  }
+  if(D_PET.length>0){
+    h+='<div class="psec"><div class="enbsh">■ ペットについて</div>';
+    h+='<table class="cttbl"><thead><tr><th style="width:12%">名前</th><th style="width:10%">種類</th><th style="width:8%">年齢</th><th style="width:22%">かかりつけ獣医</th><th style="width:12%">獣医TEL</th><th style="width:20%">引き取り先</th><th style="width:12%">引き取りTEL</th></tr></thead><tbody>';
+    D_PET.forEach(function(p){
+      h+='<tr><td>'+esc(p.name)+'</td><td>'+esc(p.species)+'</td><td>'+esc(p.age)+'</td><td>'+esc(p.vet)+'</td><td>'+esc(p.vettel)+'</td><td>'+esc(p.heir)+'</td><td>'+esc(p.heirtel)+'</td></tr>';
+      if(p.note)h+='<tr><td colspan="7" style="font-size:10px;color:#555;background:#fafafa">備考：'+esc(p.note)+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+  }
   h+='<div class="psec"><div class="enbsh">■ 大切な人へのメッセージ</div><div class="enmsg">'+(gv('en-msg')||'（未記入）')+'</div></div>';
   h+='<div class="phr"></div>';
   h+='<div style="font-size:14px;font-weight:bold;text-align:center;margin-bottom:5px">生前契約・解約が必要な契約一覧</div>';
@@ -620,6 +653,126 @@ function buildPrintHTML(){
   h+='<div class="pnotice">第八行政書士事務所　TEL：052-653-3215　※本書類は定期的に内容を見直してください。</div>';
   return h;
 }
+
+var D_PET=[];
+var PET_SPECIES=['犬','猫','鳥','魚','うさぎ','ハムスター','爬虫類','その他'];
+
+
+var D_OBIT = [];
+var OBIT_REL = ['家族','親族','友人・知人','職場関係','近隣','恩師','その他'];
+
+function addObit(){
+  D_OBIT.push({name:'',rel:'友人・知人',tel:'',note:''});
+  renderObits();
+  var rows=document.querySelectorAll('.obit-row');
+  if(rows.length>0){var last=rows[rows.length-1];var inp=last.querySelector('input');if(inp)inp.focus();}
+}
+
+function removeObit(ri){D_OBIT.splice(ri,1);renderObits();}
+
+function renderObits(){
+  var el=document.getElementById('obit-list');if(!el)return;
+  el.innerHTML='';
+  if(D_OBIT.length===0){
+    el.innerHTML='<div style="font-size:12px;color:#888;padding:6px 0">「連絡先を追加」ボタンで入力してください。</div>';
+    return;
+  }
+  var tbl=document.createElement('table');
+  tbl.className='atbl';tbl.style.cssText='margin-bottom:4px';
+  tbl.innerHTML='<thead><tr>'
+    +'<th style="width:26%">氏名</th>'
+    +'<th style="width:18%">関係性</th>'
+    +'<th style="width:30%">電話番号 / メールアドレス</th>'
+    +'<th style="width:20%">備考（住所・メモ等）</th>'
+    +'<th style="width:26px"></th>'
+    +'</tr></thead><tbody id="obit-tbody"></tbody>';
+  el.appendChild(tbl);
+  var tb=document.getElementById('obit-tbody');
+  D_OBIT.forEach(function(o,ri){
+    var tr=document.createElement('tr');
+    tr.className='obit-row';
+    var relSel=OBIT_REL.map(function(r){return '<option'+(o.rel===r?' selected':'')+'>'+r+'</option>';}).join('');
+    var cols=[
+      {tp:'text',val:o.name,ph:'例：山田 花子',key:'name'},
+      {tp:'sel',val:o.rel,opts:relSel,key:'rel'},
+      {tp:'text',val:o.tel,ph:'090-0000-0000 / mail@example.com',key:'tel'},
+      {tp:'text',val:o.note,ph:'例：旧住所・大学の友人',key:'note'},
+    ];
+    cols.forEach(function(col){
+      var td=document.createElement('td');
+      if(col.tp==='sel'){
+        var sel=document.createElement('select');
+        sel.innerHTML=col.opts;
+        sel.onchange=(function(ri2,k){return function(e){D_OBIT[ri2][k]=e.target.value;};})(ri,col.key);
+        td.appendChild(sel);
+      }else{
+        var inp=document.createElement('input');
+        inp.type='text';inp.value=col.val||'';inp.placeholder=col.ph||'';
+        inp.oninput=(function(ri2,k){return function(e){D_OBIT[ri2][k]=e.target.value;};})(ri,col.key);
+        td.appendChild(inp);
+      }
+      tr.appendChild(td);
+    });
+    var dtd=document.createElement('td');
+    var db=document.createElement('button');db.className='delbtn';db.textContent='×';
+    db.onclick=(function(ri2){return function(){removeObit(ri2);};})(ri);
+    dtd.appendChild(db);tr.appendChild(dtd);
+    tb.appendChild(tr);
+  });
+}
+
+function addPet(){
+  D_PET.push({name:'',species:'犬',age:'',vet:'',vettel:'',heir:'',heirtel:'',note:''});
+  renderPets();
+  var rows=document.querySelectorAll('.pet-card');
+  if(rows.length>0){
+    var last=rows[rows.length-1];
+    var inp=last.querySelector('input');
+    if(inp)inp.focus();
+  }
+}
+
+function removePet(ri){D_PET.splice(ri,1);renderPets();}
+
+function renderPets(){
+  var el=document.getElementById('pet-list');if(!el)return;
+  el.innerHTML='';
+  if(D_PET.length===0){
+    el.innerHTML='<div style="font-size:12px;color:#888;padding:8px 0">ペットがいる場合は「ペットを追加」ボタンで入力してください。</div>';
+    return;
+  }
+  D_PET.forEach(function(p,ri){
+    var div=document.createElement('div');
+    div.className='pet-card';
+    div.style.cssText='background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:10px;position:relative';
+    var selOpts=PET_SPECIES.map(function(s){
+      return '<option value="'+s+'"'+(p.species===s?' selected':'')+'>'+s+'</option>';
+    }).join('');
+    div.innerHTML=
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+      +'<span style="font-size:12px;font-weight:600;color:var(--teal2)">ペット '+(ri+1)+'</span>'
+      +'<button class="delbtn" onclick="removePet('+ri+')" title="削除">×</button></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">'
+      +'<div class="en-fw"><span class="en-lbl">名前</span><input type="text" value="'+esc2(p.name)+'" placeholder="例：ポチ" oninput="D_PET['+ri+'].name=this.value"></div>'
+      +'<div class="en-fw"><span class="en-lbl">種類</span><select onchange="D_PET['+ri+'].species=this.value">'+selOpts+'</select></div>'
+      +'<div class="en-fw"><span class="en-lbl">年齢</span><input type="text" value="'+esc2(p.age)+'" placeholder="例：3歳" oninput="D_PET['+ri+'].age=this.value"></div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+      +'<div class="en-fw"><span class="en-lbl">かかりつけ獣医・病院名</span><input type="text" value="'+esc2(p.vet)+'" placeholder="例：△△動物病院" oninput="D_PET['+ri+'].vet=this.value"></div>'
+      +'<div class="en-fw"><span class="en-lbl">獣医の電話番号</span><input type="text" value="'+esc2(p.vettel)+'" placeholder="052-000-0000" oninput="D_PET['+ri+'].vettel=this.value"></div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+      +'<div class="en-fw"><span class="en-lbl">死後の引き取り先（氏名・施設名）</span><input type="text" value="'+esc2(p.heir)+'" placeholder="例：山田 花子（長女）" oninput="D_PET['+ri+'].heir=this.value"></div>'
+      +'<div class="en-fw"><span class="en-lbl">引き取り先の電話番号</span><input type="text" value="'+esc2(p.heirtel)+'" placeholder="090-0000-0000" oninput="D_PET['+ri+'].heirtel=this.value"></div>'
+      +'</div>'
+      +'<div class="en-fw"><span class="en-lbl">ペットについての備考・お願い</span>'
+      +'<textarea style="min-height:56px" placeholder="例：毎日2回のえさやり。散歩は1日1回30分。アレルギーあり（〇〇不可）。" oninput="D_PET['+ri+'].note=this.value">'+esc2(p.note)+'</textarea></div>';
+    el.appendChild(div);
+  });
+}
+
+function esc2(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 function copyURL(btn){
   navigator.clipboard.writeText('https://directfuneral.github.io/dai8legalclinic/').then(function(){
     btn.textContent='✓ コピーしました';
@@ -648,7 +801,7 @@ rRadioEN('r-life',['希望する','希望しない','家族に任せる'],'life'
 rRadioEN('r-organ',['希望する','希望しない','未定'],'organ');
 rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
 rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave');
-renderAsecs();ctRender();
+renderAsecs();ctRender();renderPets();renderObits();
 </script>
 
 <footer class="site-footer" itemscope itemtype="https://schema.org/LegalService">
