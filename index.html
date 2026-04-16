@@ -315,7 +315,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   </div>
   <div class="en-sec"><div class="en-sh">生前契約・解約が必要な契約一覧</div>
     <div style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">死後に解約・手続きが必要な契約をまとめておきましょう。種類欄は書き換え可能です。</div>
-    <div class="ct-wrap"><table class="ct-tbl"><thead><tr><th style="width:16%">契約種類</th><th style="width:22%">契約会社名・機関名</th><th style="width:18%">連絡先（電話番号）</th><th style="width:18%">お客様番号等</th><th style="width:20%">書類の保管場所</th><th style="width:26px"></th></tr></thead><tbody id="ct-tbody"></tbody></table></div>
+    <div class="ct-wrap"><table class="ct-tbl"><thead><tr><th style="width:16%">契約種類</th><th style="width:22%">契約会社名・機関名</th><th style="width:18%">連絡先（電話番号）</th><th style="width:18%">ID / PW</th><th style="width:20%">書類の保管場所</th><th style="width:26px"></th></tr></thead><tbody id="ct-tbody"></tbody></table></div>
     <button class="addbtn" onclick="ctAdd()">＋ 行を追加</button>
   </div>
   <div class="en-sec"><div class="en-sh">訃報をお伝えしたい方（連絡先一覧）</div>
@@ -450,7 +450,7 @@ function ctRender(){
   var tb=document.getElementById('ct-tbody');if(!tb)return;tb.innerHTML='';
   D_CT.forEach(function(row,ri){
     var tr=document.createElement('tr');
-    [['t','種類',true],['co','会社名',false],['tel','電話番号',false],['num','番号等',false],['loc','保管場所',false]].forEach(function(col){
+    [['t','種類',true],['co','会社名',false],['tel','電話番号',false],['num','ID / PW',false],['loc','保管場所',false]].forEach(function(col){
       var td=document.createElement('td');var inp=document.createElement('input');
       inp.type='text';inp.value=row[col[0]]||'';
       if(col[2])inp.className='ct-type-inp';
@@ -647,7 +647,7 @@ function buildPrintHTML(){
   h+='<div class="phr"></div>';
   h+='<div style="font-size:14px;font-weight:bold;text-align:center;margin-bottom:5px">生前契約・解約が必要な契約一覧</div>';
   h+='<div style="text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:10px">氏名：'+name+'　　作成日：'+date+'</div>';
-  h+='<table class="cttbl"><thead><tr><th style="width:14%">契約種類</th><th style="width:22%">契約会社名</th><th style="width:20%">連絡先</th><th style="width:20%">お客様番号等</th><th style="width:22%">書類保管場所</th></tr></thead><tbody>';
+  h+='<table class="cttbl"><thead><tr><th style="width:14%">契約種類</th><th style="width:22%">契約会社名</th><th style="width:20%">連絡先</th><th style="width:20%">ID / PW</th><th style="width:22%">書類保管場所</th></tr></thead><tbody>';
   D_CT.forEach(function(row){h+='<tr><td class="tp">'+esc(row.t)+'</td><td>'+esc(row.co)+'</td><td>'+esc(row.tel)+'</td><td>'+esc(row.num)+'</td><td>'+esc(row.loc)+'</td></tr>';});
   h+='</tbody></table>';
   h+='<div class="pnotice">第八行政書士事務所　TEL：052-653-3215　※本書類は定期的に内容を見直してください。</div>';
