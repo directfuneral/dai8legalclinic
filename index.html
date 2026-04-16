@@ -245,6 +245,24 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .zip-msg.err{color:var(--red)}
 
 
+
+/* ===== 一時保存バー ===== */
+.save-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:.65rem 1rem;background:#1a1a2e;border-radius:var(--r);margin-bottom:1rem;border:0.5px solid rgba(29,158,117,.3)}
+.save-bar-left{font-size:12px;color:#9fe1cb;display:flex;align-items:center;gap:6px}
+.save-bar-right{display:flex;align-items:center;gap:6px}
+.save-btn{padding:5px 14px;border:0.5px solid #1D9E75;border-radius:var(--r);background:transparent;color:#9fe1cb;font-size:12px;cursor:pointer;transition:all .15s}
+.save-btn:hover{background:#1D9E75;color:white}
+.save-btn.saved{background:#1D9E75;color:white}
+.load-btn{padding:5px 14px;border:0.5px solid rgba(255,255,255,.2);border-radius:var(--r);background:transparent;color:#aaa;font-size:12px;cursor:pointer;transition:all .15s}
+.load-btn:hover{border-color:#9fe1cb;color:#9fe1cb}
+.clear-btn{padding:5px 10px;border:0.5px solid rgba(255,100,100,.3);border-radius:var(--r);background:transparent;color:#f09595;font-size:12px;cursor:pointer;transition:all .15s}
+.clear-btn:hover{background:#A32D2D;color:white;border-color:#A32D2D}
+.save-time{font-size:11px;color:#666;margin-left:4px}
+/* ===== PDFボタン ===== */
+.pdf-btn{width:100%;padding:12px;background:#534AB7;color:white;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;margin-top:.6rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.pdf-btn:hover{background:#3C3489}
+.pdf-btn svg{width:18px;height:18px;flex-shrink:0}
+.pdf-btn.loading{opacity:.7;cursor:wait}
 </style>
 
 <script type="application/ld+json">
@@ -349,6 +367,17 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 </div>
 
 <div id="main-screen" style="display:none">
+<div class="save-bar" id="save-bar">
+  <div class="save-bar-left">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9fe1cb" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    入力内容を一時保存できます<span class="save-time" id="save-time"></span>
+  </div>
+  <div class="save-bar-right">
+    <button class="load-btn" onclick="loadSave()" id="load-btn" style="display:none">↑ 保存データを復元</button>
+    <button class="save-btn" onclick="doSave(this)">一時保存</button>
+    <button class="clear-btn" onclick="clearSave()" title="保存データを消去">✕</button>
+  </div>
+</div>
 <div class="pb"><div class="ps active" id="p0" onclick="goTab(0)" title="家族構成へ移動">家族構成</div><div class="ps" id="p1" onclick="goTab(1)" title="財産目録へ移動">財産目録</div><div class="ps" id="p2" onclick="goTab(2)" title="対策状況へ移動">対策状況</div><div class="ps" id="p3" onclick="goTab(3)" title="お悩みへ移動">お悩み</div><div class="ps" id="p4" onclick="goTab(4)" title="ノートへ移動">ノート</div><div class="ps" id="p5" onclick="goTab(5)" title="診察結果へ移動">診察結果</div></div>
 
 <div id="s0" class="sc">
@@ -500,13 +529,18 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 </div>
 <button class="print-btn" onclick="showPV()">財産目録・エンディングノートを印刷プレビュー</button>
   <div style="font-size:12px;color:#888;text-align:center;margin-top:7px">Ctrl+P（⌘+P）で印刷できます</div>
+  <button class="pdf-btn" onclick="downloadPDF(this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+    PDFでダウンロード
+  </button>
+  <div style="font-size:11px;color:#888;text-align:center;margin-top:5px">PDFは印刷プレビューを開いてから生成されます</div>
   <button class="btn-prev" style="margin-top:8px" onclick="go(4)">← 入力内容を修正する</button>
 </div>
 </div>
 
 </div><!-- /main-screen -->
 <div class="pvpanel" id="pvpanel">
-  <div class="pvtb"><span class="pvtbtit">印刷プレビュー（財産目録 ＋ エンディングノート）</span><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#555">Ctrl+P（⌘+P）で印刷</span><button class="closebtn" onclick="closePV()">× 閉じる</button></div></div>
+  <div class="pvtb"><span class="pvtbtit">印刷プレビュー（財産目録 ＋ エンディングノート）</span><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:#555">Ctrl+P（⌘+P）で印刷</span><button onclick="downloadPDF(this)" style="padding:4px 12px;background:#534AB7;color:white;border:none;border-radius:var(--r);font-size:12px;cursor:pointer">PDF保存</button><button class="closebtn" onclick="closePV()">× 閉じる</button></div></div>
   <div class="ppage" id="pvpage"></div>
 </div>
 
@@ -708,6 +742,145 @@ function lookupZip(){
     });
 }
 
+
+
+/* ===== 一時保存 ===== */
+var SAVE_KEY='dai8_clinic_save';
+var EN_FIELDS=["en-name", "en-birth", "en-gender", "en-blood", "en-tel", "en-date", "en-zip", "en-addr", "en-ec1n", "en-ec1r", "en-ec1t", "en-ec2n", "en-ec2r", "en-ec2t", "en-care", "en-fun-note", "en-will", "en-bank-loc", "en-ins-loc", "en-pension", "en-docs", "en-doc", "en-doc-tel", "en-law", "en-law-tel", "en-tax", "en-tax-tel", "en-msg"];
+
+function collectENFields(){
+  var obj={};
+  EN_FIELDS.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)obj[id]=el.value;
+  });
+  return obj;
+}
+
+function restoreENFields(obj){
+  if(!obj)return;
+  EN_FIELDS.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&obj[id]!==undefined)el.value=obj[id];
+  });
+}
+
+function doSave(btn){
+  var payload={
+    D:JSON.parse(JSON.stringify(D)),
+    EN:JSON.parse(JSON.stringify(EN)),
+    D_CT:JSON.parse(JSON.stringify(D_CT)),
+    D_PET:JSON.parse(JSON.stringify(D_PET)),
+    D_OBIT:JSON.parse(JSON.stringify(D_OBIT)),
+    enFields:collectENFields(),
+    savedAt:new Date().toLocaleString('ja-JP')
+  };
+  try{
+    localStorage.setItem(SAVE_KEY,JSON.stringify(payload));
+    btn.textContent='✓ 保存しました';
+    btn.classList.add('saved');
+    document.getElementById('save-time').textContent=' — '+payload.savedAt;
+    setTimeout(function(){btn.textContent='一時保存';btn.classList.remove('saved');},2000);
+  }catch(e){
+    alert('保存に失敗しました。ブラウザのストレージが無効になっている可能性があります。');
+  }
+}
+
+function loadSave(){
+  try{
+    var raw=localStorage.getItem(SAVE_KEY);
+    if(!raw){alert('保存データが見つかりません。');return;}
+    var payload=JSON.parse(raw);
+    if(!confirm('保存データを復元しますか？\n（保存日時：'+payload.savedAt+'）\n現在の入力内容は上書きされます。'))return;
+    D=payload.D;
+    EN=payload.EN||{};
+    D_CT=payload.D_CT||D_CT;
+    D_PET=payload.D_PET||[];
+    D_OBIT=payload.D_OBIT||[];
+    rRadio('r-mar',['未婚','既婚','離婚','死別'],'mar',renderProxy);
+    rRadio('r-par',['両方存命','一方存命','両方故人'],'par',renderProxy);
+    document.getElementById('ch-v').textContent=D.ch;
+    document.getElementById('si-v').textContent=D.si;
+    renderProxy();
+    renderAsecs();
+    rChecksDone();
+    rChecks('worry-list','worry',WORRY_OPTS);
+    rRadioEN('r-life',['希望する','希望しない','家族に任せる'],'life');
+    rRadioEN('r-organ',['希望する','希望しない','未定'],'organ');
+    rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
+    rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave');
+    ctRender();
+    renderPets();
+    renderObits();
+    setTimeout(function(){restoreENFields(payload.enFields);},100);
+    document.getElementById('save-time').textContent=' — 復元済（'+payload.savedAt+'）';
+    document.getElementById('intro-screen').style.display='none';
+    document.getElementById('main-screen').style.display='';
+    go(0);
+    alert('入力データを復元しました。');
+  }catch(e){
+    alert('復元中にエラーが発生しました。');
+  }
+}
+
+function clearSave(){
+  if(!localStorage.getItem(SAVE_KEY)){alert('保存データがありません。');return;}
+  if(!confirm('保存データを消去しますか？'))return;
+  localStorage.removeItem(SAVE_KEY);
+  document.getElementById('save-time').textContent='';
+  document.getElementById('load-btn').style.display='none';
+  alert('保存データを消去しました。');
+}
+
+function checkExistingSave(){
+  try{
+    var raw=localStorage.getItem(SAVE_KEY);
+    if(raw){
+      var payload=JSON.parse(raw);
+      var lb=document.getElementById('load-btn');
+      if(lb){lb.style.display='';}
+      var st=document.getElementById('save-time');
+      if(st)st.textContent=' — 保存あり（'+payload.savedAt+'）';
+    }
+  }catch(e){}
+}
+
+/* ===== PDFダウンロード ===== */
+function downloadPDF(btn){
+  var pvpage=document.getElementById('pvpage');
+  if(!pvpage||pvpage.innerHTML.trim()===''){
+    showPV();
+    setTimeout(function(){downloadPDF(btn);},300);
+    return;
+  }
+  if(typeof html2pdf==='undefined'){
+    alert('PDFライブラリの読み込み中です。少し待ってから再度お試しください。');
+    return;
+  }
+  btn.classList.add('loading');
+  var origText=btn.innerHTML;
+  btn.innerHTML='生成中...';
+  var name=document.getElementById('en-name')&&document.getElementById('en-name').value||'終活';
+  var date=new Date();
+  var fname=name+'_終活診断_'+date.getFullYear()+(date.getMonth()+1)+date.getDate()+'.pdf';
+  var opt={
+    margin:[10,8,10,8],
+    filename:fname,
+    image:{type:'jpeg',quality:.92},
+    html2canvas:{scale:2,useCORS:true,logging:false},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+  };
+  var clone=pvpage.cloneNode(true);
+  clone.style.cssText='background:white;color:#111;font-family:Hiragino Kaku Gothic Pro,Meiryo,Yu Gothic,sans-serif;padding:0;max-width:190mm';
+  html2pdf().set(opt).from(clone).save().then(function(){
+    btn.classList.remove('loading');
+    btn.innerHTML=origText;
+  }).catch(function(e){
+    btn.classList.remove('loading');
+    btn.innerHTML=origText;
+    alert('PDF生成に失敗しました。印刷プレビューを開いてからCtrl+Pで印刷→PDFに保存する方法もお試しください。');
+  });
+}
 
 function startDiagnosis(){
   document.getElementById('intro-screen').style.display='none';
@@ -960,6 +1133,7 @@ rRadioEN('r-organ',['希望する','希望しない','未定'],'organ');
 rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
 rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave');
 renderAsecs();ctRender();renderPets();renderObits();
+checkExistingSave();
 </script>
 
 <footer class="site-footer" itemscope itemtype="https://schema.org/LegalService">
@@ -1004,5 +1178,6 @@ renderAsecs();ctRender();renderPets();renderObits();
 </footer>
 <script>document.getElementById('footer-year').textContent=new Date().getFullYear();</script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
