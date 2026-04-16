@@ -2,7 +2,7 @@
 
 > 終活に必要な手続きを、病院の問診票形式でわかりやすくご案内します。
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-公開中-brightgreen)](https://ihinseiri-dai8.jp)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-公開中-brightgreen)](https://directfuneral.github.io/dai8legalclinic)
 [![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-red)](#ライセンス)
 
 ---
@@ -52,7 +52,7 @@
 公開URLにアクセスするだけで、インストール不要ですぐにご利用いただけます。
 
 ```
-https://ihinseiri-dai8.jp
+https://directfuneral.github.io/dai8legalclinic
 ```
 
 ### ローカルで使う
@@ -134,7 +134,7 @@ open index.html
 
 - 所在地：愛知県名古屋市熱田区
 - 電話：052-653-3215
-- ウェブサイト：[ihinseiri-dai8.jp](https://ihinseiri-dai8.jp)
+- ウェブサイト：[directfuneral.github.io/dai8legalclinic](https://directfuneral.github.io/dai8legalclinic/)
 - 業務内容：相続手続・遺品整理・死後事務委任・遺言書作成・終活サポート（名古屋・愛知県）
 
 ---

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://directfuneral.github.io/dai8legalclinic/sitemap.xml
