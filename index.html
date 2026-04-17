@@ -112,6 +112,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .btn-prev:hover{background:var(--bg)}
 /* result */
 .shl{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin:1.2rem 0 8px}
+.dist-sh{font-size:12px;font-weight:600;color:var(--text2);padding:3px 0 5px;border-bottom:0.5px solid var(--border);margin-bottom:8px}
 .hchart{background:var(--bg2);border-radius:var(--r2);padding:1rem;overflow-x:auto}
 .lgd{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
 .lgd span{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
@@ -423,6 +424,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="fg"><span class="fl">お子さんの人数</span><div class="nw"><button class="nb" onclick="cn('ch',-1)">−</button><span class="nv" id="ch-v">0</span><button class="nb" onclick="cn('ch',1)">＋</button><span style="font-size:13px;color:#555">人</span></div></div>
   <div class="dv"></div>
   <div class="fg"><span class="fl">ご両親の状況</span><div class="rg" id="r-par"></div></div>
+  <div id="gpar-sec"></div>
   <div class="dv"></div>
   <div class="fg"><span class="fl">ご兄弟姉妹の人数</span><div class="nw"><button class="nb" onclick="cn('si',-1)">−</button><span class="nv" id="si-v">0</span><button class="nb" onclick="cn('si',1)">＋</button><span style="font-size:13px;color:#555">人</span></div></div>
   <div id="proxy-sec"></div>
@@ -543,13 +545,16 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="hchart" id="hchart"></div>
   <div class="lgd">
     <span><svg width="14" height="14" viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="#185FA5"/></svg>本人（被相続人）</span>
-    <span><svg width="14" height="14" viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="#1D9E75"/></svg>相続人</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="#1D9E75"/></svg>相続人（全血）</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="#7D6CC8"/></svg>相続人（半血）</span>
     <span><svg width="14" height="14" viewBox="0 0 14 14"><rect width="14" height="14" rx="2" fill="#B4B2A9"/></svg>既に亡くなった方</span>
     <span><svg width="22" height="10" viewBox="0 0 22 10"><line x1="0" y1="3" x2="22" y2="3" stroke="#444" stroke-width="1"/><line x1="0" y1="7" x2="22" y2="7" stroke="#444" stroke-width="1"/></svg>婚姻関係</span>
     <span><svg width="22" height="10" viewBox="0 0 22 10"><line x1="0" y1="5" x2="22" y2="5" stroke="#555" stroke-width="1.5"/></svg>親族関係</span>
   </div>
   <div class="shl">処方箋 — 必要な対策</div>
   <ul class="alist" id="alist"></ul>
+  <div class="shl">財産分配シミュレーション</div>
+  <div id="dist-cont" style="margin-bottom:1rem"></div>
   <div class="shl">専門家のご紹介</div>
   <div class="explist" id="explist"></div>
   
@@ -591,7 +596,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 </div>
 
 <script>
-var D={mar:'既婚',ch:0,par:'両方故人',si:0,deadSib:0,nephews:0,done:[],worry:[],ar:{}};
+var D={mar:'既婚',ch:0,par:'両方故人',si:0,deadSib:0,nephews:0,halfSib:0,gpar:'',done:[],worry:[],ar:{}};
 var EN={};
 /* ===== 契約一覧（新設計） ===== */
 var CT_DEFS=[
@@ -822,31 +827,71 @@ function rRadio(id,opts,key,cb){var el=document.getElementById(id);if(!el)return
 function rRadioEN(id,opts,key){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var cur=EN[key]||opts[0];var b=document.createElement('label');b.className='rb'+(cur===o?' sel':'');b.innerHTML='<input type="radio">'+o;b.onclick=function(){EN[key]=o;rRadioEN(id,opts,key);};el.appendChild(b);});}
 function rChecksDone(){var el=document.getElementById('done-list');if(!el)return;el.innerHTML='';DONE_OPTS.forEach(function(o){var sel=D.done.indexOf(o)>-1;var isN=o===NONE_DONE;var b=document.createElement('div');b.className='cb'+(sel?(isN?' none-sel':' sel'):'');b.innerHTML='<div class="ci">'+(sel?'✓':'')+'</div><span>'+o+'</span>';b.onclick=function(){if(o===NONE_DONE){D.done=sel?[]:[NONE_DONE];}else{var ni=D.done.indexOf(NONE_DONE);if(ni>-1)D.done.splice(ni,1);var i=D.done.indexOf(o);if(i>-1)D.done.splice(i,1);else D.done.push(o);}rChecksDone();};el.appendChild(b);});}
 function rChecks(id,key,opts){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var sel=D[key].indexOf(o)>-1;var b=document.createElement('div');b.className='cb'+(sel?' sel':'');b.innerHTML='<div class="ci">'+(sel?'✓':'')+'</div><span>'+o+'</span>';b.onclick=function(){var i=D[key].indexOf(o);if(i>-1)D[key].splice(i,1);else D[key].push(o);rChecks(id,key,opts);};el.appendChild(b);});}
-function cn(key,d){D[key]=Math.max(0,(D[key]||0)+d);document.getElementById(key+'-v').textContent=D[key];if(key==='si')renderProxy();}
-function cnDS(d){D.deadSib=Math.max(0,Math.min(D.si,(D.deadSib||0)+d));if(!D.deadSib)D.nephews=0;renderProxy();}
+function cn(key,d){D[key]=Math.max(0,(D[key]||0)+d);document.getElementById(key+'-v').textContent=D[key];if(key==='si'){var maxHalf=Math.max(0,D.si-(D.deadSib||0));if((D.halfSib||0)>maxHalf)D.halfSib=maxHalf;renderProxy();}}
+function cnDS(d){D.deadSib=Math.max(0,Math.min(D.si-(D.halfSib||0),(D.deadSib||0)+d));if(!D.deadSib)D.nephews=0;renderProxy();}
 function cnNE(d){D.nephews=Math.max(0,(D.nephews||0)+d);renderProxy();}
+function cnHalf(d){D.halfSib=Math.max(0,Math.min(Math.max(0,D.si-(D.deadSib||0)),(D.halfSib||0)+d));renderProxy();}
 function shouldProxy(){return D.mar!=='既婚'&&D.ch===0&&D.par==='両方故人'&&D.si>0;}
+function renderGpar(){
+  var el=document.getElementById('gpar-sec');if(!el)return;
+  if(D.par!=='両方故人'){el.innerHTML='';D.gpar='';return;}
+  var opts=['祖父存命','祖母存命','祖父母共に存命','祖父母共に故人'];
+  var h='<div class="dv"></div>'
+    +'<div style="background:#FFF8E1;border:0.5px solid #FFD54F;border-radius:8px;padding:12px">'
+    +'<div style="font-size:13px;font-weight:600;color:#7A5200;margin-bottom:4px">祖父母の状況</div>'
+    +'<div style="font-size:12px;color:#5A3B00;margin-bottom:10px;line-height:1.6">ご両親が既に他界されている場合、<strong>存命の祖父母（直系尊属）</strong>が相続人になる場合があります。</div>'
+    +'<div class="fg"><span class="fl" style="font-size:12px">祖父母の生存状況</span><div class="rg">';
+  opts.forEach(function(o){
+    h+='<label class="rb'+(D.gpar===o?' sel':'')+'" onclick="D.gpar=\''+o+'\';renderGpar()">'+o+'</label>';
+  });
+  h+='</div></div></div>';
+  el.innerHTML=h;
+}
 function renderProxy(){
   var el=document.getElementById('proxy-sec');if(!el)return;
-  if(!shouldProxy()){el.innerHTML='';D.deadSib=0;D.nephews=0;return;}
+  var h='';
+
+  /* ── 半血の兄弟姉妹（兄弟が1人以上いれば常に表示） ── */
+  if(D.si>0){
+    var maxHalf=Math.max(0,D.si-(D.deadSib||0));
+    if((D.halfSib||0)>maxHalf)D.halfSib=maxHalf;
+    var nHalf=D.halfSib||0;
+    h+='<div class="dv"></div>'
+      +'<div style="background:#F3EFFF;border:0.5px solid #A08CDE;border-radius:8px;padding:12px">'
+      +'<div style="font-size:13px;font-weight:600;color:#4A3080;margin-bottom:4px">半血の兄弟姉妹の確認</div>'
+      +'<div style="font-size:12px;color:#3A2060;margin-bottom:10px;line-height:1.6">両親の一方だけが同じ兄弟姉妹（異父・異母）がいる場合、その方の法定相続分は全血の兄弟姉妹の<strong>½（半分）</strong>になります（民法900条4号）。</div>'
+      +'<div class="fg"><span class="fl" style="font-size:12px">半血の兄弟姉妹の人数</span>'
+      +'<div class="nw"><button class="nb" onclick="cnHalf(-1)">−</button><span class="nv" id="half-v">'+nHalf+'</span><button class="nb" onclick="cnHalf(1)">＋</button><span style="font-size:13px;color:#555">人</span></div></div>'
+      +'</div>';
+  }
+
+  /* ── 代襲相続（配偶者・子・親なし＋兄弟あり の場合のみ） ── */
+  if(!shouldProxy()){el.innerHTML=h;return;}
   var ds=D.deadSib||0,ne=D.nephews||0;
-  var h='<div class="dv"></div><div style="background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:8px;padding:12px">'
+  h+='<div class="dv"></div>'
+    +'<div style="background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:8px;padding:12px">'
     +'<div style="font-size:13px;font-weight:600;color:#0F6E56;margin-bottom:4px">代襲相続の確認</div>'
     +'<div style="font-size:12px;color:#085041;margin-bottom:10px;line-height:1.6">先に亡くなっている兄弟姉妹がいるときは、その子（甥・姪）が代わりに相続します（代襲相続）。</div>'
     +'<div class="fg"><span class="fl" style="font-size:12px">先に亡くなっている兄弟姉妹の人数</span><div class="nw"><button class="nb" onclick="cnDS(-1)">−</button><span class="nv" id="ds-v">'+ds+'</span><button class="nb" onclick="cnDS(1)">＋</button><span style="font-size:13px;color:#555">人</span></div></div>';
   if(ds>0)h+='<div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">甥・姪の合計人数</span><div class="nw"><button class="nb" onclick="cnNE(-1)">−</button><span class="nv" id="ne-v">'+ne+'</span><button class="nb" onclick="cnNE(1)">＋</button><span style="font-size:13px;color:#555">人</span></div></div>';
-  h+='</div>';el.innerHTML=h;
+  h+='</div>';
+  el.innerHTML=h;
 }
 function buildHeirSVG(){
   var NW=52,NH=26,NR=4,HG=14,VG=72,MG=28,PAD=24,LBL=26;
   var sp=D.mar==='既婚';var nk=D.ch;
   var parB=D.par==='両方存命',parO=D.par==='一方存命';var np=parB?2:parO?1:0;
+  var gparAlive=D.par==='両方故人'&&D.gpar&&D.gpar!=='祖父母共に故人';
+  var gparBoth=gparAlive&&D.gpar==='祖父母共に存命';
+  var gparLabel=D.gpar==='祖父存命'?'祖父':D.gpar==='祖母存命'?'祖母':'祖父母';
+  if(gparAlive)np=gparBoth?2:1;
   var ns=D.si,nd=Math.min(D.deadSib||0,ns),nn=D.nephews||0,nl=ns-nd;
+  var nHalfSib=Math.min(D.halfSib||0,nl); /* 半血の兄弟姉妹（生存） */
   var p=[],W=300,H=160,note='';
   function gcd2(a,b){return b?gcd2(b,a%b):a;}
   function fr(n,d){if(!n||!d)return '';var g=gcd2(Math.abs(n),Math.abs(d));var n2=Math.round(n/g),d2=Math.round(d/g);return d2===1?'(全部)':'('+n2+'/'+d2+')';}
   function bx(cx,cy,lbl,sh,typ){
-    var bg=typ==='self'?'#185FA5':typ==='dead'?'#B4B2A9':'#1D9E75';var tc=typ==='dead'?'#444':'white';
+    var bg=typ==='self'?'#185FA5':typ==='dead'?'#B4B2A9':typ==='half'?'#7D6CC8':'#1D9E75';var tc=typ==='dead'?'#444':'white';
     var s='<rect x="'+(cx-NW/2)+'" y="'+(cy-NH/2)+'" width="'+NW+'" height="'+NH+'" rx="'+NR+'" fill="'+bg+'"/>';
     s+='<text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" font-size="10" font-weight="500" fill="'+tc+'">'+lbl+'</text>';
     if(sh)s+='<text x="'+cx+'" y="'+(cy+NH/2+LBL*0.6)+'" text-anchor="middle" font-size="10" fill="#0F6E56">'+sh+'</text>';
@@ -868,11 +913,14 @@ function buildHeirSVG(){
     if(NK>1)p.push(ln(cs,bky,cs+(NK-1)*(NW+HG),bky));if(nk>NK)p.push('<text x="'+(cs+NK*(NW+HG))+'" y="'+(ry2+4)+'" font-size="10" fill="#888">他'+(nk-NK)+'人</text>');
     note='配偶者'+fr(1,2)+'　子'+nk+'人で'+fr(1,2)+'を分割'+(nk>1?' 各'+fr(1,2*nk):'');
   } else if(sp&&nk===0&&np>0){
-    var ph=parB?(NW+HG/2):NW/2,sCXB=PAD+ph,spCXB=sCXB+NW+MG;W=Math.max(spCXB+NW/2+PAD,sCXB*2+PAD);if(W<240)W=240;
+    var twoAscB=parB||gparBoth;
+    var ph=twoAscB?(NW+HG/2):NW/2,sCXB=PAD+ph,spCXB=sCXB+NW+MG;W=Math.max(spCXB+NW/2+PAD,sCXB*2+PAD);if(W<240)W=240;
     var ry1B=PAD+NH/2,ry2B=ry1B+VG;H=ry2B+NH/2+LBL+PAD+14;
-    if(parB){p.push(bx(sCXB-NW/2-HG/2,ry1B,'父',fr(1,6),'heir'));p.push(bx(sCXB+NW/2+HG/2,ry1B,'母',fr(1,6),'heir'));p.push(ln(sCXB-HG/2,ry1B,sCXB+HG/2,ry1B));}else p.push(bx(sCXB,ry1B,'親',fr(1,3),'heir'));
+    if(parB){p.push(bx(sCXB-NW/2-HG/2,ry1B,'父',fr(1,6),'heir'));p.push(bx(sCXB+NW/2+HG/2,ry1B,'母',fr(1,6),'heir'));p.push(ln(sCXB-HG/2,ry1B,sCXB+HG/2,ry1B));}
+    else if(gparBoth){p.push(bx(sCXB-NW/2-HG/2,ry1B,'祖父',fr(1,6),'heir'));p.push(bx(sCXB+NW/2+HG/2,ry1B,'祖母',fr(1,6),'heir'));p.push(ln(sCXB-HG/2,ry1B,sCXB+HG/2,ry1B));}
+    else p.push(bx(sCXB,ry1B,gparAlive?gparLabel:'親',fr(1,3),'heir'));
     p.push(ln(sCXB,ry1B+NH/2,sCXB,ry2B-NH/2));p.push(bx(sCXB,ry2B,'本人','','self'));p.push(bx(spCXB,ry2B,'配偶者',fr(2,3),'heir'));p.push(dbl(sCXB,spCXB,ry2B));
-    note='配偶者'+fr(2,3)+'　直系尊属'+fr(1,3)+(parB?'（父母各'+fr(1,6)+'）':'');
+    note='配偶者'+fr(2,3)+'　直系尊属'+fr(1,3)+(parB?'（父母各'+fr(1,6)+'）':gparBoth?'（祖父・祖母 各'+fr(1,6)+'）':gparAlive?'（'+gparLabel+'）':'');
   } else if(sp&&nk===0&&np===0&&ns>0&&(nl>0||(nd>0&&nn>0))){
     var NLS=Math.min(nl,4),showNC=nd>0&&nn>0,gap=36;
     var sCXC=PAD+NW/2,spCXC=sCXC+NW+MG,sibSt=spCXC+NW/2+gap+NW/2,dsCXC=sibSt+NLS*(NW+HG);
@@ -881,10 +929,10 @@ function buildHeirSVG(){
     H=ry1C+NH/2+LBL+PAD+14;if(showNC)H+=VG+NH/2+LBL;
     p.push(ln(sCXC,bkyC,Math.max(lastX,showNC?dsCXC:lastX),bkyC,'#888',1));p.push(ln(sCXC,bkyC,sCXC,ry1C-NH/2,'#555',1.5));
     p.push(bx(sCXC,ry1C,'本人','','self'));p.push(bx(spCXC,ry1C,'配偶者',fr(3,4),'heir'));p.push(dbl(sCXC,spCXC,ry1C));
-    for(var siC=0;siC<NLS;siC++){var scC=sibSt+siC*(NW+HG);p.push(ln(scC,bkyC,scC,ry1C-NH/2,'#555',1.5));p.push(bx(scC,ry1C,NLS===1&&nd===0?'兄弟姉妹':'兄弟'+(siC+1),fr(1,4*ns),'heir'));}
+    for(var siC=0;siC<NLS;siC++){var scC=sibSt+siC*(NW+HG);p.push(ln(scC,bkyC,scC,ry1C-NH/2,'#555',1.5));var nFullC=nl-nHalfSib;var denC=2*ns-nHalfSib;var isHlfC=siC>=nFullC;var lblC=NLS===1&&nd===0&&!isHlfC?'兄弟姉妹':isHlfC?'半血'+(siC+1):'兄弟'+(siC+1);p.push(bx(scC,ry1C,lblC,fr(isHlfC?1:2,4*denC),isHlfC?'half':'heir'));}
     if(nl>NLS&&!showNC)p.push('<text x="'+(sibSt+NLS*(NW+HG))+'" y="'+(ry1C+4)+'" font-size="10" fill="#888">他'+(nl-NLS)+'人</text>');
     if(showNC){p.push(ln(dsCXC,bkyC,dsCXC,ry1C-NH/2,'#888',1,'4,3'));p.push(bx(dsCXC,ry1C,'亡兄弟','','dead'));subT(dsCXC,ry1C,ry1C+VG);}
-    note='配偶者'+fr(3,4)+'　兄弟姉妹で'+fr(1,4)+'を分割　※遺留分なし';
+    note='配偶者'+fr(3,4)+'　兄弟姉妹で'+fr(1,4)+'を分割'+(nHalfSib>0?' ※半血は全血の½':'')+'　※遺留分なし';
   } else if(!sp&&nk>0){
     var NKD=Math.min(nk,5),chWD=NKD*NW+(NKD-1)*HG;W=Math.max(chWD,NW)+2*PAD;var cxD=W/2;
     var ry1D=PAD+NH/2,ry2D=ry1D+VG,bkyD=ry2D-NH/2-16;H=ry2D+NH/2+LBL+PAD+14;
@@ -893,11 +941,14 @@ function buildHeirSVG(){
     if(NKD>1)p.push(ln(csD,bkyD,csD+(NKD-1)*(NW+HG),bkyD));if(nk>NKD)p.push('<text x="'+(csD+NKD*(NW+HG))+'" y="'+(ry2D+4)+'" font-size="10" fill="#888">他'+(nk-NKD)+'人</text>');
     note='子'+nk+'人で均等分割　各'+fr(1,nk);
   } else if(!sp&&nk===0&&np>0){
-    var phE=parB?(NW+HG/2):NW/2,cxE=PAD+phE;W=Math.max(cxE+phE+PAD,200);
+    var twoAscE=parB||gparBoth;
+    var phE=twoAscE?(NW+HG/2):NW/2,cxE=PAD+phE;W=Math.max(cxE+phE+PAD,200);
     var ry1E=PAD+NH/2,ry2E=ry1E+VG;H=ry2E+NH/2+LBL+PAD+14;
-    if(parB){p.push(bx(cxE-NW/2-HG/2,ry1E,'父',fr(1,2),'heir'));p.push(bx(cxE+NW/2+HG/2,ry1E,'母',fr(1,2),'heir'));p.push(ln(cxE-HG/2,ry1E,cxE+HG/2,ry1E));}else p.push(bx(cxE,ry1E,'親','(全部)','heir'));
+    if(parB){p.push(bx(cxE-NW/2-HG/2,ry1E,'父',fr(1,2),'heir'));p.push(bx(cxE+NW/2+HG/2,ry1E,'母',fr(1,2),'heir'));p.push(ln(cxE-HG/2,ry1E,cxE+HG/2,ry1E));}
+    else if(gparBoth){p.push(bx(cxE-NW/2-HG/2,ry1E,'祖父',fr(1,2),'heir'));p.push(bx(cxE+NW/2+HG/2,ry1E,'祖母',fr(1,2),'heir'));p.push(ln(cxE-HG/2,ry1E,cxE+HG/2,ry1E));}
+    else p.push(bx(cxE,ry1E,gparAlive?gparLabel:'親','(全部)','heir'));
     p.push(ln(cxE,ry1E+NH/2,cxE,ry2E-NH/2));p.push(bx(cxE,ry2E,'本人','','self'));
-    note=parB?'両親が相続　父'+fr(1,2)+'母'+fr(1,2):'直系尊属が全部相続';
+    note=parB?'両親が相続　父'+fr(1,2)+'母'+fr(1,2):gparBoth?'祖父・祖母が相続　各'+fr(1,2):gparAlive?gparLabel+'が全部相続（直系尊属）':'直系尊属が全部相続';
   } else if(!sp&&nk===0&&np===0&&ns>0&&(nl>0||(nd>0&&nn>0))){
     var NLSF=Math.min(nl,4),showNF=nd>0&&nn>0,gapF=36;
     var sCXF=PAD+NW/2,sibStF=sCXF+gapF+NW/2,dsCXF=sibStF+NLSF*(NW+HG);
@@ -905,10 +956,10 @@ function buildHeirSVG(){
     W=Math.max(lastXF+NW/2+PAD,200);if(showNF){var nWF=Math.min(nn,4)*(NW+HG);W=Math.max(W,dsCXF+nWF/2+PAD);}if(W<280)W=280;
     var bkyF=PAD+16,ry1F=bkyF+26;H=ry1F+NH/2+LBL+PAD+14;if(showNF)H+=VG+NH/2+LBL;
     p.push(ln(sCXF,bkyF,lastXF,bkyF,'#888',1));p.push(ln(sCXF,bkyF,sCXF,ry1F-NH/2,'#555',1.5));p.push(bx(sCXF,ry1F,'本人','','self'));
-    for(var siF=0;siF<NLSF;siF++){var scF=sibStF+siF*(NW+HG);p.push(ln(scF,bkyF,scF,ry1F-NH/2,'#555',1.5));p.push(bx(scF,ry1F,ns===1&&nd===0?'兄弟姉妹':'兄弟'+(siF+1),fr(1,ns),'heir'));}
+    for(var siF=0;siF<NLSF;siF++){var scF=sibStF+siF*(NW+HG);p.push(ln(scF,bkyF,scF,ry1F-NH/2,'#555',1.5));var nFullF=nl-nHalfSib;var denF=2*ns-nHalfSib;var isHlfF=siF>=nFullF;var lblF=NLSF===1&&nd===0&&!isHlfF?'兄弟姉妹':isHlfF?'半血'+(siF+1):'兄弟'+(siF+1);p.push(bx(scF,ry1F,lblF,fr(isHlfF?1:2,denF),isHlfF?'half':'heir'));}
     if(nl>NLSF&&!showNF)p.push('<text x="'+(sibStF+NLSF*(NW+HG))+'" y="'+(ry1F+4)+'" font-size="10" fill="#888">他'+(nl-NLSF)+'人</text>');
     if(showNF){p.push(ln(dsCXF,bkyF,dsCXF,ry1F-NH/2,'#888',1,'4,3'));p.push(bx(dsCXF,ry1F,'亡兄弟','','dead'));subT(dsCXF,ry1F,ry1F+VG);}
-    note='兄弟姉妹'+ns+'人で均等分割　各'+fr(1,ns)+(showNF?' 代襲あり':'')+'　※遺留分なし';
+    note='兄弟姉妹'+ns+'人で分割'+(nHalfSib>0?' うち半血'+nHalfSib+'人（相続分は全血の½）':'　均等')+(showNF?' 代襲あり':'')+'　※遺留分なし';
   } else{W=260;H=80;p.push(bx(130,40,'本人','','self'));p.push('<text x="130" y="74" text-anchor="middle" font-size="10" fill="#A32D2D">法定相続人がいない可能性があります</text>');}
   if(note)p.push('<text x="'+(W/2)+'" y="'+(H-5)+'" text-anchor="middle" font-size="9.5" fill="#888">'+note+'</text>');
   return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;max-width:'+W+'px;margin:0 auto" xmlns="http://www.w3.org/2000/svg">'+p.join('')+'</svg>';
@@ -1017,6 +1068,7 @@ function loadSave(){
     renderPets();
     renderObits();
     renderFunGuests();
+    renderGpar();
     setTimeout(function(){restoreENFields(payload.enFields);},100);
     document.getElementById('save-time').textContent=' — 復元済（'+payload.savedAt+'）';
     document.getElementById('intro-screen').style.display='none';
@@ -1101,8 +1153,121 @@ function go(n){
   [0,1,2,3,4,5].forEach(function(i){document.getElementById('s'+i).style.display=i===n?'':'none';var p2=document.getElementById('p'+i);p2.className='ps'+(i===n?' active':i<n?' done':'');});
   window.scrollTo(0,0);
 }
+function getHeirShares(){
+  var sp=D.mar==='既婚',nk=D.ch;
+  var parB=D.par==='両方存命',parO=D.par==='一方存命';
+  var gparAlive=D.par==='両方故人'&&D.gpar&&D.gpar!=='祖父母共に故人';
+  var gparBoth=gparAlive&&D.gpar==='祖父母共に存命';
+  var gparLabel=D.gpar==='祖父存命'?'祖父':D.gpar==='祖母存命'?'祖母':'祖父母';
+  var np=parB?2:parO?1:0;if(gparAlive)np=gparBoth?2:1;
+  var ns=D.si,nd=Math.min(D.deadSib||0,ns),nn=D.nephews||0,nl=ns-nd;
+  var nHalfSib=Math.min(D.halfSib||0,nl),nFullSib=nl-nHalfSib;
+  function gcd(a,b){return b?gcd(b,a%b):a;}
+  function mk(name,num,den){var g=gcd(Math.abs(num),Math.abs(den));return{name:name,n:num/g,d:den/g};}
+  var list=[];
+  if(sp&&nk>0){
+    list.push(mk('配偶者',1,2));
+    for(var i=0;i<nk;i++)list.push(mk(nk===1?'子':'子'+(i+1),1,2*nk));
+  }else if(sp&&nk===0&&np>0){
+    list.push(mk('配偶者',2,3));
+    if(parB){list.push(mk('父',1,6));list.push(mk('母',1,6));}
+    else if(gparBoth){list.push(mk('祖父',1,6));list.push(mk('祖母',1,6));}
+    else list.push(mk(gparAlive?gparLabel:'親',1,3));
+  }else if(sp&&nk===0&&np===0&&ns>0&&(nl>0||(nd>0&&nn>0))){
+    list.push(mk('配偶者',3,4));
+    var den=2*ns-nHalfSib;
+    for(var i=0;i<nFullSib;i++)list.push(mk(nFullSib===1&&nd===0?'兄弟姉妹':'兄弟'+(i+1),2,4*den));
+    for(var i=0;i<nHalfSib;i++)list.push(mk('半血'+(i+1),1,4*den));
+    if(nd>0&&nn>0){var nn2=Math.min(nn,6);for(var i=0;i<nn2;i++)list.push(mk(nn===1?'甥・姪':'甥姪'+(i+1),2,4*den*nn));}
+  }else if(!sp&&nk>0){
+    for(var i=0;i<nk;i++)list.push(mk(nk===1?'子':'子'+(i+1),1,nk));
+  }else if(!sp&&nk===0&&np>0){
+    if(parB){list.push(mk('父',1,2));list.push(mk('母',1,2));}
+    else if(gparBoth){list.push(mk('祖父',1,2));list.push(mk('祖母',1,2));}
+    else list.push(mk(gparAlive?gparLabel:'親',1,1));
+  }else if(!sp&&nk===0&&np===0&&ns>0&&(nl>0||(nd>0&&nn>0))){
+    var den=2*ns-nHalfSib;
+    for(var i=0;i<nFullSib;i++)list.push(mk(ns===1&&nd===0?'兄弟姉妹':'兄弟'+(i+1),2,den));
+    for(var i=0;i<nHalfSib;i++)list.push(mk('半血'+(i+1),1,den));
+    if(nd>0&&nn>0){var nn2=Math.min(nn,6);for(var i=0;i<nn2;i++)list.push(mk(nn===1?'甥・姪':'甥姪'+(i+1),2,den*nn));}
+  }
+  return list;
+}
+
+function buildDistribution(){
+  var heirs=getHeirShares();
+  function frStr(n,d){return d===1?'全部':'('+n+'/'+d+')';}
+  function amtRnd(tot,n,d){return Math.round(tot*n/d);}
+  if(heirs.length===0)return '<div style="font-size:12px;color:#888;padding:8px 0">相続人が確認できないため、分配シミュレーションを表示できません。家族構成を入力してください。</div>';
+  var divTot=stot('bk')+stot('sc');
+  var hasIndiv=stot('re')>0||stot('vc')>0||stot('ot')>0;
+  var debtTot=stot('db'),insTot=stot('ins');
+  if(divTot===0&&!hasIndiv&&debtTot===0)return '<div style="font-size:12px;color:#888;padding:8px 0">財産目録が未入力のため、シミュレーションを表示できません。<br>財産目録ステップで財産情報を入力するとここに分配シミュレーションが表示されます。</div>';
+  var h='<div style="font-size:11px;color:#666;line-height:1.7;background:var(--bg2);border-radius:var(--r);padding:9px 12px;margin-bottom:12px;border:0.5px solid var(--border)">財産目録の入力をもとに、<strong>法定相続分による仮の分配</strong>をシミュレーションしています。実際の分配は遺産分割協議で決定されます。</div>';
+  /* ── 相続人バッジ ── */
+  h+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px">';
+  heirs.forEach(function(hr){h+='<div style="background:var(--teal3);border:0.5px solid var(--teal);border-radius:20px;padding:3px 11px;font-size:12px"><span style="font-weight:600;color:var(--teal2)">'+hr.name+'</span><span style="color:#555;margin-left:3px">'+frStr(hr.n,hr.d)+'</span></div>';});
+  h+='</div>';
+  /* ── 分割可能（預貯金・有価証券） ── */
+  if(divTot>0){
+    var divRows=[];
+    [{id:'bk',t:'預貯金'},{id:'sc',t:'有価証券'}].forEach(function(s){var t=stot(s.id);if(t>0)divRows.push({t:s.t,tot:t});});
+    h+='<div class="dist-sh">💰 分割可能な財産（金融資産）</div>';
+    h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:14px">';
+    h+='<table style="width:100%;min-width:'+Math.max(260,120+heirs.length*96)+'px;border-collapse:collapse;font-size:11.5px">';
+    h+='<thead><tr><th style="text-align:left;padding:5px 8px;background:var(--bg2);border:0.5px solid var(--border);white-space:nowrap">財産</th><th style="text-align:right;padding:5px 8px;background:var(--bg2);border:0.5px solid var(--border);white-space:nowrap">総額</th>';
+    heirs.forEach(function(hr){h+='<th style="text-align:right;padding:5px 8px;background:var(--teal3);border:0.5px solid var(--border);white-space:nowrap;color:var(--teal2)">'+hr.name+'<br><small style="font-weight:400;font-size:9px">'+frStr(hr.n,hr.d)+'</small></th>';});
+    h+='</tr></thead><tbody>';
+    var hTotals=heirs.map(function(){return 0;});
+    divRows.forEach(function(row){
+      h+='<tr><td style="padding:5px 8px;border:0.5px solid var(--border)">'+row.t+'</td><td style="padding:5px 8px;border:0.5px solid var(--border);text-align:right">'+row.tot.toLocaleString()+'万円</td>';
+      heirs.forEach(function(hr,i){var a=amtRnd(row.tot,hr.n,hr.d);hTotals[i]+=a;h+='<td style="padding:5px 8px;border:0.5px solid var(--border);text-align:right">'+a.toLocaleString()+'万円</td>';});
+      h+='</tr>';
+    });
+    h+='<tr style="font-weight:600;background:var(--bg2)"><td style="padding:5px 8px;border:0.5px solid var(--border)">合計</td><td style="padding:5px 8px;border:0.5px solid var(--border);text-align:right">'+divTot.toLocaleString()+'万円</td>';
+    heirs.forEach(function(hr,i){h+='<td style="padding:5px 8px;border:0.5px solid var(--border);text-align:right;color:var(--teal2)">'+hTotals[i].toLocaleString()+'万円</td>';});
+    h+='</tr></tbody></table></div>';
+  }
+  /* ── 不可分財産（不動産・車両等） ── */
+  if(hasIndiv){
+    h+='<div class="dist-sh">🏠 共有持分が生じる財産（不動産・車両等）</div>';
+    var indivConf=[{id:'re',lk:'addr',fb:'不動産'},{id:'vc',lk:'md',fb:'車両・動産'},{id:'ot',lk:'desc',fb:'その他財産'}];
+    indivConf.forEach(function(conf){
+      var s=ASECS.find(function(x){return x.id===conf.id;});
+      var valCol=s.cols.find(function(c){return c.amt;});
+      D.ar[conf.id].forEach(function(row){
+        var empty=s.cols.every(function(c){return !row[c.k]||(c.tp==='sel'&&row[c.k]===c.opts[0]);});
+        if(empty)return;
+        var label=row[conf.lk]||conf.fb;
+        var val=valCol?(parseFloat(row[valCol.k])||0):0;
+        h+='<div style="border:0.5px solid var(--border);border-radius:var(--r);padding:8px 10px;margin-bottom:6px;background:var(--bg)">';
+        h+='<div style="font-size:12px;font-weight:600;margin-bottom:6px">🔷 '+esc(label)+(val>0?' <span style="font-weight:400;color:var(--text2);font-size:11px">（'+val.toLocaleString()+'万円）</span>':'')+'</div>';
+        h+='<div style="display:flex;flex-wrap:wrap;gap:4px">';
+        heirs.forEach(function(hr){h+='<div style="background:var(--blue3);border:0.5px solid #A8C8F0;border-radius:4px;padding:3px 9px;font-size:11px"><span style="color:#555">'+hr.name+'：</span><span style="font-weight:600;color:var(--blue)">持分'+frStr(hr.n,hr.d)+'</span></div>';});
+        h+='</div></div>';
+      });
+    });
+    if(heirs.length>1){
+      h+='<div style="background:#FFFDE7;border:0.5px solid #F9A825;border-radius:var(--r);padding:10px 12px;margin-top:4px">';
+      h+='<div style="font-size:12px;font-weight:600;color:#7A5A00;margin-bottom:5px">⚠️ 共有状態になる場合の注意</div>';
+      h+='<div style="font-size:11.5px;color:#5A3F00;line-height:1.75">不動産・車両等が複数の相続人で<strong>共有</strong>になると、売却・処分には<strong>相続人全員の同意と印鑑証明書</strong>が必要となります。相続人の一人でも連絡が取れない・反対する場合は手続きが止まり、売却できない状況が生じます。<br>→ <strong>遺言書</strong>で特定の相続人に財産を帰属させることで、共有状態を防ぎスムーズな承継が可能になります。</div>';
+      h+='</div>';
+    }
+  }
+  /* ── 負債 ── */
+  if(debtTot>0){
+    h+='<div class="dist-sh" style="margin-top:12px">📋 負債の承継</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">';
+    heirs.forEach(function(hr){h+='<div style="background:#FFF5F5;border:0.5px solid #FFCDD2;border-radius:var(--r);padding:4px 10px;font-size:12px"><span style="color:#666">'+hr.name+'：</span><span style="font-weight:600;color:#C62828">'+amtRnd(debtTot,hr.n,hr.d).toLocaleString()+'万円</span></div>';});
+    h+='</div><div style="font-size:11px;color:#888">※負債は各相続人が法定相続分に応じて承継します。相続放棄・限定承認も検討できます。</div>';
+  }
+  /* ── 生命保険メモ ── */
+  if(insTot>0)h+='<div style="margin-top:10px;font-size:11px;color:#888;padding:6px 10px;border-left:2px solid var(--border);background:var(--bg2)">生命保険金（'+insTot.toLocaleString()+'万円）は受取人に直接支払われるため、相続財産の分配対象外です。</div>';
+  return h;
+}
 function buildResult(){
   document.getElementById('hchart').innerHTML=buildHeirSVG();
+  document.getElementById('dist-cont').innerHTML=buildDistribution();
   var adv=buildAdvice();
   document.getElementById('alist').innerHTML=adv.map(function(a){return '<li class="ai"><div class="adot"></div><div><div class="atxt">'+a.t+'</div><span class="apri '+a.p+'">'+a.l+'</span></div></li>';}).join('');
   document.getElementById('explist').innerHTML=buildExperts().map(function(e){return '<div class="expitem"><span class="expbadge '+e.cls+'">'+e.type+'</span><div><div style="font-size:13px;font-weight:600">'+e.type+'</div><div style="font-size:11px;color:#555">'+e.desc+'</div></div></div>';}).join('');
@@ -1114,6 +1279,8 @@ function buildAdvice(){
   var sp2=D.mar==='既婚',sibHir=!sp2&&D.ch===0&&D.par==='両方故人'&&D.si>0;
   if(noAction)adv.push({t:'終活対策がまだ何も行われていません。まずはエンディングノートの作成と財産目録の整理から始めることをお勧めします。',p:'phi',l:'優先度高'});
   if(!hasWill)adv.push({t:'遺言書の作成をお勧めします。'+(sibHir?'兄弟姉妹に遺留分はないため、遺言書がなければ意図しない相続が生じる可能性があります。':'相続人への財産分配を明確にしておきましょう。'),p:'phi',l:'優先度高'});
+  var hasIndivAsset=stot('re')>0||stot('vc')>0||stot('ot')>0;
+  if(hasIndivAsset&&getHeirShares().length>1&&!hasWill)adv.push({t:'不動産・車両等の財産が複数の相続人で共有になると、売却・処分に相続人全員の同意と印鑑証明書が必要となり手続きが大幅に複雑化します。特定の相続人に帰属させるには遺言書の作成が最も有効な解決策です。',p:'phi',l:'優先度高'});
   if(worry.indexOf('認知症になった場合が心配')>-1&&done.indexOf('任意後見契約を締結済')===-1)adv.push({t:'任意後見契約の締結をお勧めします。認知症になった場合に備え、信頼できる人に財産管理を委任しておくことが重要です。',p:'phi',l:'優先度高'});
   if(worry.indexOf('葬儀・納骨などの死後手続')>-1&&done.indexOf('死後事務委任契約を締結済')===-1)adv.push({t:'死後事務委任契約の締結をご検討ください。葬儀・納骨・各種行政手続きを専門家に委任できます。',p:'pme',l:'優先度中'});
   if(bigAsset||worry.indexOf('相続税が心配')>-1)adv.push({t:'財産規模から相続税の申告が必要になる可能性があります。税理士への早めの相談と生前贈与の活用をご検討ください。',p:'phi',l:'優先度高'});
@@ -1600,13 +1767,13 @@ function printDirect(){
   setTimeout(function(){win.print();},600);
 }{document.getElementById('pvpanel').style.display='none';}
 rRadio('r-mar',['未婚','既婚','離婚','死別'],'mar',renderProxy);
-rRadio('r-par',['両方存命','一方存命','両方故人'],'par',renderProxy);
+rRadio('r-par',['両方存命','一方存命','両方故人'],'par',function(){renderProxy();renderGpar();});
 rChecksDone();rChecks('worry-list','worry',WORRY_OPTS);
 rRadioEN('r-life',['希望する','希望しない','家族に任せる'],'life');
 rRadioEN('r-organ',['希望する','希望しない','未定'],'organ');
 rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
 rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave');
-renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();
+renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();renderGpar();
 checkExistingSave();
 </script>
 
