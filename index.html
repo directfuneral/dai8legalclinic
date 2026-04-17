@@ -97,14 +97,14 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .en-fw input:focus,.en-fw select:focus,.en-fw textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px rgba(29,158,117,.12)}
 .en-fw textarea{resize:vertical;min-height:70px;line-height:1.6}
 /* contract table */
-.ct-wrap{overflow-x:auto;margin-bottom:8px}
-.ct-tbl{width:100%;border-collapse:collapse;table-layout:fixed;min-width:540px}
-.ct-tbl th{font-size:11px;color:var(--text3);font-weight:600;padding:4px 5px;border-bottom:0.5px solid var(--border);text-align:left;background:var(--bg2);white-space:nowrap}
-.ct-tbl td{padding:2px 2px;border-bottom:0.5px solid var(--border);vertical-align:middle}
-.ct-tbl tr:last-child td{border-bottom:none}
-.ct-tbl td input{width:100%;font-size:11px;padding:4px 5px;border:0.5px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text)}
-.ct-tbl td input:focus{outline:none;border-color:var(--blue);}
-.ct-type-inp{font-weight:600!important}
+.ct-grp-hd{font-size:10.5px;font-weight:700;color:var(--text3);padding:10px 2px 5px;letter-spacing:.06em;border-bottom:0.5px solid var(--border);margin-bottom:4px;text-transform:none}
+.ct-item{border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:5px;overflow:hidden}
+.ct-item-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg2)}
+.ct-item-hd.active{background:var(--teal3)}
+.ct-lbl{font-size:13px;color:var(--text);font-weight:500}
+.ct-item-body{padding:10px 10px 6px;background:var(--bg);border-top:0.5px solid var(--border)}
+.ct-entry{background:var(--bg2);border-radius:var(--r);padding:8px 10px;margin-bottom:6px}
+.ct-entry:last-of-type{margin-bottom:0}
 /* buttons */
 .btn-next{width:100%;padding:12px;background:var(--teal);color:white;border:none;border-radius:var(--r);font-size:15px;cursor:pointer;margin-top:1.2rem;font-weight:600}
 .btn-next:hover{background:var(--teal2)}
@@ -511,11 +511,6 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     <div class="en-g g2"><div class="en-fw"><span class="en-lbl">弁護士・司法書士・行政書士</span><input type="text" id="en-law" placeholder="例：△△法律事務所"></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-law-tel" placeholder="052-000-0000"></div></div>
     <div class="en-g g2"><div class="en-fw"><span class="en-lbl">税理士</span><input type="text" id="en-tax" placeholder="例：△△税理士事務所"></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-tax-tel" placeholder="052-000-0000"></div></div>
   </div>
-  <div class="en-sec"><div class="en-sh">生前契約・解約が必要な契約一覧</div>
-    <div style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">死後に解約・手続きが必要な契約をまとめておきましょう。種類欄は書き換え可能です。</div>
-    <div class="ct-wrap"><table class="ct-tbl"><thead><tr><th style="width:16%">契約種類</th><th style="width:22%">契約会社名・機関名</th><th style="width:18%">連絡先（電話番号）</th><th style="width:18%">ID / PW</th><th style="width:20%">書類の保管場所</th><th style="width:26px"></th></tr></thead><tbody id="ct-tbody"></tbody></table></div>
-    <button class="addbtn" onclick="ctAdd()">＋ 行を追加</button>
-  </div>
   <div class="en-sec"><div class="en-sh">訃報をお伝えしたい方（連絡先一覧）</div>
     <div style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">亡くなった際に連絡していただきたい方の情報をまとめておきましょう。</div>
     <div id="obit-list"></div>
@@ -528,6 +523,10 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   </div>
   <div class="en-sec"><div class="en-sh">大切な人へのメッセージ</div>
     <div class="en-fw"><textarea id="en-msg" style="min-height:90px" placeholder="家族・友人への感謝やお願い事など、自由にお書きください。"></textarea></div>
+  </div>
+  <div class="en-sec"><div class="en-sh">生前契約・解約が必要な契約一覧</div>
+    <div style="font-size:12px;color:#555;margin-bottom:12px;line-height:1.6">「あり」を選択した項目の詳細入力欄が表示されます。書類・証明書は保管場所のみ入力できます。</div>
+    <div id="ct-container"></div>
   </div>
   <button class="btn-next" onclick="go(5)">診察結果を見る →</button>
   <button class="btn-prev" onclick="go(3)">← 戻る</button>
@@ -594,9 +593,180 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 <script>
 var D={mar:'既婚',ch:0,par:'両方故人',si:0,deadSib:0,nephews:0,done:[],worry:[],ar:{}};
 var EN={};
-var CT_DEF=['電気','ガス','水道','ＮＨＫ','新聞','牛乳（配達弁当）','定期購入物','固定電話','携帯電話','車・バイク','インターネット','ＣＡＴＶ・ＢＳ・ＣＳ','クレジットカード','土地等の権利書','年金手帳','保険・共済契約等','証券会社','免許証','健康保険証','印鑑手帳','リース品','ＪＡＦ','出資金関係','マイナンバーカード','パスポート','敬老パス','会員権等','Amazonプライム','Netflix（ネットフリックス）','Disney+（ディズニープラス）','Hulu（フールー）','U-NEXT','Apple TV+','YouTube Premium','Spotify','Apple Music','ＬＩＮＥミュージック','楽天マガジン・dマガジン','その他サブスク①','その他サブスク②'];
-var D_CT=CT_DEF.map(function(t){return{t:t,co:'',tel:'',num:'',loc:''}});
-var DONE_OPTS=['遺言書（自筆）を作成済','遺言書（公正証書）を作成済','エンディングノートを作成済','任意後見契約を締結済','死後事務委任契約を締結済','家族信託を設定済','相続税対策（生前贈与等）を実施済','特に対策は何もしていない'];
+/* ===== 契約一覧（新設計） ===== */
+var CT_DEFS=[
+  {id:'denki',   label:'電気',                   type:'normal', coPh:'中部電力'},
+  {id:'gasu',    label:'ガス',                   type:'normal', coPh:'東邦ガス'},
+  {id:'suido',   label:'水道',                   type:'normal', coPh:'名古屋市・管理組合'},
+  {id:'nhk',     label:'ＮＨＫ',                 type:'normal', noCo:true},
+  {id:'shinbun', label:'新聞',                   type:'normal', coPh:'〇〇販売店'},
+  {id:'milk',    label:'牛乳・配達弁当',         type:'normal', coPh:'〇〇販売店'},
+  {id:'teiki',   label:'定期購入物',             type:'normal', locLbl:'購入物', locPh:'雑誌・化粧品・健康食品'},
+  {id:'ktTel',   label:'固定電話',               type:'normal', coPh:'NTT・KDDI等'},
+  {id:'keitai',  label:'携帯電話',               type:'multi',  coLbl:'販売店', numLbl:'自分の携帯電話番号', numPh:'090-0000-0000', noLoc:true},
+  {id:'net',     label:'インターネット',         type:'normal', coPh:'ドコモ光・BIGLOBE等'},
+  {id:'catv',    label:'ＣＡＴＶ・ＢＳ・ＣＳ', type:'normal', coPh:'J:COM・スターキャット等'},
+  {id:'card',    label:'クレジットカード',       type:'multi'},
+  {id:'hoken',   label:'保険・共済契約等',       type:'multi'},
+  {id:'shoken',  label:'証券会社',               type:'multi'},
+  {id:'jaf',     label:'ＪＡＦ',                type:'normal', noCo:true},
+  {id:'rental',  label:'レンタル品',             type:'normal', locLbl:'レンタルしている物', locPh:'車イス・介護ベット等'},
+  {id:'kaiken',  label:'会員権等',               type:'normal', coPh:'〇〇スポーツ倶楽部等', locLbl:'会員の種類', locPh:'スポーツクラブ・ゴルフ会員等'},
+  {id:'amazon',  label:'Amazonプライム',        type:'subsc'},
+  {id:'netflix', label:'Netflix',               type:'subsc'},
+  {id:'disney',  label:'Disney+',               type:'subsc'},
+  {id:'hulu',    label:'Hulu',                  type:'subsc'},
+  {id:'unext',   label:'U-NEXT',                type:'subsc'},
+  {id:'appletv', label:'Apple TV+',             type:'subsc'},
+  {id:'youtube', label:'YouTube Premium',       type:'subsc'},
+  {id:'sub1',    label:'その他サブスク①',       type:'normal', locLbl:'サブスクの種類', locPh:'VOD・音楽・漫画・食品・ファッション等'},
+  {id:'sub2',    label:'その他サブスク②',       type:'normal', locLbl:'サブスクの種類', locPh:'VOD・音楽・漫画・食品・ファッション等'},
+  {id:'menkyo',  label:'免許証',                type:'doc'},
+  {id:'passport',label:'パスポート',            type:'doc'},
+  {id:'mynum',   label:'マイナンバーカード',    type:'doc'},
+  {id:'nenkin',  label:'年金手帳',              type:'doc'},
+  {id:'hanko',   label:'印鑑手帳・カード',      type:'doc'},
+  {id:'kenri',   label:'土地の登記済証（権利書）', type:'doc'},
+  {id:'keiro',   label:'敬老パス',              type:'doc'}
+];
+var CT_GROUPS=[
+  {label:'公共・生活インフラ', ids:['denki','gasu','suido','nhk','shinbun','milk','teiki']},
+  {label:'通信',               ids:['ktTel','keitai','net','catv']},
+  {label:'金融・保険',         ids:['card','hoken','shoken']},
+  {label:'サービス・その他',   ids:['jaf','rental','kaiken']},
+  {label:'サブスクリプション', ids:['amazon','netflix','disney','hulu','unext','appletv','youtube','sub1','sub2']},
+  {label:'書類・証明書',       ids:['menkyo','passport','mynum','nenkin','hanko','kenri','keiro']}
+];
+var CT_STATE={};
+CT_DEFS.forEach(function(d){
+  CT_STATE[d.id]=d.type==='doc'
+    ?{active:false,loc:''}
+    :{active:false,entries:[{memo:'',co:'',tel:'',num:'',loc:''}]};
+});
+
+function ctDef(id){return CT_DEFS.find(function(d){return d.id===id;});}
+function ctToggle(id,val){CT_STATE[id].active=val;ctRender();}
+function ctAddEntry(id){CT_STATE[id].entries.push({memo:'',co:'',tel:'',num:'',loc:''});ctRender();}
+function ctRemEntry(id,ei){
+  var es=CT_STATE[id].entries;
+  if(es.length<=1){es[0]={memo:'',co:'',tel:'',num:'',loc:''};ctRender();return;}
+  es.splice(ei,1);ctRender();
+}
+
+function ctNormalHTML(id){
+  var e=CT_STATE[id].entries[0];
+  var def=ctDef(id);
+  var coLbl=def.coLbl||'会社名・機関名';
+  var coPh=def.coPh?'例：'+def.coPh:'';
+  var numLbl=def.numLbl||'お客様番号・ID等';
+  var numPh=def.numPh||'';
+  var locLbl=def.locLbl||'書類の保管場所';
+  var locPh=def.locPh?'例：'+def.locPh:'例：自宅金庫';
+  var html='<div class="ct-entry">';
+  if(!def.noCo){
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:5px">'
+      +'<div class="en-fw"><span class="en-lbl">'+coLbl+'</span><input type="text" value="'+esc2(e.co||'')+'" placeholder="'+coPh+'" oninput="CT_STATE[\''+id+'\'].entries[0].co=this.value"></div>'
+      +'<div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" value="'+esc2(e.tel||'')+'" placeholder="0120-000-000" oninput="CT_STATE[\''+id+'\'].entries[0].tel=this.value"></div>'
+      +'</div>';
+  }else{
+    html+='<div style="margin-bottom:5px">'
+      +'<div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" value="'+esc2(e.tel||'')+'" placeholder="0120-000-000" oninput="CT_STATE[\''+id+'\'].entries[0].tel=this.value"></div>'
+      +'</div>';
+  }
+  html+='<div style="display:grid;grid-template-columns:'+(def.noLoc?'1fr':'1fr 1fr')+';gap:6px">'
+    +'<div class="en-fw"><span class="en-lbl">'+numLbl+'</span><input type="text" value="'+esc2(e.num||'')+'" placeholder="'+numPh+'" oninput="CT_STATE[\''+id+'\'].entries[0].num=this.value"></div>';
+  if(!def.noLoc){
+    html+='<div class="en-fw"><span class="en-lbl">'+locLbl+'</span><input type="text" value="'+esc2(e.loc||'')+'" placeholder="'+locPh+'" oninput="CT_STATE[\''+id+'\'].entries[0].loc=this.value"></div>';
+  }
+  html+='</div></div>';
+  return html;
+}
+
+function ctMultiEntryHTML(id,ei){
+  var e=CT_STATE[id].entries[ei];
+  var def=ctDef(id);
+  var memoPh=id==='keitai'?'例：ドコモ':id==='card'?'例：楽天カード':id==='hoken'?'例：日本生命':'';
+  var coLbl=def.coLbl||'会社名・機関名';
+  var coPh=def.coPh?'例：'+def.coPh:'';
+  var numLbl=def.numLbl||'お客様番号・ID等';
+  var numPh=def.numPh||'';
+  var locLbl=def.locLbl||'書類の保管場所';
+  var locPh=def.locPh?'例：'+def.locPh:'例：自宅金庫';
+  var html='<div class="ct-entry">'
+    +'<div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:5px">'
+    +'<div class="en-fw" style="flex:1"><span class="en-lbl">名称・メモ（'+memoPh+'）</span>'
+    +'<input type="text" value="'+esc2(e.memo||'')+'" placeholder="'+memoPh+'" oninput="CT_STATE[\''+id+'\'].entries['+ei+'].memo=this.value"></div>'
+    +'<button class="delbtn" style="margin-bottom:2px" onclick="ctRemEntry(\''+id+'\','+ei+')">×</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:5px">'
+    +'<div class="en-fw"><span class="en-lbl">'+coLbl+'</span><input type="text" value="'+esc2(e.co||'')+'" placeholder="'+coPh+'" oninput="CT_STATE[\''+id+'\'].entries['+ei+'].co=this.value"></div>'
+    +'<div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" value="'+esc2(e.tel||'')+'" oninput="CT_STATE[\''+id+'\'].entries['+ei+'].tel=this.value"></div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:'+(def.noLoc?'1fr':'1fr 1fr')+';gap:6px">'
+    +'<div class="en-fw"><span class="en-lbl">'+numLbl+'</span><input type="text" value="'+esc2(e.num||'')+'" placeholder="'+numPh+'" oninput="CT_STATE[\''+id+'\'].entries['+ei+'].num=this.value"></div>';
+  if(!def.noLoc){
+    html+='<div class="en-fw"><span class="en-lbl">'+locLbl+'</span><input type="text" value="'+esc2(e.loc||'')+'" placeholder="'+locPh+'" oninput="CT_STATE[\''+id+'\'].entries['+ei+'].loc=this.value"></div>';
+  }
+  html+='</div></div>';
+  return html;
+}
+function ctDocHTML(id){
+  var st=CT_STATE[id];
+  return '<div class="ct-entry">'
+    +'<div class="en-fw"><span class="en-lbl">保管場所</span>'
+    +'<input type="text" value="'+esc2(st.loc)+'" placeholder="例：自宅金庫、引き出し" oninput="CT_STATE[\''+id+'\'].loc=this.value"></div>'
+    +'</div>';
+}
+
+function ctSubscHTML(id){
+  var e=CT_STATE[id].entries[0];
+  return '<div class="ct-entry">'
+    +'<div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px">ログイン情報</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">'
+    +'<div class="en-fw"><span class="en-lbl">メールアドレス・携帯電話番号</span>'
+    +'<input type="text" value="'+esc2(e.co||'')+'" placeholder="例：mail@example.com" oninput="CT_STATE[\''+id+'\'].entries[0].co=this.value"></div>'
+    +'<div class="en-fw"><span class="en-lbl">パスワード</span>'
+    +'<input type="text" value="'+esc2(e.num||'')+'" placeholder="例：パスワードを入力" oninput="CT_STATE[\''+id+'\'].entries[0].num=this.value"></div>'
+    +'</div>'
+    +'<div class="en-fw"><span class="en-lbl">普段の視聴状況</span>'
+    +'<input type="text" value="'+esc2(e.loc||'')+'" placeholder="例：テレビ・PC・スマホ・タブレット" oninput="CT_STATE[\''+id+'\'].entries[0].loc=this.value"></div>'
+    +'</div>';
+}
+
+function ctRender(){
+  var cont=document.getElementById('ct-container');if(!cont)return;
+  var html='';
+  CT_GROUPS.forEach(function(grp){
+    html+='<div class="ct-grp-hd">'+grp.label+'</div>';
+    grp.ids.forEach(function(id){
+      var def=ctDef(id),st=CT_STATE[id];
+      var isActive=st.active;
+      html+='<div class="ct-item">';
+      html+='<div class="ct-item-hd'+(isActive?' active':'')+'">';
+      html+='<span class="ct-lbl">'+def.label+'</span>';
+      html+='<div style="display:flex;gap:4px">';
+      html+='<label class="rb'+(isActive?' sel':'')+'" onclick="ctToggle(\''+id+'\',true)">あり</label>';
+      html+='<label class="rb'+(!isActive?' sel':'')+'" onclick="ctToggle(\''+id+'\',false)">なし</label>';
+      html+='</div></div>';
+      if(isActive){
+        html+='<div class="ct-item-body">';
+        if(def.type==='doc'){
+          html+=ctDocHTML(id);
+        }else if(def.type==='multi'){
+          st.entries.forEach(function(e,ei){html+=ctMultiEntryHTML(id,ei);});
+          html+='<button class="addbtn" style="margin-top:4px" onclick="ctAddEntry(\''+id+'\')">＋ 追加</button>';
+        }else if(def.type==='subsc'){
+          html+=ctSubscHTML(id);
+        }else{
+          html+=ctNormalHTML(id);
+        }
+        html+='</div>';
+      }
+      html+='</div>';
+    });
+  });
+  cont.innerHTML=html;
+}var DONE_OPTS=['遺言書（自筆）を作成済','遺言書（公正証書）を作成済','エンディングノートを作成済','任意後見契約を締結済','死後事務委任契約を締結済','家族信託を設定済','相続税対策（生前贈与等）を実施済','特に対策は何もしていない'];
 var WORRY_OPTS=['遺産の行き先が心配','相続税が心配','認知症になった場合が心配','葬儀・納骨などの死後手続','身元保証人がいない','遺品整理をどうするか','特定の家族への手当てをしたい','借金を相続させたくない','兄妹へ財産を渡したくない','死後の手続で兄妹を頼りたくない','自分の死後のペットのこと'];
 var NONE_DONE='特に対策は何もしていない';
 var ASECS=[
@@ -650,21 +820,6 @@ function aRows(sid){
 }
 function aAdd(sid){var s=ASECS.find(function(x){return x.id===sid;});D.ar[sid].push(blk(s));aRows(sid);upd();}
 function aRm(sid,ri){var s=ASECS.find(function(x){return x.id===sid;});if(D.ar[sid].length<=1)D.ar[sid][0]=blk(s);else D.ar[sid].splice(ri,1);aRows(sid);upd();}
-function ctRender(){
-  var tb=document.getElementById('ct-tbody');if(!tb)return;tb.innerHTML='';
-  D_CT.forEach(function(row,ri){
-    var tr=document.createElement('tr');
-    [['t','種類',true],['co','会社名',false],['tel','電話番号',false],['num','ID / PW',false],['loc','保管場所',false]].forEach(function(col){
-      var td=document.createElement('td');var inp=document.createElement('input');
-      inp.type='text';inp.value=row[col[0]]||'';
-      if(col[2])inp.className='ct-type-inp';
-      inp.oninput=(function(ri2,k){return function(e){D_CT[ri2][k]=e.target.value;};})(ri,col[0]);
-      td.appendChild(inp);tr.appendChild(td);
-    });
-    var dtd=document.createElement('td');var db=document.createElement('button');db.className='delbtn';db.textContent='×';db.onclick=(function(ri2){return function(){D_CT.splice(ri2,1);ctRender();};})(ri);dtd.appendChild(db);tr.appendChild(dtd);tb.appendChild(tr);
-  });
-}
-function ctAdd(){D_CT.push({t:'',co:'',tel:'',num:'',loc:''});ctRender();}
 function rRadio(id,opts,key,cb){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var b=document.createElement('label');b.className='rb'+(D[key]===o?' sel':'');b.innerHTML='<input type="radio">'+o;b.onclick=function(){D[key]=o;rRadio(id,opts,key,cb);if(cb)cb();};el.appendChild(b);});}
 function rRadioEN(id,opts,key){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var cur=EN[key]||opts[0];var b=document.createElement('label');b.className='rb'+(cur===o?' sel':'');b.innerHTML='<input type="radio">'+o;b.onclick=function(){EN[key]=o;rRadioEN(id,opts,key);};el.appendChild(b);});}
 function rChecksDone(){var el=document.getElementById('done-list');if(!el)return;el.innerHTML='';DONE_OPTS.forEach(function(o){var sel=D.done.indexOf(o)>-1;var isN=o===NONE_DONE;var b=document.createElement('div');b.className='cb'+(sel?(isN?' none-sel':' sel'):'');b.innerHTML='<div class="ci">'+(sel?'✓':'')+'</div><span>'+o+'</span>';b.onclick=function(){if(o===NONE_DONE){D.done=sel?[]:[NONE_DONE];}else{var ni=D.done.indexOf(NONE_DONE);if(ni>-1)D.done.splice(ni,1);var i=D.done.indexOf(o);if(i>-1)D.done.splice(i,1);else D.done.push(o);}rChecksDone();};el.appendChild(b);});}
@@ -816,7 +971,7 @@ function doSave(btn){
   var payload={
     D:JSON.parse(JSON.stringify(D)),
     EN:JSON.parse(JSON.stringify(EN)),
-    D_CT:JSON.parse(JSON.stringify(D_CT)),
+    D_CT:JSON.parse(JSON.stringify(CT_STATE)),
     D_PET:JSON.parse(JSON.stringify(D_PET)),
     D_OBIT:JSON.parse(JSON.stringify(D_OBIT)),
     D_FGUEST:JSON.parse(JSON.stringify(D_FGUEST)),
@@ -843,7 +998,7 @@ function loadSave(){
     if(!confirm('保存データを復元しますか？\n（保存日時：'+payload.savedAt+'）\n現在の入力内容は上書きされます。'))return;
     D=payload.D;
     EN=payload.EN||{};
-    D_CT=payload.D_CT||D_CT;
+    if(payload.D_CT&&typeof Object.values(payload.D_CT)[0]==='object'&&'active' in Object.values(payload.D_CT)[0]){CT_STATE=payload.D_CT;}else{CT_DEFS.forEach(function(d){CT_STATE[d.id]=d.type==='doc'?{active:false,loc:''}:{active:false,entries:[{memo:'',co:'',tel:'',num:'',loc:''}]};});}
     D_PET=payload.D_PET||[];
     D_OBIT=payload.D_OBIT||[];
     D_FGUEST=payload.D_FGUEST||[];
@@ -1091,15 +1246,67 @@ function buildPrintHTML(){
   /* ===== ⑤ 契約一覧 ===== */
   h+='<div class="pnewpage">'
     +'<div style="font-size:14px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.06em">生前契約・解約が必要な契約一覧</div>'
-    +'<div style="text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:8px">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>'
-    +'<table class="cttbl"><thead><tr>'
-    +'<th style="width:14%">契約種類</th><th style="width:22%">契約会社名・機関名</th>'
-    +'<th style="width:19%">連絡先（電話番号）</th><th style="width:19%">ID / PW</th>'
-    +'<th style="width:24%">書類の保管場所</th>'
-    +'</tr></thead><tbody>';
-  D_CT.forEach(function(row){h+='<tr><td class="tp">'+esc(row.t)+'</td><td>'+esc(row.co)+'</td><td>'+esc(row.tel)+'</td><td>'+esc(row.num)+'</td><td>'+esc(row.loc)+'</td></tr>';});
-  h+='</tbody></table>'
-    +'<div class="pnotice" style="margin-top:14px">第八行政書士事務所　名古屋市熱田区　TEL：052-653-3215　ihinseiri-dai8.jp　※本書類は定期的に内容を見直してください。</div>'
+    +'<div style="text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:8px">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>';
+  var hasAnyCT=CT_DEFS.some(function(d){return CT_STATE[d.id]&&CT_STATE[d.id].active;});
+  if(!hasAnyCT){
+    h+='<div style="font-size:11px;color:#aaa;padding:8px">（未記入）</div>';
+  }else{
+    CT_GROUPS.forEach(function(grp){
+      var actIds=grp.ids.filter(function(id){return CT_STATE[id]&&CT_STATE[id].active;});
+      if(!actIds.length)return;
+      var isDocGrp=actIds.every(function(id){return ctDef(id).type==='doc';});
+      var isSubscGrp=actIds.every(function(id){return ctDef(id).type==='subsc';});
+      h+='<div class="psh" style="margin-top:6px">■ '+grp.label+'</div>';
+      if(isDocGrp){
+        h+='<table class="cttbl"><thead><tr><th style="width:40%">種類</th><th>保管場所</th></tr></thead><tbody>';
+        actIds.forEach(function(id){
+          var def=ctDef(id),st=CT_STATE[id];
+          h+='<tr><td style="font-weight:bold">'+esc(def.label)+'</td><td>'+esc(st.loc||'（未記入）')+'</td></tr>';
+        });
+        h+='</tbody></table>';
+      }else if(isSubscGrp){
+        h+='<table class="cttbl"><thead><tr>'
+          +'<th style="width:18%">サービス名</th>'
+          +'<th style="width:32%">メールアドレス・電話番号</th>'
+          +'<th style="width:22%">パスワード</th>'
+          +'<th style="width:26%">視聴状況</th>'
+          +'</tr></thead><tbody>';
+        actIds.forEach(function(id){
+          var def=ctDef(id),st=CT_STATE[id],e=st.entries[0];
+          h+='<tr><td style="font-weight:bold">'+esc(def.label)+'</td><td>'+esc(e.co)+'</td><td>'+esc(e.num)+'</td><td>'+esc(e.loc)+'</td></tr>';
+        });
+        h+='</tbody></table>';
+      }else{
+        h+='<table class="cttbl"><thead><tr>'
+          +'<th style="width:12%">種類</th><th style="width:14%">名称</th>'
+          +'<th style="width:22%">会社名・機関名</th>'
+          +'<th style="width:17%">連絡先</th>'
+          +'<th style="width:14%">番号・ID</th>'
+          +'<th style="width:19%">保管場所</th>'
+          +'</tr></thead><tbody>';
+        actIds.forEach(function(id){
+          var def=ctDef(id),st=CT_STATE[id];
+          var filled=st.entries.filter(function(e){return e.co||e.tel||e.num||e.loc||e.memo;});
+          if(!filled.length){
+            h+='<tr><td style="font-weight:bold">'+esc(def.label)+'</td><td colspan="5" style="color:#aaa">（詳細未入力）</td></tr>';
+          }else{
+            filled.forEach(function(e,ei){
+              h+='<tr>'
+                +'<td style="font-weight:bold">'+(ei===0?esc(def.label):'')+'</td>'
+                +'<td>'+esc(e.memo)+'</td>'
+                +'<td>'+esc(e.co)+'</td>'
+                +'<td>'+esc(e.tel)+'</td>'
+                +'<td>'+esc(e.num)+'</td>'
+                +'<td>'+esc(e.loc)+'</td>'
+                +'</tr>';
+            });
+          }
+        });
+        h+='</tbody></table>';
+      }
+    });
+  }
+  h+='<div class="pnotice" style="margin-top:14px">第八行政書士事務所　名古屋市熱田区　TEL：052-653-3215　ihinseiri-dai8.jp　※本書類は定期的に内容を見直してください。</div>'
     +'</div>';
   return h;
 }
