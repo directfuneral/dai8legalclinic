@@ -386,10 +386,12 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="intro-notice">
     <div class="intro-notice-title">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      ご利用にあたってのお願い
+      免責事項・ご利用にあたってのお願い
     </div>
     <div class="intro-notice-body">
-      本ツールはあくまで<strong>参考資料の作成</strong>を目的としたものです。出力された内容は法的効力を持ちません。相続・遺言書の作成・任意後見契約など具体的な手続きにつきましては、必ず<strong>専門家（司法書士・行政書士・弁護士・税理士）にご相談ください</strong>。<br>
+      本ツールはあくまで<strong>参考資料の作成</strong>を目的としたものです。出力された相続人関係図・財産目録・エンディングノート・各種アドバイスの内容は<strong>法的効力を持ちません</strong>。<br>
+      本ツールの利用により生じた損害・トラブル・不利益について、<strong>第八行政書士事務所および運営者は一切の責任を負いかねます</strong>。掲載情報の正確性・完全性を保証するものでもありません。<br>
+      相続・遺言書の作成・任意後見契約など具体的な手続きにつきましては、必ず<strong>専門家（司法書士・行政書士・弁護士・税理士）にご相談ください</strong>。<br>
       ご相談は、運営元の<a href="https://ihinseiri-dai8.jp/" target="_blank" rel="noopener">第八行政書士事務所（052-653-3215）</a>でも承っております。
     </div>
   </div>
@@ -480,15 +482,62 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名①</span><input type="text" id="en-ec1n" placeholder="例：山田 花子"></div><div class="en-fw"><span class="en-lbl">続柄</span><input type="text" id="en-ec1r" placeholder="長女"></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-ec1t" placeholder="090-1111-2222"></div></div>
     <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名②</span><input type="text" id="en-ec2n"></div><div class="en-fw"><span class="en-lbl">続柄</span><input type="text" id="en-ec2r"></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-ec2t"></div></div>
   </div>
-  <div class="en-sec"><div class="en-sh">医療・介護の希望</div>
+  <div class="en-sec"><div class="en-sh">医療・介護の希望（事前指示書）</div>
+    <div style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">判断能力があるうちに、医療・介護に関する意思を記録しておきましょう。</div>
     <div class="fg"><span class="fl" style="font-size:12px">延命治療の希望</span><div class="rg" id="r-life"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">心肺蘇生（CPR）の希望</span><div class="rg" id="r-cpr"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">人工呼吸器の使用</span><div class="rg" id="r-ventilator"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">胃ろう・経管栄養</span><div class="rg" id="r-tube"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">輸血の希望</span><div class="rg" id="r-blood"></div></div>
     <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">臓器提供</span><div class="rg" id="r-organ"></div></div>
-    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">介護・医療の希望</span><div class="en-fw"><textarea id="en-care" placeholder="例：自宅で最期を迎えたい。胃ろうや人工呼吸器は希望しない。"></textarea></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">献体の希望</span><div class="rg" id="r-body"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">終末期の療養場所</span><div class="rg" id="r-place"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">介護が必要になった場合</span><div class="rg" id="r-care-pref"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">認知症になった場合の希望</span><div class="rg" id="r-dementia"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">痛みへの対応（緩和ケア）</span><div class="rg" id="r-palliative"></div></div>
+    <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">かかりつけ医・家族への伝言メモ</span><div class="en-fw"><textarea id="en-care" placeholder="例：苦痛を和らげることを最優先にしてほしい。最期は自宅で家族に看取られたい。"></textarea></div></div>
   </div>
   <div class="en-sec"><div class="en-sh">葬儀・お骨の希望</div>
     <div class="fg"><span class="fl" style="font-size:12px">葬儀の形式</span><div class="rg" id="r-fun"></div></div>
     <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">火葬後の焼骨の扱い</span><div class="rg" id="r-grave"></div></div>
+    <!-- 先祖の墓：菩提寺・お墓管理者 -->
+    <div id="grave-detail-temple" style="display:none;margin-top:10px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 12px">
+      <div style="font-size:12px;font-weight:600;color:var(--teal2);margin-bottom:8px">先祖のお墓について</div>
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">菩提寺（お墓のあるお寺）</div>
+      <div class="en-g g1" style="margin-bottom:6px"><div class="en-fw"><span class="en-lbl">寺院名</span><input type="text" id="en-temple" placeholder="例：△△山○○寺"></div></div>
+      <div class="en-g g2" style="margin-bottom:10px"><div class="en-fw"><span class="en-lbl">住所</span><input type="text" id="en-temple-addr" placeholder="例：名古屋市熱田区…"></div><div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" id="en-temple-tel" placeholder="052-000-0000"></div></div>
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">現在のお墓の管理者</div>
+      <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名</span><input type="text" id="en-grave-mgr-name" placeholder="例：山田 太郎"></div><div class="en-fw"><span class="en-lbl">連絡先</span><input type="text" id="en-grave-mgr-tel" placeholder="090-0000-0000"></div><div class="en-fw"><span class="en-lbl">関係</span><input type="text" id="en-grave-mgr-rel" placeholder="例：長男・親族"></div></div>
+    </div>
+    <!-- 樹木葬・散骨 -->
+    <div id="grave-detail-nature" style="display:none;margin-top:10px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 12px">
+      <div style="font-size:12px;font-weight:600;color:var(--teal2);margin-bottom:8px" id="nature-type-lbl">樹木葬について</div>
+      <div class="fg" style="margin-bottom:8px"><span class="fl" style="font-size:12px">事前契約</span><div class="rg" id="r-nature-contract"></div></div>
+      <div class="en-g g1" style="margin-bottom:6px"><div class="en-fw"><span class="en-lbl">契約先・希望先の名称</span><input type="text" id="en-nature-co" placeholder="例：〇〇樹木葬霊園、△△散骨サービス"></div></div>
+      <div class="en-g g2" style="margin-bottom:6px"><div class="en-fw"><span class="en-lbl">住所</span><input type="text" id="en-nature-addr" placeholder="例：愛知県名古屋市…"></div><div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" id="en-nature-tel" placeholder="052-000-0000"></div></div>
+      <div id="grave-sea-wrap" style="display:none"><div class="en-fw"><span class="en-lbl">希望する散骨の海域（任意）</span><input type="text" id="en-sea-area" placeholder="例：伊勢湾、太平洋沖など"></div></div>
+    </div>
+    <!-- その他 -->
+    <div id="grave-detail-other" style="display:none;margin-top:10px"><div class="en-fw"><span class="en-lbl">焼骨の扱い（詳細）</span><textarea id="en-grave-other" style="min-height:60px" placeholder="例：自宅に安置する、永代供養墓に納骨するなど、ご希望を自由にご記入ください"></textarea></div></div>
+    <!-- 収骨しない：注意事項 -->
+    <div id="grave-detail-nobone" style="display:none;margin-top:10px;background:#FFF8E1;border:0.5px solid #FFD54F;border-radius:var(--r);padding:10px 14px">
+      <div style="font-size:12px;font-weight:600;color:#7A5200;margin-bottom:5px">⚠️ 「収骨しない」を選択される前にご確認ください</div>
+      <div style="font-size:11.5px;color:#5A3B00;line-height:1.8">火葬後に遺骨を引き取らない（収骨しない）ことを選択できる地域は<strong>限られています</strong>。全国の自治体・火葬場によって対応が異なり、収骨を義務付けている地域では選択できない場合があります。<br>→ ご自身のお住まいの地域で「収骨しない」が選択できるかどうかは、<strong>ご利用予定の火葬場に事前にご確認ください</strong>。</div>
+    </div>
     <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">葬儀・お骨の希望メモ</span><div class="en-fw"><textarea id="en-fun-note" placeholder="例：家族だけで静かに送ってほしい。"></textarea></div></div>
+    <div class="dv" style="margin-top:12px"></div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">利用を希望する葬儀社</div>
+    <div class="en-g g1" style="margin-bottom:6px"><div class="en-fw"><span class="en-lbl">葬儀社名</span><input type="text" id="en-funeral-co" placeholder="例：△△葬祭、〇〇セレモニー"></div></div>
+    <div class="en-g g3" style="margin-bottom:8px">
+      <div class="en-fw"><span class="en-lbl">支店・会館名</span><input type="text" id="en-funeral-branch" placeholder="例：熱田会館"></div>
+      <div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" id="en-funeral-tel" placeholder="052-000-0000"></div>
+      <div class="en-fw"><span class="en-lbl">葬儀費用の目安（万円）</span><input type="text" id="en-funeral-cost" placeholder="例：80"></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;margin-bottom:10px">
+      <div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">生前見積もり</div><div class="rg" id="r-estimate"></div></div>
+      <div><div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">互助会への加入</div><div class="rg" id="r-mutual"></div></div>
+    </div>
+    <div class="en-fw" id="en-mutual-detail-wrap"><span class="en-lbl">互助会の名称・連絡先</span><input type="text" id="en-mutual-detail" placeholder="例：△△互助会 052-000-0000"></div>
     <div class="dv" style="margin-top:12px"></div>
     <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">葬儀に呼んでほしい方</div>
     <div style="margin-bottom:8px">
@@ -596,7 +645,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 </div>
 
 <script>
-var D={mar:'既婚',ch:0,par:'両方故人',si:0,deadSib:0,nephews:0,halfSib:0,gpar:'',done:[],worry:[],ar:{}};
+var D={mar:'既婚',ch:0,par:'両方故人',si:0,deadSib:0,nephews:0,halfSib:0,gpar:'',deadCh:0,grandCh:0,done:[],worry:[],ar:{}};
 var EN={};
 /* ===== 契約一覧（新設計） ===== */
 var CT_DEFS=[
@@ -769,8 +818,8 @@ function ctRender(){
     });
   });
   cont.innerHTML=html;
-}var DONE_OPTS=['遺言書（自筆）を作成済','遺言書（公正証書）を作成済','エンディングノートを作成済','任意後見契約を締結済','死後事務委任契約を締結済','家族信託を設定済','相続税対策（生前贈与等）を実施済','特に対策は何もしていない'];
-var WORRY_OPTS=['遺産の行き先が心配','相続税が心配','認知症になった場合が心配','葬儀・納骨などの死後手続','身元保証人がいない','遺品整理をどうするか','特定の家族への手当てをしたい','借金を相続させたくない','兄妹へ財産を渡したくない','死後の手続で兄妹を頼りたくない','自分の死後のペットのこと'];
+}var DONE_OPTS=['遺言書（自筆）を作成済','遺言書（公正証書）を作成済','遺言書（法務局保管制度）を利用済','エンディングノートを作成済','任意後見契約を締結済','死後事務委任契約を締結済','家族信託を設定済','相続税対策（生前贈与等）を実施済','特に対策は何もしていない'];
+var WORRY_OPTS=['遺産の行き先が心配','相続税が心配','認知症になった場合が心配','葬儀・納骨などの死後手続','身元保証人がいない','遺品整理をどうするか','子供や親戚に負担をかけたくない','特定の家族への手当てをしたい','借金を相続させたくない','兄妹へ財産を渡したくない','死後の手続で兄妹を頼りたくない','自分の死後のペットのこと'];
 var NONE_DONE='特に対策は何もしていない';
 var ASECS=[
   {id:'re',t:'不動産',c:'#1D9E75',debt:false,cols:[{k:'addr',l:'所在地',tp:'text',ph:'例：名古屋市中区…',w:'33%'},{k:'use',l:'用途',tp:'sel',opts:['自宅','収益物件','駐車場','その他'],w:'15%'},{k:'owner',l:'名義人',tp:'text',ph:'本人',w:'18%'},{k:'val',l:'評価額(万円)',tp:'num',ph:'0',w:'18%',amt:true}]},
@@ -824,17 +873,25 @@ function aRows(sid){
 function aAdd(sid){var s=ASECS.find(function(x){return x.id===sid;});D.ar[sid].push(blk(s));aRows(sid);upd();}
 function aRm(sid,ri){var s=ASECS.find(function(x){return x.id===sid;});if(D.ar[sid].length<=1)D.ar[sid][0]=blk(s);else D.ar[sid].splice(ri,1);aRows(sid);upd();}
 function rRadio(id,opts,key,cb){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var b=document.createElement('label');b.className='rb'+(D[key]===o?' sel':'');b.innerHTML='<input type="radio">'+o;b.onclick=function(){D[key]=o;rRadio(id,opts,key,cb);if(cb)cb();};el.appendChild(b);});}
-function rRadioEN(id,opts,key){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var cur=EN[key]||opts[0];var b=document.createElement('label');b.className='rb'+(cur===o?' sel':'');b.innerHTML='<input type="radio">'+o;b.onclick=function(){EN[key]=o;rRadioEN(id,opts,key);};el.appendChild(b);});}
+function rRadioEN(id,opts,key,cb){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var cur=EN[key]||opts[0];var b=document.createElement('label');b.className='rb'+(cur===o?' sel':'');b.innerHTML='<input type="radio">'+o;b.onclick=function(){EN[key]=o;rRadioEN(id,opts,key,cb);if(cb)cb();};el.appendChild(b);});}
 function rChecksDone(){var el=document.getElementById('done-list');if(!el)return;el.innerHTML='';DONE_OPTS.forEach(function(o){var sel=D.done.indexOf(o)>-1;var isN=o===NONE_DONE;var b=document.createElement('div');b.className='cb'+(sel?(isN?' none-sel':' sel'):'');b.innerHTML='<div class="ci">'+(sel?'✓':'')+'</div><span>'+o+'</span>';b.onclick=function(){if(o===NONE_DONE){D.done=sel?[]:[NONE_DONE];}else{var ni=D.done.indexOf(NONE_DONE);if(ni>-1)D.done.splice(ni,1);var i=D.done.indexOf(o);if(i>-1)D.done.splice(i,1);else D.done.push(o);}rChecksDone();};el.appendChild(b);});}
 function rChecks(id,key,opts){var el=document.getElementById(id);if(!el)return;el.innerHTML='';opts.forEach(function(o){var sel=D[key].indexOf(o)>-1;var b=document.createElement('div');b.className='cb'+(sel?' sel':'');b.innerHTML='<div class="ci">'+(sel?'✓':'')+'</div><span>'+o+'</span>';b.onclick=function(){var i=D[key].indexOf(o);if(i>-1)D[key].splice(i,1);else D[key].push(o);rChecks(id,key,opts);};el.appendChild(b);});}
-function cn(key,d){D[key]=Math.max(0,(D[key]||0)+d);document.getElementById(key+'-v').textContent=D[key];if(key==='si'){var maxHalf=Math.max(0,D.si-(D.deadSib||0));if((D.halfSib||0)>maxHalf)D.halfSib=maxHalf;renderProxy();}}
+function cn(key,d){
+  D[key]=Math.max(0,(D[key]||0)+d);
+  document.getElementById(key+'-v').textContent=D[key];
+  if(key==='si'){var maxHalf=Math.max(0,D.si-(D.deadSib||0));if((D.halfSib||0)>maxHalf)D.halfSib=maxHalf;renderProxy();}
+  if(key==='ch'){if((D.deadCh||0)>D.ch)D.deadCh=D.ch;renderProxy();renderGpar();}
+}
+function cnDeadCh(d){D.deadCh=Math.max(0,Math.min(D.ch,(D.deadCh||0)+d));if(!D.deadCh)D.grandCh=0;renderProxy();}
+function cnGrandCh(d){D.grandCh=Math.max(0,(D.grandCh||0)+d);renderProxy();}
 function cnDS(d){D.deadSib=Math.max(0,Math.min(D.si-(D.halfSib||0),(D.deadSib||0)+d));if(!D.deadSib)D.nephews=0;renderProxy();}
 function cnNE(d){D.nephews=Math.max(0,(D.nephews||0)+d);renderProxy();}
 function cnHalf(d){D.halfSib=Math.max(0,Math.min(Math.max(0,D.si-(D.deadSib||0)),(D.halfSib||0)+d));renderProxy();}
 function shouldProxy(){return D.mar!=='既婚'&&D.ch===0&&D.par==='両方故人'&&D.si>0;}
 function renderGpar(){
   var el=document.getElementById('gpar-sec');if(!el)return;
-  if(D.par!=='両方故人'){el.innerHTML='';D.gpar='';return;}
+  /* 子が相続人になる場合は祖父母確認不要 */
+  if(D.ch>0||D.par!=='両方故人'){el.innerHTML='';D.gpar='';return;}
   var opts=['祖父存命','祖母存命','祖父母共に存命','祖父母共に故人'];
   var h='<div class="dv"></div>'
     +'<div style="background:#FFF8E1;border:0.5px solid #FFD54F;border-radius:8px;padding:12px">'
@@ -851,7 +908,28 @@ function renderProxy(){
   var el=document.getElementById('proxy-sec');if(!el)return;
   var h='';
 
-  /* ── 半血の兄弟姉妹（兄弟が1人以上いれば常に表示） ── */
+  /* 子が相続人になる場合：兄弟姉妹関連チェックは不要。代わりに死亡した子の孫代襲確認のみ表示 */
+  if(D.ch>0){
+    /* 死亡した子の確認 */
+    var maxDeadCh=D.ch;
+    if((D.deadCh||0)>maxDeadCh)D.deadCh=maxDeadCh;
+    var dc=D.deadCh||0,gc=D.grandCh||0;
+    h+='<div class="dv"></div>'
+      +'<div style="background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:8px;padding:12px">'
+      +'<div style="font-size:13px;font-weight:600;color:#0F6E56;margin-bottom:4px">代襲相続の確認（お子さんの代襲）</div>'
+      +'<div style="font-size:12px;color:#085041;margin-bottom:10px;line-height:1.6">先に亡くなっているお子さんがいる場合、そのお子さんの子（お孫さん）が代わりに相続します（代襲相続）。</div>'
+      +'<div class="fg"><span class="fl" style="font-size:12px">先に亡くなっているお子さんの人数</span>'
+      +'<div class="nw"><button class="nb" onclick="cnDeadCh(-1)">−</button><span class="nv" id="dch-v">'+dc+'</span><button class="nb" onclick="cnDeadCh(1)">＋</button><span style="font-size:13px;color:#555">人</span></div></div>';
+    if(dc>0){
+      h+='<div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">代襲相続人となるお孫さんの合計人数</span>'
+        +'<div class="nw"><button class="nb" onclick="cnGrandCh(-1)">−</button><span class="nv" id="gch-v">'+gc+'</span><button class="nb" onclick="cnGrandCh(1)">＋</button><span style="font-size:13px;color:#555">人</span></div></div>';
+    }
+    h+='</div>';
+    el.innerHTML=h;
+    return;
+  }
+
+  /* ── 子なしの場合：半血の兄弟姉妹（兄弟が1人以上いれば表示） ── */
   if(D.si>0){
     var maxHalf=Math.max(0,D.si-(D.deadSib||0));
     if((D.halfSib||0)>maxHalf)D.halfSib=maxHalf;
@@ -887,6 +965,9 @@ function buildHeirSVG(){
   if(gparAlive)np=gparBoth?2:1;
   var ns=D.si,nd=Math.min(D.deadSib||0,ns),nn=D.nephews||0,nl=ns-nd;
   var nHalfSib=Math.min(D.halfSib||0,nl); /* 半血の兄弟姉妹（生存） */
+  var nDeadCh=Math.min(D.deadCh||0,nk); /* 先に亡くなった子 */
+  var nGrandCh=D.grandCh||0; /* 代襲する孫の数 */
+  var nLiveCh=nk-nDeadCh; /* 生存している子 */
   var p=[],W=300,H=160,note='';
   function gcd2(a,b){return b?gcd2(b,a%b):a;}
   function fr(n,d){if(!n||!d)return '';var g=gcd2(Math.abs(n),Math.abs(d));var n2=Math.round(n/g),d2=Math.round(d/g);return d2===1?'(全部)':'('+n2+'/'+d2+')';}
@@ -906,12 +987,34 @@ function buildHeirSVG(){
     if(nn>NNS)p.push('<text x="'+(nSt+NNS*(NW+HG))+'" y="'+(ryN+4)+'" font-size="10" fill="#888">他'+(nn-NNS)+'人</text>');
   }
   if(sp&&nk>0){
-    var NK=Math.min(nk,5),chW=NK*NW+(NK-1)*HG;W=Math.max(chW,NW+MG+NW)+2*PAD;var cx=W/2;
-    var sCX=cx-(MG/2+NW/2),spCX=cx+(MG/2+NW/2),ry1=PAD+NH/2,ry2=ry1+VG,bky=ry2-NH/2-16;H=ry2+NH/2+LBL+PAD+14;
+    /* 表示する子ボックス数: 生存 + 亡（最大合計5個）*/
+    var showLive=Math.min(nLiveCh,4),showDead=Math.min(nDeadCh,4-showLive>0?4-showLive:0);
+    var NK=showLive+showDead;if(NK===0)NK=1;
+    var chW=NK*NW+(NK-1)*HG;W=Math.max(chW,NW+MG+NW)+2*PAD;var cx=W/2;
+    /* 孫がいる場合は高さを拡張 */
+    var hasGrand=nDeadCh>0&&nGrandCh>0;
+    var ry1=PAD+NH/2,ry2=ry1+VG,bky=ry2-NH/2-16;
+    H=ry2+NH/2+LBL+PAD+14+(hasGrand?VG+NH/2+LBL:0);
+    var sCX=cx-(MG/2+NW/2),spCX=cx+(MG/2+NW/2);
     p.push(bx(sCX,ry1,'本人','','self'));p.push(bx(spCX,ry1,'配偶者',fr(1,2),'heir'));p.push(dbl(sCX,spCX,ry1));p.push(ln(cx,ry1+NH/2,cx,bky));
-    var cs=cx-chW/2+NW/2;for(var i=0;i<NK;i++){var cc=cs+i*(NW+HG);p.push(bx(cc,ry2,nk===1?'子':'子'+(i+1),fr(1,2*nk),'heir'));p.push(ln(cc,bky,cc,ry2-NH/2));}
-    if(NK>1)p.push(ln(cs,bky,cs+(NK-1)*(NW+HG),bky));if(nk>NK)p.push('<text x="'+(cs+NK*(NW+HG))+'" y="'+(ry2+4)+'" font-size="10" fill="#888">他'+(nk-NK)+'人</text>');
-    note='配偶者'+fr(1,2)+'　子'+nk+'人で'+fr(1,2)+'を分割'+(nk>1?' 各'+fr(1,2*nk):'');
+    var cs=cx-chW/2+NW/2;
+    /* 生存している子 */
+    for(var i=0;i<showLive;i++){var cc=cs+i*(NW+HG);p.push(bx(cc,ry2,nLiveCh===1&&nDeadCh===0?'子':'子'+(i+1),fr(1,2*nk),'heir'));p.push(ln(cc,bky,cc,ry2-NH/2));}
+    /* 亡くなった子 */
+    for(var i=0;i<showDead;i++){var cc=cs+(showLive+i)*(NW+HG);p.push(ln(cc,bky,cc,ry2-NH/2,'#888',1,'4,3'));p.push(bx(cc,ry2,nDeadCh===1?'亡子':'亡子'+(i+1),'','dead'));}
+    if(NK>1)p.push(ln(cs,bky,cs+(NK-1)*(NW+HG),bky));
+    if(nLiveCh>showLive)p.push('<text x="'+(cs+NK*(NW+HG))+'" y="'+(ry2+4)+'" font-size="10" fill="#888">他'+(nLiveCh-showLive)+'人</text>');
+    /* 孫（代襲）: 亡子ボックスの下に展開 */
+    if(hasGrand){
+      var dsCX=cs+(showLive)*(NW+HG); /* 最初の亡子の中心X */
+      var NG=Math.min(nGrandCh,4),gTW=NG*NW+(NG-1)*HG,gSt=dsCX-gTW/2+NW/2,gbky=ry2+NH/2+14;
+      p.push(ln(dsCX,ry2+NH/2,dsCX,gbky));
+      if(NG>1)p.push(ln(gSt,gbky,gSt+(NG-1)*(NW+HG),gbky));
+      for(var gi=0;gi<NG;gi++){var gc=gSt+gi*(NW+HG);p.push(ln(gc,gbky,gc,ry2+VG-NH/2));p.push(bx(gc,ry2+VG,nGrandCh===1?'孫':'孫'+(gi+1),fr(1,2*nk*nGrandCh),'heir'));}
+      if(nGrandCh>NG)p.push('<text x="'+(gSt+NG*(NW+HG))+'" y="'+(ry2+VG+4)+'" font-size="10" fill="#888">他'+(nGrandCh-NG)+'人</text>');
+    }
+    var noteBase=nk>1?'各'+fr(1,2*nk):'全部';
+    note='配偶者'+fr(1,2)+'　子'+nk+'人で'+fr(1,2)+'を分割 各'+fr(1,2*nk)+(nDeadCh>0&&nGrandCh>0?' 亡子の代わりに孫'+nGrandCh+'人が代襲':'');
   } else if(sp&&nk===0&&np>0){
     var twoAscB=parB||gparBoth;
     var ph=twoAscB?(NW+HG/2):NW/2,sCXB=PAD+ph,spCXB=sCXB+NW+MG;W=Math.max(spCXB+NW/2+PAD,sCXB*2+PAD);if(W<240)W=240;
@@ -934,12 +1037,30 @@ function buildHeirSVG(){
     if(showNC){p.push(ln(dsCXC,bkyC,dsCXC,ry1C-NH/2,'#888',1,'4,3'));p.push(bx(dsCXC,ry1C,'亡兄弟','','dead'));subT(dsCXC,ry1C,ry1C+VG);}
     note='配偶者'+fr(3,4)+'　兄弟姉妹で'+fr(1,4)+'を分割'+(nHalfSib>0?' ※半血は全血の½':'')+'　※遺留分なし';
   } else if(!sp&&nk>0){
-    var NKD=Math.min(nk,5),chWD=NKD*NW+(NKD-1)*HG;W=Math.max(chWD,NW)+2*PAD;var cxD=W/2;
-    var ry1D=PAD+NH/2,ry2D=ry1D+VG,bkyD=ry2D-NH/2-16;H=ry2D+NH/2+LBL+PAD+14;
+    var showLiveD=Math.min(nLiveCh,4),showDeadD=Math.min(nDeadCh,4-showLiveD>0?4-showLiveD:0);
+    var NKD=showLiveD+showDeadD;if(NKD===0)NKD=1;
+    var chWD=NKD*NW+(NKD-1)*HG;W=Math.max(chWD,NW)+2*PAD;var cxD=W/2;
+    var hasGrandD=nDeadCh>0&&nGrandCh>0;
+    var ry1D=PAD+NH/2,ry2D=ry1D+VG,bkyD=ry2D-NH/2-16;
+    H=ry2D+NH/2+LBL+PAD+14+(hasGrandD?VG+NH/2+LBL:0);
     p.push(bx(cxD,ry1D,'本人','','self'));p.push(ln(cxD,ry1D+NH/2,cxD,bkyD));
-    var csD=cxD-chWD/2+NW/2;for(var iD=0;iD<NKD;iD++){var ccD=csD+iD*(NW+HG);p.push(bx(ccD,ry2D,nk===1?'子':'子'+(iD+1),fr(1,nk),'heir'));p.push(ln(ccD,bkyD,ccD,ry2D-NH/2));}
-    if(NKD>1)p.push(ln(csD,bkyD,csD+(NKD-1)*(NW+HG),bkyD));if(nk>NKD)p.push('<text x="'+(csD+NKD*(NW+HG))+'" y="'+(ry2D+4)+'" font-size="10" fill="#888">他'+(nk-NKD)+'人</text>');
-    note='子'+nk+'人で均等分割　各'+fr(1,nk);
+    var csD=cxD-chWD/2+NW/2;
+    /* 生存している子 */
+    for(var iD=0;iD<showLiveD;iD++){var ccD=csD+iD*(NW+HG);p.push(bx(ccD,ry2D,nLiveCh===1&&nDeadCh===0?'子':'子'+(iD+1),fr(1,nk),'heir'));p.push(ln(ccD,bkyD,ccD,ry2D-NH/2));}
+    /* 亡くなった子 */
+    for(var iD=0;iD<showDeadD;iD++){var ccD=csD+(showLiveD+iD)*(NW+HG);p.push(ln(ccD,bkyD,ccD,ry2D-NH/2,'#888',1,'4,3'));p.push(bx(ccD,ry2D,nDeadCh===1?'亡子':'亡子'+(iD+1),'','dead'));}
+    if(NKD>1)p.push(ln(csD,bkyD,csD+(NKD-1)*(NW+HG),bkyD));
+    if(nLiveCh>showLiveD)p.push('<text x="'+(csD+NKD*(NW+HG))+'" y="'+(ry2D+4)+'" font-size="10" fill="#888">他'+(nLiveCh-showLiveD)+'人</text>');
+    /* 孫（代襲） */
+    if(hasGrandD){
+      var dsCXD=csD+(showLiveD)*(NW+HG);
+      var NGD=Math.min(nGrandCh,4),gTWD=NGD*NW+(NGD-1)*HG,gStD=dsCXD-gTWD/2+NW/2,gbkyD=ry2D+NH/2+14;
+      p.push(ln(dsCXD,ry2D+NH/2,dsCXD,gbkyD));
+      if(NGD>1)p.push(ln(gStD,gbkyD,gStD+(NGD-1)*(NW+HG),gbkyD));
+      for(var giD=0;giD<NGD;giD++){var gcD=gStD+giD*(NW+HG);p.push(ln(gcD,gbkyD,gcD,ry2D+VG-NH/2));p.push(bx(gcD,ry2D+VG,nGrandCh===1?'孫':'孫'+(giD+1),fr(1,nk*nGrandCh),'heir'));}
+      if(nGrandCh>NGD)p.push('<text x="'+(gStD+NGD*(NW+HG))+'" y="'+(ry2D+VG+4)+'" font-size="10" fill="#888">他'+(nGrandCh-NGD)+'人</text>');
+    }
+    note='子'+nk+'人で均等分割 各'+fr(1,nk)+(nDeadCh>0&&nGrandCh>0?' 亡子の代わりに孫'+nGrandCh+'人が代襲':'');
   } else if(!sp&&nk===0&&np>0){
     var twoAscE=parB||gparBoth;
     var phE=twoAscE?(NW+HG/2):NW/2,cxE=PAD+phE;W=Math.max(cxE+phE+PAD,200);
@@ -997,7 +1118,7 @@ function lookupZip(){
 
 /* ===== 一時保存 ===== */
 var SAVE_KEY='dai8_clinic_save';
-var EN_FIELDS=["en-name", "en-birth", "en-gender", "en-blood", "en-tel", "en-date", "en-zip", "en-addr", "en-ec1n", "en-ec1r", "en-ec1t", "en-ec2n", "en-ec2r", "en-ec2t", "en-care", "en-fun-note", "en-temple", "en-temple-addr", "en-temple-tel", "en-will", "en-bank-loc", "en-ins-loc", "en-pension", "en-docs", "en-doc", "en-doc-tel", "en-law", "en-law-tel", "en-tax", "en-tax-tel", "en-msg"];
+var EN_FIELDS=["en-name","en-birth","en-gender","en-blood","en-tel","en-date","en-zip","en-addr","en-ec1n","en-ec1r","en-ec1t","en-ec2n","en-ec2r","en-ec2t","en-care","en-fun-note","en-temple","en-temple-addr","en-temple-tel","en-grave-mgr-name","en-grave-mgr-tel","en-grave-mgr-rel","en-nature-co","en-nature-addr","en-nature-tel","en-sea-area","en-grave-other","en-funeral-co","en-funeral-branch","en-funeral-tel","en-funeral-cost","en-mutual-detail","en-will","en-bank-loc","en-ins-loc","en-pension","en-docs","en-doc","en-doc-tel","en-law","en-law-tel","en-tax","en-tax-tel","en-msg"];
 
 function collectENFields(){
   var obj={};
@@ -1052,6 +1173,7 @@ function loadSave(){
     D_OBIT=payload.D_OBIT||[];
     D_FGUEST=payload.D_FGUEST||[];
     FGUEST_NONE=payload.FGUEST_NONE||false;
+    if(payload.D){D.deadCh=payload.D.deadCh||0;D.grandCh=payload.D.grandCh||0;}
     rRadio('r-mar',['未婚','既婚','離婚','死別'],'mar',renderProxy);
     rRadio('r-par',['両方存命','一方存命','両方故人'],'par',renderProxy);
     document.getElementById('ch-v').textContent=D.ch;
@@ -1061,9 +1183,22 @@ function loadSave(){
     rChecksDone();
     rChecks('worry-list','worry',WORRY_OPTS);
     rRadioEN('r-life',['希望する','希望しない','家族に任せる'],'life');
+    rRadioEN('r-cpr',['希望する','希望しない','家族に任せる'],'cpr');
+    rRadioEN('r-ventilator',['希望する','希望しない','家族に任せる'],'ventilator');
+    rRadioEN('r-tube',['希望する','希望しない','家族に任せる'],'tube');
+    rRadioEN('r-blood',['希望する','希望しない','家族に任せる'],'blood');
     rRadioEN('r-organ',['希望する','希望しない','未定'],'organ');
+    rRadioEN('r-body',['希望する','希望しない','未定'],'body');
+    rRadioEN('r-place',['自宅','病院','ホスピス・緩和ケア病棟','施設','家族に任せる'],'place');
+    rRadioEN('r-care-pref',['在宅介護を希望','施設入居を希望','家族に任せる'],'carePref');
+    rRadioEN('r-dementia',['自宅で過ごしたい','施設に入居したい','家族に任せる'],'dementia');
+    rRadioEN('r-palliative',['積極的に緩和ケアを希望','通常の治療を継続','家族に任せる'],'palliative');
     rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
-    rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave');
+    rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+    rRadioEN('r-nature-contract',['契約済み','契約予定あり','まだない'],'natureContract');
+    rRadioEN('r-estimate',['あり','なし','検討中'],'estimate');
+    rRadioEN('r-mutual',['加入あり','加入なし','検討中'],'mutual');
+    updateMutualDetail();
     ctRender();
     renderPets();
     renderObits();
@@ -1167,7 +1302,9 @@ function getHeirShares(){
   var list=[];
   if(sp&&nk>0){
     list.push(mk('配偶者',1,2));
-    for(var i=0;i<nk;i++)list.push(mk(nk===1?'子':'子'+(i+1),1,2*nk));
+    var nDC=Math.min(D.deadCh||0,nk),nGC=D.grandCh||0,nLC=nk-nDC;
+    for(var i=0;i<nLC;i++)list.push(mk(nLC===1&&nDC===0?'子':'子'+(i+1),1,2*nk));
+    if(nDC>0&&nGC>0){for(var i=0;i<Math.min(nGC,6);i++)list.push(mk(nGC===1?'孫（代襲）':'孫'+(i+1)+'（代襲）',1,2*nk*nGC));}
   }else if(sp&&nk===0&&np>0){
     list.push(mk('配偶者',2,3));
     if(parB){list.push(mk('父',1,6));list.push(mk('母',1,6));}
@@ -1180,7 +1317,9 @@ function getHeirShares(){
     for(var i=0;i<nHalfSib;i++)list.push(mk('半血'+(i+1),1,4*den));
     if(nd>0&&nn>0){var nn2=Math.min(nn,6);for(var i=0;i<nn2;i++)list.push(mk(nn===1?'甥・姪':'甥姪'+(i+1),2,4*den*nn));}
   }else if(!sp&&nk>0){
-    for(var i=0;i<nk;i++)list.push(mk(nk===1?'子':'子'+(i+1),1,nk));
+    var nDC2=Math.min(D.deadCh||0,nk),nGC2=D.grandCh||0,nLC2=nk-nDC2;
+    for(var i=0;i<nLC2;i++)list.push(mk(nLC2===1&&nDC2===0?'子':'子'+(i+1),1,nk));
+    if(nDC2>0&&nGC2>0){for(var i=0;i<Math.min(nGC2,6);i++)list.push(mk(nGC2===1?'孫（代襲）':'孫'+(i+1)+'（代襲）',1,nk*nGC2));}
   }else if(!sp&&nk===0&&np>0){
     if(parB){list.push(mk('父',1,2));list.push(mk('母',1,2));}
     else if(gparBoth){list.push(mk('祖父',1,2));list.push(mk('祖母',1,2));}
@@ -1274,22 +1413,168 @@ function buildResult(){
 }
 function buildAdvice(){
   var adv=[],done=D.done,worry=D.worry;
+
+  /* ── 基本フラグ ── */
   var hasWill=done.indexOf('遺言書（自筆）を作成済')>-1||done.indexOf('遺言書（公正証書）を作成済')>-1;
-  var noAction=done.indexOf(NONE_DONE)>-1,bigAsset=stot('re')>0||stot('bk')>500;
-  var sp2=D.mar==='既婚',sibHir=!sp2&&D.ch===0&&D.par==='両方故人'&&D.si>0;
-  if(noAction)adv.push({t:'終活対策がまだ何も行われていません。まずはエンディングノートの作成と財産目録の整理から始めることをお勧めします。',p:'phi',l:'優先度高'});
-  if(!hasWill)adv.push({t:'遺言書の作成をお勧めします。'+(sibHir?'兄弟姉妹に遺留分はないため、遺言書がなければ意図しない相続が生じる可能性があります。':'相続人への財産分配を明確にしておきましょう。'),p:'phi',l:'優先度高'});
-  var hasIndivAsset=stot('re')>0||stot('vc')>0||stot('ot')>0;
-  if(hasIndivAsset&&getHeirShares().length>1&&!hasWill)adv.push({t:'不動産・車両等の財産が複数の相続人で共有になると、売却・処分に相続人全員の同意と印鑑証明書が必要となり手続きが大幅に複雑化します。特定の相続人に帰属させるには遺言書の作成が最も有効な解決策です。',p:'phi',l:'優先度高'});
-  if(worry.indexOf('認知症になった場合が心配')>-1&&done.indexOf('任意後見契約を締結済')===-1)adv.push({t:'任意後見契約の締結をお勧めします。認知症になった場合に備え、信頼できる人に財産管理を委任しておくことが重要です。',p:'phi',l:'優先度高'});
-  if(worry.indexOf('葬儀・納骨などの死後手続')>-1&&done.indexOf('死後事務委任契約を締結済')===-1)adv.push({t:'死後事務委任契約の締結をご検討ください。葬儀・納骨・各種行政手続きを専門家に委任できます。',p:'pme',l:'優先度中'});
-  if(bigAsset||worry.indexOf('相続税が心配')>-1)adv.push({t:'財産規模から相続税の申告が必要になる可能性があります。税理士への早めの相談と生前贈与の活用をご検討ください。',p:'phi',l:'優先度高'});
-  if(stot('db')>0)adv.push({t:'負債がある場合は、相続人が相続放棄・限定承認を検討できるよう財産目録を整備しておくことが重要です。',p:'pme',l:'優先度中'});
-  if(worry.indexOf('兄妹へ財産を渡したくない')>-1)adv.push({t:'兄弟姉妹への相続を避けたい場合は遺言書の作成が有効です。兄弟姉妹に遺留分はないため、遺言書で意思を明確にできます。',p:'phi',l:'優先度高'});
-  if(worry.indexOf('死後の手続で兄妹を頼りたくない')>-1)adv.push({t:'死後事務委任契約を締結することで、葬儀・納骨・行政手続きを専門家に一任でき、兄弟姉妹に頼らない仕組みを作ることができます。',p:'phi',l:'優先度高'});
-  if(done.indexOf('エンディングノートを作成済')===-1)adv.push({t:'エンディングノートの作成をお勧めします。財産・連絡先・医療希望などをまとめておくと、万が一の際の家族の負担を大きく軽減できます。',p:'plo',l:'確認推奨'});
-  if(worry.indexOf('自分の死後のペットのこと')>-1)adv.push({t:'ペットの行く末については、死後事務委任契約や遺言書に「ペットの世話を誰に託すか」を明記する方法があります。信頼できる引き取り先を事前に相談・確認しておくことが重要です。',p:'phi',l:'優先度高'});
-  if(adv.length===0)adv.push({t:'現在の対策は十分に整っています。定期的な内容の見直しと更新をお勧めします。',p:'plo',l:'良好'});
+  var noAction=done.indexOf(NONE_DONE)>-1;
+  var sp=D.mar==='既婚';
+  var nk=D.ch;
+  var parB=D.par==='両方存命',parO=D.par==='一方存命';
+  var gparAlive=D.par==='両方故人'&&D.gpar&&D.gpar!=='祖父母共に故人';
+  var np=parB?2:parO?1:0;if(gparAlive)np=1;
+  var ns=D.si,nd=Math.min(D.deadSib||0,ns),nn=D.nephews||0;
+  var nHalf=D.halfSib||0;
+  var hasProxy=nd>0&&nn>0;
+
+  /* ── 財産フラグ ── */
+  var reTot=stot('re'),bkTot=stot('bk'),scTot=stot('sc'),vcTot=stot('vc'),otTot=stot('ot');
+  var insTot=stot('ins'),dbTot=stot('db');
+  var totalAssets=reTot+bkTot+scTot+vcTot+otTot;
+  var netAssets=totalAssets-dbTot;
+  var hasIndiv=reTot>0||vcTot>0||otTot>0;
+  var hasJitaku=D.ar['re'].some(function(r){return r.use==='自宅'&&(parseFloat(r.val)||0)>0;});
+
+  /* ── 相続人フラグ ── */
+  var heirs=getHeirShares();
+  var heirCount=heirs.length;
+  var basicDeduction=heirCount>0?3000+600*heirCount:3600;
+
+  /* ── 家族パターン ── */
+  var sibHir=!sp&&nk===0&&np===0&&ns>0;
+  var sibWithSp=sp&&nk===0&&np===0&&ns>0;
+
+  /* ━━ 1. 未対策 ━━ */
+  if(noAction){
+    adv.push({t:'終活対策がまだ何も行われていません。まずはエンディングノートの作成と財産目録の整理から始めましょう。'+(totalAssets>0?'総資産約'+totalAssets.toLocaleString()+'万円の財産がある場合、相続人への明確な意思表示が特に重要です。':''),p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 2. 遺言書（家族構成別） ━━ */
+  if(!hasWill){
+    var wt;
+    if(heirCount===0){
+      wt='法定相続人がいない可能性があります。遺言書がなければ財産は最終的に国庫へ帰属します。信頼できる方への遺贈や公益団体への寄附を遺言書で定めることができます。';
+    }else if(sibWithSp){
+      wt='お子さんがいない場合、配偶者の他に兄弟姉妹も相続人になります（兄弟姉妹の取り分：遺産の1/4）。配偶者にすべての財産を遺したい場合は遺言書が必須です。兄弟姉妹に遺留分はないため遺言書で自由に指定できます。';
+    }else if(sibHir){
+      wt='兄弟姉妹が相続人になる場合、遺留分（最低限の相続権）がないため遺言書で相続先を自由に指定できます。遺言書がないと意図しない相手への財産分配が生じやすくなります。';
+    }else if(!sp&&nk===0&&np>0){
+      wt='配偶者がいない場合、財産は両親・祖父母が相続します。特定の方に財産を遺したい場合は遺言書で明確にしておきましょう。';
+    }else{
+      wt='遺言書の作成をお勧めします。相続人への財産分配を明確にしておくことで、遺産分割をめぐるトラブルを防ぎます。';
+    }
+    adv.push({t:wt,p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 3. 不可分財産の共有リスク ━━ */
+  if(hasIndiv&&heirCount>1&&!hasWill){
+    adv.push({t:'不動産・車両等の財産が相続人'+heirCount+'人で共有になると、売却・処分には全員の同意と印鑑証明書が必要となり、一人でも連絡が取れない・反対する場合は手続きが止まります。遺言書で特定の相続人に帰属させることで共有状態を防げます。',p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 4. 配偶者居住権 ━━ */
+  if(sp&&nk>0&&hasJitaku&&!hasWill){
+    adv.push({t:'配偶者が自宅（約'+reTot.toLocaleString()+'万円）に住み続けられるよう「配偶者居住権」の設定をご検討ください。遺言書で自宅を配偶者に帰属させるか配偶者居住権を設定することで、お子さんとの遺産分割においても配偶者の住まいを確保できます。',p:'pme',l:'優先度中'});
+  }
+
+  /* ━━ 5. 相続税リスク ━━ */
+  if(totalAssets>0&&(totalAssets>basicDeduction||worry.indexOf('相続税が心配')>-1)){
+    var taxTxt;
+    if(totalAssets>basicDeduction){
+      taxTxt='財産総額（約'+totalAssets.toLocaleString()+'万円）が相続税の基礎控除（3,000万＋600万×法定相続人'+heirCount+'人＝'+basicDeduction.toLocaleString()+'万円）を超えています。申告が必要になる可能性が高く、税理士への早期相談と生前贈与・生命保険の活用をお勧めします。';
+    }else{
+      taxTxt='ご心配の通り、財産規模によっては相続税の申告が必要になる場合があります。税理士への相談と生前贈与の活用をご検討ください。';
+    }
+    adv.push({t:taxTxt,p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 6. 債務超過・負債 ━━ */
+  if(dbTot>0){
+    if(netAssets<0){
+      adv.push({t:'負債（'+dbTot.toLocaleString()+'万円）が資産（'+totalAssets.toLocaleString()+'万円）を上回っています（純資産：'+netAssets.toLocaleString()+'万円）。相続人は相続開始を知った日から3ヶ月以内に相続放棄または限定承認を申請できます。財産目録を整備し、相続人が早期に判断できる情報を残しておきましょう。',p:'phi',l:'優先度高'});
+    }else{
+      adv.push({t:'負債（'+dbTot.toLocaleString()+'万円）があります。相続人が相続放棄・限定承認を検討できるよう、財産目録で正確な純資産（現在：約'+netAssets.toLocaleString()+'万円）を把握しておくことが重要です。',p:'pme',l:'優先度中'});
+    }
+  }
+
+  /* ━━ 7. 認知症 + 任意後見・家族信託 ━━ */
+  if(worry.indexOf('認知症になった場合が心配')>-1&&done.indexOf('任意後見契約を締結済')===-1){
+    var dTxt='任意後見契約の締結をお勧めします。認知症になった場合に備え、信頼できる人に財産管理を委任しておきましょう。';
+    if(reTot>0)dTxt+='不動産（約'+reTot.toLocaleString()+'万円）は認知症後に売却・管理が法的に困難になります。家族信託との組み合わせも有効です。';
+    adv.push({t:dTxt,p:'phi',l:'優先度高'});
+  }else if(reTot>0&&done.indexOf('任意後見契約を締結済')===-1&&done.indexOf('家族信託を設定済')===-1){
+    adv.push({t:'不動産（約'+reTot.toLocaleString()+'万円）をお持ちの場合、認知症等で判断能力が低下すると売却・担保設定・管理が法的にできなくなります。任意後見契約または家族信託の設定で事前に備えることをお勧めします。',p:'pme',l:'優先度中'});
+  }
+
+  /* ━━ 8. 死後事務委任 ━━ */
+  if(worry.indexOf('葬儀・納骨などの死後手続')>-1&&done.indexOf('死後事務委任契約を締結済')===-1){
+    adv.push({t:'死後事務委任契約の締結をご検討ください。葬儀・納骨・各種行政手続きを専門家に委任でき、ご家族の負担を大きく軽減できます。',p:'pme',l:'優先度中'});
+  }
+
+  /* ━━ 9. 兄弟姉妹への希望 ━━ */
+  if(worry.indexOf('兄妹へ財産を渡したくない')>-1){
+    adv.push({t:'兄弟姉妹への相続を避けたい場合は遺言書の作成が有効です。兄弟姉妹に遺留分はないため、遺言書で相続先を自由に指定できます。',p:'phi',l:'優先度高'});
+  }
+  if(worry.indexOf('死後の手続で兄妹を頼りたくない')>-1){
+    adv.push({t:'死後事務委任契約を締結することで、葬儀・納骨・行政手続きを専門家に一任でき、兄弟姉妹に頼らない仕組みを作ることができます。',p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 10. 複雑化リスク（半血・代襲・子多数） ━━ */
+  if(nHalf>0&&heirCount>1&&!hasWill){
+    adv.push({t:'半血の兄弟姉妹（'+nHalf+'人）がいる場合、相続分が全血と異なるため遺産分割協議が複雑になることがあります。遺言書で各相続人への分配を具体的に指定することでトラブルを防げます。',p:'pme',l:'優先度中'});
+  }
+  if(hasProxy&&reTot>0&&!hasWill){
+    adv.push({t:'甥・姪が代襲相続人になる場合、不動産が多人数の共有になる可能性があります。遺言書で帰属先を明確にしておくことをお勧めします。',p:'pme',l:'優先度中'});
+  }
+  if(nk>=3&&reTot>0&&!hasWill){
+    adv.push({t:'お子さんが'+nk+'人いる場合、不動産（約'+reTot.toLocaleString()+'万円）の遺産分割には全員の合意が必要で複雑になりやすい状況です。遺言書で具体的な分配先を指定しておくことで協議をスムーズにできます。',p:'pme',l:'優先度中'});
+  }
+
+  /* ━━ 11. 生命保険の非課税枠確認 ━━ */
+  if(insTot>0&&heirCount>0){
+    var insEx=500*heirCount;
+    if(insTot>insEx){
+      adv.push({t:'生命保険金（'+insTot.toLocaleString()+'万円）が非課税枠（500万×相続人'+heirCount+'人＝'+insEx.toLocaleString()+'万円）を超えています。超過分は相続税課税対象となる可能性があるため、受取人の設定や保険内容の見直しをご検討ください。',p:'pme',l:'優先度中'});
+    }else if(insEx-insTot>500&&totalAssets>basicDeduction){
+      adv.push({t:'生命保険の非課税枠（500万×'+heirCount+'人＝'+insEx.toLocaleString()+'万円）にまだ余裕があります（現在：'+insTot.toLocaleString()+'万円）。財産規模から相続税対策として生命保険の追加活用が有効な場合があります。',p:'plo',l:'確認推奨'});
+    }
+  }
+
+  /* ━━ 12. 身元保証 ━━ */
+  if(worry.indexOf('身元保証人がいない')>-1){
+    adv.push({t:'身元保証人がいない場合、入院・介護施設入居の際に手続きが困難になることがあります。死後事務委任契約・任意後見契約と合わせて、専門家による身元保証サービスの利用もご検討ください。',p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 13. 遺品整理 ━━ */
+  if(worry.indexOf('遺品整理をどうするか')>-1){
+    adv.push({t:'遺品整理の希望がある場合、死後事務委任契約に「遺品整理の委任」を含めることで専門家に一任できます。第八行政書士事務所では遺品整理業者との連携サービスも提供しています。',p:'pme',l:'優先度中'});
+  }
+
+  /* ━━ 14. 特定の家族への手当て ━━ */
+  if(worry.indexOf('特定の家族への手当てをしたい')>-1){
+    adv.push({t:'特定の相続人に多く遺したい・逆に遺留分を意識した公平な分配をしたい場合は、遺言書での指定が有効です。遺留分（法定相続分の1/2）を侵害しない範囲で自由に分配を指定できます。',p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 15. 借金の相続 ━━ */
+  if(worry.indexOf('借金を相続させたくない')>-1){
+    adv.push({t:'相続人に借金を引き継がせたくない場合、財産目録で純資産（資産−負債）を明確にし、相続人が相続放棄を検討できる情報を残しておきましょう。生命保険の受取人指定で一定の生活資金を確保しながら相続放棄を選択する方法もあります。',p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 16. 収骨しない ━━ */
+  if(EN['grave']==='収骨しない'){
+    adv.push({t:'「収骨しない」を希望されているようですが、火葬後に遺骨を引き取らない選択ができる地域は限られています。自治体・火葬場によって対応が異なり、収骨を義務付けている地域では選択できない場合があります。ご利用予定の火葬場に事前にご確認いただくことをお勧めします。',p:'pme',l:'確認推奨'});
+  }
+
+  /* ━━ 17. ペット ━━ */
+  if(worry.indexOf('自分の死後のペットのこと')>-1){
+    adv.push({t:'ペットの行く末については、死後事務委任契約や遺言書に引き取り先と飼育内容（餌・通院先など）を明記しておきましょう。信頼できる引き取り先を生前に確認・合意しておくことが最も重要です。',p:'phi',l:'優先度高'});
+  }
+
+  /* ━━ 17. エンディングノート ━━ */
+  if(done.indexOf('エンディングノートを作成済')===-1){
+    adv.push({t:'エンディングノートの作成をお勧めします。財産・連絡先・医療希望・葬儀の意向などをまとめておくと、万が一の際の家族の負担を大きく軽減できます。',p:'plo',l:'確認推奨'});
+  }
+
+  /* ━━ 全対策済み ━━ */
+  if(adv.length===0){adv.push({t:'現在の対策は十分に整っています。定期的な内容の見直しと更新をお勧めします。なお、家族構成や財産状況に変化があった場合は専門家への相談もご検討ください。',p:'plo',l:'良好'});}
   return adv;
 }
 function buildExperts(){
@@ -1358,12 +1643,32 @@ function buildPrintHTML(){
   var enSecs=[
     {t:'基本情報',rows:[['氏名（フリガナ）',gv('en-name')],['生年月日',gv('en-birth')],['性別',gv('en-gender')],['血液型',gv('en-blood')],['電話番号',gv('en-tel')],['現住所',gv('en-addr')]]},
     {t:'緊急連絡先',rows:[['氏名①・続柄',gv('en-ec1n')+'　'+gv('en-ec1r')],['電話①',gv('en-ec1t')],['氏名②・続柄',gv('en-ec2n')+'　'+gv('en-ec2r')],['電話②',gv('en-ec2t')]]},
-    {t:'医療・介護の希望',rows:[['延命治療',EN['life']||'（未回答）'],['臓器提供',EN['organ']||'（未回答）'],['希望メモ',gv('en-care')]]},
+    {t:'医療・介護の希望（事前指示書）',rows:[
+      ['延命治療',EN['life']||'（未回答）'],
+      ['心肺蘇生（CPR）',EN['cpr']||'（未回答）'],
+      ['人工呼吸器の使用',EN['ventilator']||'（未回答）'],
+      ['胃ろう・経管栄養',EN['tube']||'（未回答）'],
+      ['輸血の希望',EN['blood']||'（未回答）'],
+      ['臓器提供',EN['organ']||'（未回答）'],
+      ['献体の希望',EN['body']||'（未回答）'],
+      ['終末期の療養場所',EN['place']||'（未回答）'],
+      ['介護が必要な場合',EN['carePref']||'（未回答）'],
+      ['認知症になった場合',EN['dementia']||'（未回答）'],
+      ['緩和ケアの希望',EN['palliative']||'（未回答）'],
+      ['伝言メモ',gv('en-care')]
+    ]},
     {t:'葬儀・お骨の希望',rows:[
       ['葬儀の形式',EN['fun']||'（未回答）'],
       ['焼骨の扱い',EN['grave']||'（未回答）'],
+      ['収骨に関する注意',EN['grave']==='収骨しない'?'⚠️ 収骨しないを選択できる地域は限られています。ご利用予定の火葬場に事前にご確認ください。':'（該当なし）'],
       ['希望メモ',gv('en-fun-note')],
-      ['菩提寺',gv('en-temple')?(gv('en-temple')+(gv('en-temple-addr')?' 〒住所：'+gv('en-temple-addr'):'')+(gv('en-temple-tel')?' TEL:'+gv('en-temple-tel'):'')):'（記載なし）']
+      ['希望する葬儀社',gv('en-funeral-co')?(gv('en-funeral-co')+(gv('en-funeral-branch')?' 支店：'+gv('en-funeral-branch'):'')+(gv('en-funeral-tel')?' TEL:'+gv('en-funeral-tel'):'')+(gv('en-funeral-cost')?' 費用目安：'+gv('en-funeral-cost')+'万円':'')):'（記載なし）'],
+      ['生前見積もり',EN['estimate']||'（未回答）'],
+      ['互助会',EN['mutual']?EN['mutual']+(gv('en-mutual-detail')?' / '+gv('en-mutual-detail'):''):'（未回答）'],
+      ['菩提寺',gv('en-temple')?(gv('en-temple')+(gv('en-temple-addr')?' 住所：'+gv('en-temple-addr'):'')+(gv('en-temple-tel')?' TEL:'+gv('en-temple-tel'):'')):'（記載なし）'],
+      ['お墓の管理者',gv('en-grave-mgr-name')?(gv('en-grave-mgr-name')+(gv('en-grave-mgr-rel')?' （'+gv('en-grave-mgr-rel')+'）':'')+(gv('en-grave-mgr-tel')?' TEL:'+gv('en-grave-mgr-tel'):'')):'（記載なし）'],
+      ['樹木葬・散骨',EN['grave']==='樹木葬'||EN['grave']==='散骨'?(EN['natureContract']||'')+(gv('en-nature-co')?' 先：'+gv('en-nature-co'):'')+(gv('en-nature-addr')?' 住所：'+gv('en-nature-addr'):'')+(gv('en-nature-tel')?' TEL:'+gv('en-nature-tel'):'')+(gv('en-sea-area')?' 希望海域：'+gv('en-sea-area'):''):'（該当なし）'],
+      ['焼骨その他希望',EN['grave']==='その他'?gv('en-grave-other')||'（詳細未記入）':'（該当なし）']
     ]},
     {t:'重要書類の保管場所',rows:[['遺言書',gv('en-will')],['通帳・印鑑',gv('en-bank-loc')],['保険証書',gv('en-ins-loc')],['年金手帳・マイナンバー',gv('en-pension')],['その他',gv('en-docs')]]},
     {t:'専門家・重要連絡先',rows:[['かかりつけ医',gv('en-doc')+(gv('en-doc-tel')?' TEL:'+gv('en-doc-tel'):'')],['弁護士・司法書士等',gv('en-law')+(gv('en-law-tel')?' TEL:'+gv('en-law-tel'):'')],['税理士',gv('en-tax')+(gv('en-tax-tel')?' TEL:'+gv('en-tax-tel'):'')]]}
@@ -1770,10 +2075,53 @@ rRadio('r-mar',['未婚','既婚','離婚','死別'],'mar',renderProxy);
 rRadio('r-par',['両方存命','一方存命','両方故人'],'par',function(){renderProxy();renderGpar();});
 rChecksDone();rChecks('worry-list','worry',WORRY_OPTS);
 rRadioEN('r-life',['希望する','希望しない','家族に任せる'],'life');
+rRadioEN('r-cpr',['希望する','希望しない','家族に任せる'],'cpr');
+rRadioEN('r-ventilator',['希望する','希望しない','家族に任せる'],'ventilator');
+rRadioEN('r-tube',['希望する','希望しない','家族に任せる'],'tube');
+rRadioEN('r-blood',['希望する','希望しない','家族に任せる'],'blood');
 rRadioEN('r-organ',['希望する','希望しない','未定'],'organ');
+rRadioEN('r-body',['希望する','希望しない','未定'],'body');
+rRadioEN('r-place',['自宅','病院','ホスピス・緩和ケア病棟','施設','家族に任せる'],'place');
+rRadioEN('r-care-pref',['在宅介護を希望','施設入居を希望','家族に任せる'],'carePref');
+rRadioEN('r-dementia',['自宅で過ごしたい','施設に入居したい','家族に任せる'],'dementia');
+rRadioEN('r-palliative',['積極的に緩和ケアを希望','通常の治療を継続','家族に任せる'],'palliative');
 rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
-rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave');
+rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+    rRadioEN('r-nature-contract',['契約済み','契約予定あり','まだない'],'natureContract');
+    rRadioEN('r-estimate',['あり','なし','検討中'],'estimate');
+rRadioEN('r-mutual',['加入あり','加入なし','検討中'],'mutual');
+function renderGraveDetail(){
+  var g=EN['grave']||'先祖の墓';
+  var secTemple=document.getElementById('grave-detail-temple');
+  var secNature=document.getElementById('grave-detail-nature');
+  var secOther=document.getElementById('grave-detail-other');
+  var secNobone=document.getElementById('grave-detail-nobone');
+  if(secTemple)secTemple.style.display=(g==='先祖の墓')?'':'none';
+  if(secNature)secNature.style.display=(g==='樹木葬'||g==='散骨')?'':'none';
+  if(secOther)secOther.style.display=(g==='その他')?'':'none';
+  if(secNobone)secNobone.style.display=(g==='収骨しない')?'':'none';
+  /* 散骨のみ 海域欄の表示切替 */
+  var secSea=document.getElementById('grave-sea-wrap');
+  if(secSea)secSea.style.display=(g==='散骨')?'':'none';
+  /* 樹木葬/散骨のラベル切替 */
+  var lbl=document.getElementById('nature-type-lbl');
+  if(lbl)lbl.textContent=(g==='散骨'?'散骨':'樹木葬')+'について';
+}
+function updateMutualDetail(){var w=document.getElementById('en-mutual-detail-wrap');if(w)w.style.display=EN['mutual']==='加入あり'?'':'none';}
+/* 互助会詳細の初期非表示 */
+(function(){var w=document.getElementById('en-mutual-detail-wrap');if(w)w.style.display='none';})();
+/* r-mutual 切替時に詳細表示制御 */
+(function(){var el=document.getElementById('r-mutual');if(!el)return;var obs=new MutationObserver(updateMutualDetail);obs.observe(el,{childList:true,subtree:true});})();
 renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();renderGpar();
+/* ③ en-date デフォルト：今日の日付（和暦） */
+(function(){
+  var el=document.getElementById('en-date');
+  if(el&&!el.value){
+    var d=new Date(),y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate();
+    var wareki='';if(y>=2019){wareki='令和'+(y-2018);}else if(y>=1989){wareki='平成'+(y-1988);}else{wareki=y+'年';}
+    el.value=wareki+'年'+m+'月'+day+'日';
+  }
+})();
 checkExistingSave();
 </script>
 
