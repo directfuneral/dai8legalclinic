@@ -135,40 +135,74 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .closebtn:hover{background:var(--bg2)}
 /* print */
 @media print{
+  @page{size:A4;margin:15mm 12mm}
   body{background:white}
   .outer{padding:0}
-  .chd,.pb,.sc{display:none!important}
-  .pvpanel{display:block!important;border:none!important;border-radius:0!important}
+  .chd,.pb,.sc,.save-bar,.site-footer{display:none!important}
+  .pvpanel{display:block!important;border:none!important;border-radius:0!important;margin:0!important}
   .pvtb{display:none!important}
   .ppage{padding:0!important}
+  .pnewpage{page-break-before:always}
+  .psec{page-break-inside:avoid}
+  .pfooter{page-break-inside:avoid}
+  .ptbl tr,.entbl tr,.cttbl tr{page-break-inside:avoid}
 }
-.ppage{background:white;padding:28px 32px;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif}
-.ppage .ptit,.ppage .entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;color:#111}
+/* ===== 印刷プレビュー共通スタイル ===== */
+.ppage{background:white;padding:20px 28px;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif}
+/* 新ページ */
+.ppage .pnewpage{padding-top:2px}
+/* 表紙 */
+.ppage .pcover{min-height:220mm;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px 20px}
+.ppage .pcover-office{font-size:13px;color:#555;letter-spacing:.08em;margin-bottom:16px}
+.ppage .pcover-line{width:60px;height:2px;background:#1D9E75;margin:0 auto 16px}
+.ppage .pcover-title{font-size:28px;font-weight:bold;letter-spacing:.15em;color:#111;margin-bottom:8px}
+.ppage .pcover-sub{font-size:13px;color:#1D9E75;letter-spacing:.05em;margin-bottom:36px}
+.ppage .pcover-card{border:1px solid #ccc;border-radius:6px;padding:16px 32px;margin-bottom:32px;min-width:280px;background:#fafafa}
+.ppage .pcover-tbl{border-collapse:collapse;font-size:13px}
+.ppage .pcover-tbl td{padding:5px 14px;text-align:left}
+.ppage .pcover-tbl td:first-child{color:#555;font-weight:bold;white-space:nowrap}
+.ppage .pcover-contents{text-align:left;background:#E1F5EE;border-radius:6px;padding:14px 20px;margin-bottom:28px;min-width:320px}
+.ppage .pcover-ctit{font-size:12px;font-weight:bold;color:#0F6E56;margin-bottom:6px}
+.ppage .pcover-clist{font-size:12px;color:#111;line-height:1.9}
+.ppage .pcover-notice{font-size:10px;color:#888;line-height:1.7;max-width:400px}
+/* セクション見出し（相続関係図用） */
+.ppage .psec-hd{font-size:15px;font-weight:bold;text-align:center;padding:8px 0 12px;margin-bottom:10px;border-bottom:2px solid #1D9E75;color:#0F6E56;letter-spacing:.05em}
+.ppage .heir-print-wrap{display:flex;justify-content:center;padding:12px 0}
+/* 財産目録・エンディングノートタイトル */
+.ppage .ptit,.ppage .entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;color:#111;letter-spacing:.08em}
 .ppage .pmeta{text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px}
-.ppage .psec{margin-bottom:13px}
-.ppage .psh{font-size:12px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}
-.ppage .enbsh{font-size:12px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}
-.ppage .ptbl{width:100%;border-collapse:collapse;font-size:11px}
-.ppage .ptbl th{background:#f7f7f7;border:0.5px solid #ccc;padding:4px 7px;font-weight:bold;text-align:left}
-.ppage .ptbl td{border:0.5px solid #ccc;padding:4px 7px}
+/* セクション */
+.ppage .psec{margin-bottom:11px}
+.ppage .psh{font-size:11.5px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}
+.ppage .enbsh{font-size:11.5px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}
+/* 財産目録テーブル */
+.ppage .ptbl{width:100%;border-collapse:collapse;font-size:10.5px}
+.ppage .ptbl th{background:#f0f0f0;border:0.5px solid #bbb;padding:4px 7px;font-weight:bold;text-align:left}
+.ppage .ptbl td{border:0.5px solid #ccc;padding:3px 7px}
 .ppage .ptbl .num{text-align:right}
-.ppage .ptbl .sub td{background:#f0faf5;font-weight:bold}
+.ppage .ptbl .sub td{background:#e8f5f0;font-weight:bold;font-size:11px}
 .ppage .ptbl .empty td{color:#aaa;font-style:italic}
+/* エンディングノートテーブル */
 .ppage .entbl{width:100%;border-collapse:collapse;font-size:11px}
 .ppage .entbl td{border:0.5px solid #ccc;padding:4px 8px;vertical-align:top}
 .ppage .entbl .el{width:30%;background:#f7f7f7;font-weight:bold;color:#333}
+/* 契約一覧テーブル */
 .ppage .cttbl{width:100%;border-collapse:collapse;font-size:10px}
-.ppage .cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:4px 6px;font-weight:bold;color:#0c447c;text-align:left}
-.ppage .cttbl td{border:0.5px solid #ccc;padding:4px 6px;color:#111;vertical-align:top}
+.ppage .cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:3px 5px;font-weight:bold;color:#0c447c;text-align:left}
+.ppage .cttbl td{border:0.5px solid #ccc;padding:3px 5px;color:#111;vertical-align:top}
 .ppage .cttbl tr:nth-child(even) td{background:#fafafa}
 .ppage .cttbl .tp{font-weight:bold;background:#f0f6ff!important}
-.ppage .pfooter{margin-top:14px;border-top:2px solid #555;padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+/* 純資産フッター */
+.ppage .pfooter{margin-top:12px;border-top:2px solid #444;padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;page-break-inside:avoid}
 .ppage .pfbox{border:0.5px solid #ccc;padding:9px;text-align:center}
 .ppage .pfl{font-size:10px;color:#666;margin-bottom:2px}
 .ppage .pfv{font-size:15px;font-weight:bold}
-.ppage .pnotice{margin-top:12px;font-size:9.5px;color:#999;text-align:center}
-.ppage .phr{border:none;border-top:1px solid #ccc;margin:18px 0}
-.ppage .enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px}
+.ppage .pfv.pos{color:#0a5c3d}
+.ppage .pfv.neg{color:#C0392B}
+/* 注意書き・区切り */
+.ppage .pnotice{margin-top:10px;font-size:9.5px;color:#999;text-align:center}
+.ppage .phr{border:none;border-top:1px solid #ccc;margin:16px 0}
+.ppage .enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}
 
 .share-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:.9rem 1rem;background:var(--bg2);border-radius:var(--r2);margin-bottom:1.5rem;border:0.5px solid var(--border)}
 .share-label{font-size:12px;color:var(--text2);margin-right:4px;white-space:nowrap}
@@ -453,6 +487,19 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     <div class="fg"><span class="fl" style="font-size:12px">葬儀の形式</span><div class="rg" id="r-fun"></div></div>
     <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">火葬後の焼骨の扱い</span><div class="rg" id="r-grave"></div></div>
     <div class="fg" style="margin-top:8px"><span class="fl" style="font-size:12px">葬儀・お骨の希望メモ</span><div class="en-fw"><textarea id="en-fun-note" placeholder="例：家族だけで静かに送ってほしい。"></textarea></div></div>
+    <div class="dv" style="margin-top:12px"></div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">葬儀に呼んでほしい方</div>
+    <div style="margin-bottom:8px">
+      <label class="cb" id="fguest-none-lbl" style="display:inline-flex;width:auto;padding:6px 14px">
+        <div class="ci" id="fguest-none-ci"></div><span>誰も呼ばなくて良い</span>
+      </label>
+    </div>
+    <div id="fguest-list"></div>
+    <button class="addbtn" id="fguest-add-btn" style="margin-top:6px" onclick="addFunGuest()">＋ 呼んでほしい方を追加</button>
+    <div class="dv" style="margin-top:12px"></div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">菩提寺（お墓のあるお寺）</div>
+    <div class="en-g g1" style="margin-bottom:6px"><div class="en-fw"><span class="en-lbl">寺院名</span><input type="text" id="en-temple" placeholder="例：△△山○○寺"></div></div>
+    <div class="en-g g2"><div class="en-fw"><span class="en-lbl">住所</span><input type="text" id="en-temple-addr" placeholder="例：名古屋市熱田区…"></div><div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" id="en-temple-tel" placeholder="052-000-0000"></div></div>
   </div>
   <div class="en-sec"><div class="en-sh">重要書類の保管場所</div>
     <div class="en-g g2"><div class="en-fw"><span class="en-lbl">遺言書</span><input type="text" id="en-will" placeholder="例：自宅金庫、法務局保管"></div><div class="en-fw"><span class="en-lbl">通帳・印鑑</span><input type="text" id="en-bank-loc" placeholder="例：自宅引き出し"></div></div>
@@ -527,13 +574,13 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     </button>
   </div>
 </div>
-<button class="print-btn" onclick="printDirect()">財産目録・エンディングノートを印刷する</button>
-  <div style="font-size:12px;color:#888;text-align:center;margin-top:7px">クリックすると印刷ダイアログが開きます（ポップアップ許可が必要です）</div>
+<button class="print-btn" onclick="printDirect()">📄 財産目録・エンディングノートを印刷する</button>
+  <div style="font-size:12px;color:#888;text-align:center;margin-top:5px">表紙 → 相続関係図 → 財産目録 → エンディングノート → 契約一覧の順で印刷されます（ポップアップ許可が必要）</div>
   <button class="pdf-btn" onclick="downloadPDF(this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
     PDFでダウンロード
   </button>
-  <div style="font-size:11px;color:#888;text-align:center;margin-top:5px">印刷プレビューを表示してからPDF生成できます</div>
+  <div style="font-size:11px;color:#888;text-align:center;margin-top:5px">全内容（表紙〜契約一覧）をまとめてPDF保存できます</div>
   <button class="btn-prev" style="margin-top:8px" onclick="go(4)">← 入力内容を修正する</button>
 </div>
 </div>
@@ -746,7 +793,7 @@ function lookupZip(){
 
 /* ===== 一時保存 ===== */
 var SAVE_KEY='dai8_clinic_save';
-var EN_FIELDS=["en-name", "en-birth", "en-gender", "en-blood", "en-tel", "en-date", "en-zip", "en-addr", "en-ec1n", "en-ec1r", "en-ec1t", "en-ec2n", "en-ec2r", "en-ec2t", "en-care", "en-fun-note", "en-will", "en-bank-loc", "en-ins-loc", "en-pension", "en-docs", "en-doc", "en-doc-tel", "en-law", "en-law-tel", "en-tax", "en-tax-tel", "en-msg"];
+var EN_FIELDS=["en-name", "en-birth", "en-gender", "en-blood", "en-tel", "en-date", "en-zip", "en-addr", "en-ec1n", "en-ec1r", "en-ec1t", "en-ec2n", "en-ec2r", "en-ec2t", "en-care", "en-fun-note", "en-temple", "en-temple-addr", "en-temple-tel", "en-will", "en-bank-loc", "en-ins-loc", "en-pension", "en-docs", "en-doc", "en-doc-tel", "en-law", "en-law-tel", "en-tax", "en-tax-tel", "en-msg"];
 
 function collectENFields(){
   var obj={};
@@ -772,6 +819,8 @@ function doSave(btn){
     D_CT:JSON.parse(JSON.stringify(D_CT)),
     D_PET:JSON.parse(JSON.stringify(D_PET)),
     D_OBIT:JSON.parse(JSON.stringify(D_OBIT)),
+    D_FGUEST:JSON.parse(JSON.stringify(D_FGUEST)),
+    FGUEST_NONE:FGUEST_NONE,
     enFields:collectENFields(),
     savedAt:new Date().toLocaleString('ja-JP')
   };
@@ -797,6 +846,8 @@ function loadSave(){
     D_CT=payload.D_CT||D_CT;
     D_PET=payload.D_PET||[];
     D_OBIT=payload.D_OBIT||[];
+    D_FGUEST=payload.D_FGUEST||[];
+    FGUEST_NONE=payload.FGUEST_NONE||false;
     rRadio('r-mar',['未婚','既婚','離婚','死別'],'mar',renderProxy);
     rRadio('r-par',['両方存命','一方存命','両方故人'],'par',renderProxy);
     document.getElementById('ch-v').textContent=D.ch;
@@ -812,6 +863,7 @@ function loadSave(){
     ctRender();
     renderPets();
     renderObits();
+    renderFunGuests();
     setTimeout(function(){restoreENFields(payload.enFields);},100);
     document.getElementById('save-time').textContent=' — 復元済（'+payload.savedAt+'）';
     document.getElementById('intro-screen').style.display='none';
@@ -847,38 +899,38 @@ function checkExistingSave(){
 
 /* ===== PDFダウンロード ===== */
 function downloadPDF(btn){
-  var pvpage=document.getElementById('pvpage');
-  if(!pvpage||pvpage.innerHTML.trim()===''){
-    showPV();
-    setTimeout(function(){downloadPDF(btn);},300);
-    return;
-  }
   if(typeof html2pdf==='undefined'){
     alert('PDFライブラリの読み込み中です。少し待ってから再度お試しください。');
     return;
   }
   btn.classList.add('loading');
-  var origText=btn.innerHTML;
-  btn.innerHTML='生成中...';
+  var origHTML=btn.innerHTML;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> 生成中...';
   var name=document.getElementById('en-name')&&document.getElementById('en-name').value||'終活';
   var date=new Date();
-  var fname=name+'_終活診断_'+date.getFullYear()+(date.getMonth()+1)+date.getDate()+'.pdf';
+  var fname=name+'_終活診断書_'+date.getFullYear()+(date.getMonth()+1)+date.getDate()+'.pdf';
+  /* printDirectと同じCSSを使う */
+  var CSS='*{box-sizing:border-box;margin:0;padding:0}body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}.pcover{min-height:220mm;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px 20px}.pcover-office{font-size:13px;color:#555;letter-spacing:.08em;margin-bottom:16px}.pcover-line{width:60px;height:2px;background:#1D9E75;margin:0 auto 16px}.pcover-title{font-size:28px;font-weight:bold;letter-spacing:.15em;color:#111;margin-bottom:8px}.pcover-sub{font-size:13px;color:#1D9E75;letter-spacing:.05em;margin-bottom:36px}.pcover-card{border:1px solid #ccc;border-radius:6px;padding:16px 32px;margin-bottom:32px;min-width:280px;background:#fafafa}.pcover-tbl{border-collapse:collapse;font-size:13px}.pcover-tbl td{padding:5px 14px;text-align:left}.pcover-tbl td:first-child{color:#555;font-weight:bold;white-space:nowrap}.pcover-contents{text-align:left;background:#E1F5EE;border-radius:6px;padding:14px 20px;margin-bottom:28px;min-width:320px}.pcover-ctit{font-size:12px;font-weight:bold;color:#0F6E56;margin-bottom:6px}.pcover-clist{font-size:12px;color:#111;line-height:1.9}.pcover-notice{font-size:10px;color:#888;line-height:1.7;max-width:400px}.pnewpage{padding-top:2px;page-break-before:always}.psec-hd{font-size:15px;font-weight:bold;text-align:center;padding:8px 0 12px;margin-bottom:10px;border-bottom:2px solid #1D9E75;color:#0F6E56;letter-spacing:.05em}.heir-print-wrap{display:flex;justify-content:center;padding:12px 0}.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.08em}.pmeta{text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px}.psec{margin-bottom:11px}.psh{font-size:11.5px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}.enbsh{font-size:11.5px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}.ptbl{width:100%;border-collapse:collapse;font-size:10.5px}.ptbl th{background:#f0f0f0;border:0.5px solid #bbb;padding:4px 7px;font-weight:bold;text-align:left}.ptbl td{border:0.5px solid #ccc;padding:3px 7px}.ptbl .num{text-align:right}.ptbl .sub td{background:#e8f5f0;font-weight:bold;font-size:11px}.ptbl .empty td{color:#aaa;font-style:italic}.entbl{width:100%;border-collapse:collapse;font-size:11px}.entbl td{border:0.5px solid #ccc;padding:4px 8px;vertical-align:top}.entbl .el{width:30%;background:#f7f7f7;font-weight:bold;color:#333}.cttbl{width:100%;border-collapse:collapse;font-size:10px}.cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:3px 5px;font-weight:bold;color:#0c447c;text-align:left}.cttbl td{border:0.5px solid #ccc;padding:3px 5px;color:#111;vertical-align:top}.cttbl tr:nth-child(even) td{background:#fafafa}.cttbl .tp{font-weight:bold;background:#f0f6ff!important}.pfooter{margin-top:12px;border-top:2px solid #444;padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center}.pfl{font-size:10px;color:#666;margin-bottom:2px}.pfv{font-size:15px;font-weight:bold}.pfv.pos{color:#0a5c3d}.pfv.neg{color:#C0392B}.pnotice{margin-top:10px;font-size:9.5px;color:#999;text-align:center}.phr{border:none;border-top:1px solid #ccc;margin:16px 0}.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}';
+  var wrapper=document.createElement('div');
+  wrapper.style.cssText='background:white;width:190mm;padding:0 12px;font-family:Hiragino Kaku Gothic Pro,Meiryo,Yu Gothic,sans-serif';
+  wrapper.innerHTML='<style>'+CSS+'</style>'+buildPrintHTML();
+  document.body.appendChild(wrapper);
   var opt={
-    margin:[10,8,10,8],
+    margin:[12,8,12,8],
     filename:fname,
-    image:{type:'jpeg',quality:.92},
-    html2canvas:{scale:2,useCORS:true,logging:false},
+    image:{type:'jpeg',quality:.95},
+    html2canvas:{scale:2,useCORS:true,logging:false,windowWidth:794},
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
   };
-  var clone=pvpage.cloneNode(true);
-  clone.style.cssText='background:white;color:#111;font-family:Hiragino Kaku Gothic Pro,Meiryo,Yu Gothic,sans-serif;padding:0;max-width:190mm';
-  html2pdf().set(opt).from(clone).save().then(function(){
+  html2pdf().set(opt).from(wrapper).save().then(function(){
+    document.body.removeChild(wrapper);
     btn.classList.remove('loading');
-    btn.innerHTML=origText;
-  }).catch(function(e){
+    btn.innerHTML=origHTML;
+  }).catch(function(){
+    document.body.removeChild(wrapper);
     btn.classList.remove('loading');
-    btn.innerHTML=origText;
-    alert('PDF生成に失敗しました。印刷プレビューを開いてからCtrl+Pで印刷→PDFに保存する方法もお試しください。');
+    btn.innerHTML=origHTML;
+    alert('PDF生成に失敗しました。「印刷する」ボタンからCtrl+P→「PDFに保存」をお試しください。');
   });
 }
 
@@ -931,57 +983,124 @@ function gv(id){var e=document.getElementById(id);return e?e.value:'';}
 function esc(s){if(!s)return '&nbsp;';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function buildPrintHTML(){
   var name=gv('en-name')||'　　　　　';var date=gv('en-date')||'　　年　月　日';
-  var h='<div class="ptit">財　産　目　録</div><div class="pmeta">氏名：'+name+'　　作成日：'+date+'</div>';
+  var birth=gv('en-birth');
+
+  /* ===== ① 表紙 ===== */
+  var h='<div class="pcover">'
+    +'<div class="pcover-office">第八行政書士事務所</div>'
+    +'<div class="pcover-line"></div>'
+    +'<div class="pcover-title">終　活　診　断　書</div>'
+    +'<div class="pcover-sub">第八終活リーガルクリニック</div>'
+    +'<div class="pcover-card"><table class="pcover-tbl"><tbody>'
+    +'<tr><td>氏　　名</td><td>'+esc(name)+'</td></tr>'
+    +(birth?'<tr><td>生年月日</td><td>'+esc(birth)+'</td></tr>':'')
+    +'<tr><td>作 成 日</td><td>'+esc(date)+'</td></tr>'
+    +'</tbody></table></div>'
+    +'<div class="pcover-contents">'
+    +'<div class="pcover-ctit">■ 収録内容</div>'
+    +'<div class="pcover-clist">① 相続人関係図（法定相続人・法定相続分）<br>② 財産目録（不動産・預貯金・有価証券・保険・その他財産・負債）<br>③ エンディングノート（医療・葬儀希望・書類保管場所・専門家連絡先等）<br>④ 生前契約・解約が必要な契約一覧</div>'
+    +'</div>'
+    +'<div class="pcover-notice">本書類は参考資料の作成を目的としたものであり、法的効力を持ちません。相続・遺言書作成・任意後見契約等の具体的な手続きについては、専門家（司法書士・行政書士・弁護士・税理士）にご相談ください。<br><br>第八行政書士事務所　名古屋市熱田区　TEL：052-653-3215　ihinseiri-dai8.jp</div>'
+    +'</div>';
+
+  /* ===== ② 相続人関係図 ===== */
+  h+='<div class="pnewpage">'
+    +'<div class="psec-hd">相 続 人 関 係 図</div>'
+    +'<div class="heir-print-wrap">'+buildHeirSVG()+'</div>'
+    +'<div class="pnotice" style="margin-top:14px">※上図は法定相続分を示します。遺言書がある場合は遺言の内容が優先されます。相続分は最終的に遺産分割協議で決定します。</div>'
+    +'</div>';
+
+  /* ===== ③ 財産目録 ===== */
+  h+='<div class="pnewpage">'
+    +'<div class="ptit">財　産　目　録</div>'
+    +'<div class="pmeta">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>';
   ASECS.forEach(function(s){
     var a=acol(s);var filled=D.ar[s.id].filter(function(r){return s.cols.some(function(c){return r[c.k]&&r[c.k]!==''&&!(c.tp==='sel'&&r[c.k]===c.opts[0]);});});
     h+='<div class="psec"><div class="psh">■ '+s.t+'</div><table class="ptbl"><thead><tr>'+s.cols.map(function(c){return '<th'+(c.amt?' class="num"':'')+'>'+c.l.replace('(万円)','')+'</th>';}).join('')+'</tr></thead><tbody>';
     if(!filled.length)h+='<tr class="empty"><td colspan="'+s.cols.length+'">（記載なし）</td></tr>';
-    else{filled.forEach(function(r){h+='<tr>'+s.cols.map(function(c){var v=r[c.k]||'';return c.amt?'<td class="num">'+(parseFloat(v)>0?parseFloat(v).toLocaleString()+'万円':'—')+'</td>':'<td>'+v+'</td>';}).join('')+'</tr>';});if(a)h+='<tr class="sub"><td colspan="'+(s.cols.length-1)+'" style="text-align:right">小計</td><td class="num">'+stot(s.id).toLocaleString()+'万円</td></tr>';}
+    else{filled.forEach(function(r){h+='<tr>'+s.cols.map(function(c){var v=r[c.k]||'';return c.amt?'<td class="num">'+(parseFloat(v)>0?parseFloat(v).toLocaleString()+'万円':'—')+'</td>':'<td>'+esc(v)+'</td>';}).join('')+'</tr>';});if(a)h+='<tr class="sub"><td colspan="'+(s.cols.length-1)+'" style="text-align:right">小計</td><td class="num">'+stot(s.id).toLocaleString()+'万円</td></tr>';}
     h+='</tbody></table></div>';
   });
   var ta=0,td=0;ASECS.forEach(function(s){var t=stot(s.id);if(s.debt)td+=t;else ta+=t;});
-  h+='<div class="pfooter"><div class="pfbox"><div class="pfl">総資産</div><div class="pfv">'+ta.toLocaleString()+'万円</div></div><div class="pfbox"><div class="pfl">総負債</div><div class="pfv">'+td.toLocaleString()+'万円</div></div><div class="pfbox"><div class="pfl">純資産</div><div class="pfv">'+(ta-td).toLocaleString()+'万円</div></div></div>';
+  var net=ta-td;
+  h+='<div class="pfooter">'
+    +'<div class="pfbox"><div class="pfl">総資産</div><div class="pfv pos">'+ta.toLocaleString()+'万円</div></div>'
+    +'<div class="pfbox"><div class="pfl">総負債</div><div class="pfv neg">'+td.toLocaleString()+'万円</div></div>'
+    +'<div class="pfbox"><div class="pfl">純資産</div><div class="pfv '+(net>=0?'pos':'neg')+'">'+net.toLocaleString()+'万円</div></div>'
+    +'</div>';
   h+='<div class="pnotice">※本財産目録は概算を含みます。実際の相続手続きには正確な評価額の確認が必要です。</div>';
-  h+='<div class="phr"></div><div class="entit">エンディングノート</div><div class="pmeta">氏名：'+name+'　　作成日：'+date+'</div>';
+  h+='</div>';
+
+  /* ===== ④ エンディングノート ===== */
+  h+='<div class="pnewpage">'
+    +'<div class="entit">エンディングノート</div>'
+    +'<div class="pmeta">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>';
   var enSecs=[
     {t:'基本情報',rows:[['氏名（フリガナ）',gv('en-name')],['生年月日',gv('en-birth')],['性別',gv('en-gender')],['血液型',gv('en-blood')],['電話番号',gv('en-tel')],['現住所',gv('en-addr')]]},
     {t:'緊急連絡先',rows:[['氏名①・続柄',gv('en-ec1n')+'　'+gv('en-ec1r')],['電話①',gv('en-ec1t')],['氏名②・続柄',gv('en-ec2n')+'　'+gv('en-ec2r')],['電話②',gv('en-ec2t')]]},
     {t:'医療・介護の希望',rows:[['延命治療',EN['life']||'（未回答）'],['臓器提供',EN['organ']||'（未回答）'],['希望メモ',gv('en-care')]]},
-    {t:'葬儀・お骨の希望',rows:[['葬儀の形式',EN['fun']||'（未回答）'],['焼骨の扱い',EN['grave']||'（未回答）'],['希望メモ',gv('en-fun-note')]]},
+    {t:'葬儀・お骨の希望',rows:[
+      ['葬儀の形式',EN['fun']||'（未回答）'],
+      ['焼骨の扱い',EN['grave']||'（未回答）'],
+      ['希望メモ',gv('en-fun-note')],
+      ['菩提寺',gv('en-temple')?(gv('en-temple')+(gv('en-temple-addr')?' 〒住所：'+gv('en-temple-addr'):'')+(gv('en-temple-tel')?' TEL:'+gv('en-temple-tel'):'')):'（記載なし）']
+    ]},
     {t:'重要書類の保管場所',rows:[['遺言書',gv('en-will')],['通帳・印鑑',gv('en-bank-loc')],['保険証書',gv('en-ins-loc')],['年金手帳・マイナンバー',gv('en-pension')],['その他',gv('en-docs')]]},
-    {t:'専門家・重要連絡先',rows:[['かかりつけ医',gv('en-doc')+(gv('en-doc-tel')?' TEL:'+gv('en-doc-tel'):'')],['弁護士・司法書士等',gv('en-law')+(gv('en-law-tel')?' TEL:'+gv('en-law-tel'):'')],['税理士',gv('en-tax')+(gv('en-tax-tel')?' TEL:'+gv('en-tax-tel'):'')] ]}
+    {t:'専門家・重要連絡先',rows:[['かかりつけ医',gv('en-doc')+(gv('en-doc-tel')?' TEL:'+gv('en-doc-tel'):'')],['弁護士・司法書士等',gv('en-law')+(gv('en-law-tel')?' TEL:'+gv('en-law-tel'):'')],['税理士',gv('en-tax')+(gv('en-tax-tel')?' TEL:'+gv('en-tax-tel'):'')]]}
   ];
-  enSecs.forEach(function(sec){h+='<div class="psec"><div class="enbsh">■ '+sec.t+'</div><table class="entbl"><tbody>'+sec.rows.map(function(r){return '<tr><td class="el">'+r[0]+'</td><td>'+(r[1]||'　')+'</td></tr>';}).join('')+'</tbody></table></div>';});
+  enSecs.forEach(function(sec){h+='<div class="psec"><div class="enbsh">■ '+sec.t+'</div><table class="entbl"><tbody>'+sec.rows.map(function(r){return '<tr><td class="el">'+r[0]+'</td><td>'+(esc(r[1])||'　')+'</td></tr>';}).join('')+'</tbody></table></div>';});
   if(D_OBIT.length>0){
-    h+='<div class="psec"><div class="enbsh">■ 訃報をお伝えしたい方</div>';
-    h+='<table class="cttbl"><thead><tr>'
-      +'<th style="width:25%">氏名</th>'
-      +'<th style="width:15%">関係性</th>'
-      +'<th style="width:30%">電話番号 / メール</th>'
-      +'<th style="width:28%">備考</th>'
+    h+='<div class="psec"><div class="enbsh">■ 訃報をお伝えしたい方</div>'
+      +'<table class="cttbl"><thead><tr>'
+      +'<th style="width:25%">氏名</th><th style="width:15%">関係性</th>'
+      +'<th style="width:30%">電話番号 / メール</th><th style="width:28%">備考</th>'
       +'</tr></thead><tbody>';
-    D_OBIT.forEach(function(o){
-      h+='<tr><td>'+esc(o.name)+'</td><td>'+esc(o.rel)+'</td><td>'+esc(o.tel)+'</td><td>'+esc(o.note)+'</td></tr>';
-    });
+    D_OBIT.forEach(function(o){h+='<tr><td>'+esc(o.name)+'</td><td>'+esc(o.rel)+'</td><td>'+esc(o.tel)+'</td><td>'+esc(o.note)+'</td></tr>';});
     h+='</tbody></table></div>';
   }
   if(D_PET.length>0){
-    h+='<div class="psec"><div class="enbsh">■ ペットについて</div>';
-    h+='<table class="cttbl"><thead><tr><th style="width:12%">名前</th><th style="width:10%">種類</th><th style="width:8%">年齢</th><th style="width:22%">かかりつけ獣医</th><th style="width:12%">獣医TEL</th><th style="width:20%">引き取り先</th><th style="width:12%">引き取りTEL</th></tr></thead><tbody>';
+    h+='<div class="psec"><div class="enbsh">■ ペットについて</div>'
+      +'<table class="cttbl"><thead><tr>'
+      +'<th style="width:11%">名前</th><th style="width:9%">種類</th><th style="width:7%">年齢</th>'
+      +'<th style="width:22%">かかりつけ獣医</th><th style="width:13%">獣医TEL</th>'
+      +'<th style="width:22%">引き取り先</th><th style="width:14%">引き取りTEL</th>'
+      +'</tr></thead><tbody>';
     D_PET.forEach(function(p){
       h+='<tr><td>'+esc(p.name)+'</td><td>'+esc(p.species)+'</td><td>'+esc(p.age)+'</td><td>'+esc(p.vet)+'</td><td>'+esc(p.vettel)+'</td><td>'+esc(p.heir)+'</td><td>'+esc(p.heirtel)+'</td></tr>';
-      if(p.note)h+='<tr><td colspan="7" style="font-size:10px;color:#555;background:#fafafa">備考：'+esc(p.note)+'</td></tr>';
+      if(p.note)h+='<tr><td colspan="7" style="font-size:10px;color:#555;background:#fafafa;padding:3px 6px">備考：'+esc(p.note)+'</td></tr>';
     });
     h+='</tbody></table></div>';
   }
-  h+='<div class="psec"><div class="enbsh">■ 大切な人へのメッセージ</div><div class="enmsg">'+(gv('en-msg')||'（未記入）')+'</div></div>';
-  h+='<div class="phr"></div>';
-  h+='<div style="font-size:14px;font-weight:bold;text-align:center;margin-bottom:5px">生前契約・解約が必要な契約一覧</div>';
-  h+='<div style="text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:10px">氏名：'+name+'　　作成日：'+date+'</div>';
-  h+='<table class="cttbl"><thead><tr><th style="width:14%">契約種類</th><th style="width:22%">契約会社名</th><th style="width:20%">連絡先</th><th style="width:20%">ID / PW</th><th style="width:22%">書類保管場所</th></tr></thead><tbody>';
+  if(FGUEST_NONE){
+    h+='<div class="psec"><div class="enbsh">■ 葬儀に呼んでほしい方</div>'
+      +'<div style="font-size:11px;padding:6px 8px;border:0.5px solid #ccc">誰も呼ばなくて良い（直葬・家族のみ等）</div></div>';
+  } else if(D_FGUEST.length>0){
+    h+='<div class="psec"><div class="enbsh">■ 葬儀に呼んでほしい方</div>'
+      +'<table class="cttbl"><thead><tr>'
+      +'<th style="width:34%">氏名</th><th style="width:22%">関係性</th>'
+      +'<th style="width:42%">連絡先（電話・メール）</th>'
+      +'</tr></thead><tbody>';
+    D_FGUEST.forEach(function(g){
+      h+='<tr><td>'+esc(g.name)+'</td><td>'+esc(g.rel)+'</td><td>'+esc(g.tel)+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+  }
+  h+='<div class="psec"><div class="enbsh">■ 大切な人へのメッセージ</div><div class="enmsg">'+(esc(gv('en-msg'))||'（未記入）')+'</div></div>';
+  h+='</div>';
+
+  /* ===== ⑤ 契約一覧 ===== */
+  h+='<div class="pnewpage">'
+    +'<div style="font-size:14px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.06em">生前契約・解約が必要な契約一覧</div>'
+    +'<div style="text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:8px">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>'
+    +'<table class="cttbl"><thead><tr>'
+    +'<th style="width:14%">契約種類</th><th style="width:22%">契約会社名・機関名</th>'
+    +'<th style="width:19%">連絡先（電話番号）</th><th style="width:19%">ID / PW</th>'
+    +'<th style="width:24%">書類の保管場所</th>'
+    +'</tr></thead><tbody>';
   D_CT.forEach(function(row){h+='<tr><td class="tp">'+esc(row.t)+'</td><td>'+esc(row.co)+'</td><td>'+esc(row.tel)+'</td><td>'+esc(row.num)+'</td><td>'+esc(row.loc)+'</td></tr>';});
-  h+='</tbody></table>';
-  h+='<div class="pnotice">第八行政書士事務所　TEL：052-653-3215　※本書類は定期的に内容を見直してください。</div>';
+  h+='</tbody></table>'
+    +'<div class="pnotice" style="margin-top:14px">第八行政書士事務所　名古屋市熱田区　TEL：052-653-3215　ihinseiri-dai8.jp　※本書類は定期的に内容を見直してください。</div>'
+    +'</div>';
   return h;
 }
 
@@ -991,6 +1110,80 @@ var PET_SPECIES=['犬','猫','鳥','魚','うさぎ','ハムスター','爬虫�
 
 var D_OBIT = [];
 var OBIT_REL = ['家族','親族','友人・知人','職場関係','近隣','恩師','その他'];
+
+var D_FGUEST = [];
+var FGUEST_NONE = false;
+var FGUEST_REL = ['家族','親族','友人・知人','職場関係','近隣','恩師','その他'];
+
+function toggleFunGuestNone(){
+  FGUEST_NONE = !FGUEST_NONE;
+  renderFunGuests();
+}
+
+function addFunGuest(){
+  FGUEST_NONE = false;
+  D_FGUEST.push({name:'',rel:'友人・知人',tel:''});
+  renderFunGuests();
+  var rows=document.querySelectorAll('.fguest-row');
+  if(rows.length>0){var last=rows[rows.length-1];var inp=last.querySelector('input');if(inp)inp.focus();}
+}
+
+function removeFunGuest(ri){D_FGUEST.splice(ri,1);renderFunGuests();}
+
+function renderFunGuests(){
+  var noneBtn=document.getElementById('fguest-none-lbl');
+  var noneCi=document.getElementById('fguest-none-ci');
+  var addBtn=document.getElementById('fguest-add-btn');
+  var el=document.getElementById('fguest-list');
+  if(!el)return;
+  if(noneBtn){
+    noneBtn.className='cb'+(FGUEST_NONE?' none-sel':'');
+    noneBtn.onclick=toggleFunGuestNone;
+    if(noneCi)noneCi.textContent=FGUEST_NONE?'✓':'';
+  }
+  if(addBtn)addBtn.style.display=FGUEST_NONE?'none':'';
+  el.innerHTML='';
+  if(FGUEST_NONE){el.innerHTML='<div style="font-size:12px;color:#888;padding:4px 0">葬儀の参列者なし（直葬・家族のみ等）</div>';return;}
+  if(D_FGUEST.length===0){el.innerHTML='<div style="font-size:12px;color:#888;padding:4px 0">「追加」ボタンで連絡してほしい方を入力できます。</div>';return;}
+  var tbl=document.createElement('table');
+  tbl.className='atbl';tbl.style.cssText='margin-bottom:4px';
+  tbl.innerHTML='<thead><tr>'
+    +'<th style="width:32%">氏名</th>'
+    +'<th style="width:22%">関係性</th>'
+    +'<th style="width:34%">連絡先（電話・メール）</th>'
+    +'<th style="width:26px"></th>'
+    +'</tr></thead><tbody id="fguest-tbody"></tbody>';
+  el.appendChild(tbl);
+  var tb=document.getElementById('fguest-tbody');
+  D_FGUEST.forEach(function(g,ri){
+    var tr=document.createElement('tr');
+    tr.className='fguest-row';
+    var relSel=FGUEST_REL.map(function(r){return '<option'+(g.rel===r?' selected':'')+'>'+r+'</option>';}).join('');
+    var cols=[
+      {tp:'text',val:g.name,ph:'例：山田 花子',key:'name'},
+      {tp:'sel',val:g.rel,opts:relSel,key:'rel'},
+      {tp:'text',val:g.tel,ph:'090-0000-0000',key:'tel'},
+    ];
+    cols.forEach(function(col){
+      var td=document.createElement('td');
+      if(col.tp==='sel'){
+        var sel=document.createElement('select');sel.innerHTML=col.opts;
+        sel.onchange=(function(ri2,k){return function(e){D_FGUEST[ri2][k]=e.target.value;};})(ri,col.key);
+        td.appendChild(sel);
+      }else{
+        var inp=document.createElement('input');inp.type='text';inp.value=col.val||'';inp.placeholder=col.ph||'';
+        inp.oninput=(function(ri2,k){return function(e){D_FGUEST[ri2][k]=e.target.value;};})(ri,col.key);
+        td.appendChild(inp);
+      }
+      tr.appendChild(td);
+    });
+    var dtd=document.createElement('td');
+    var db=document.createElement('button');db.className='delbtn';db.textContent='×';
+    db.onclick=(function(ri2){return function(){removeFunGuest(ri2);};})(ri);
+    dtd.appendChild(db);tr.appendChild(dtd);
+    tb.appendChild(tr);
+  });
+}
 
 function addObit(){
   D_OBIT.push({name:'',rel:'友人・知人',tel:'',note:''});
@@ -1133,54 +1326,74 @@ function showPV(){
 function printDirect(){
   var html=buildPrintHTML();
   var name=document.getElementById('en-name')&&document.getElementById('en-name').value||'終活診断';
-  var date=document.getElementById('en-date')&&document.getElementById('en-date').value||'';
   var win=window.open('','_blank','width=900,height=700');
   if(!win){alert('ポップアップがブロックされています。ブラウザのポップアップ許可設定を確認してください。');return;}
+  var CSS=[
+    '*{box-sizing:border-box;margin:0;padding:0}',
+    'body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}',
+    '.pcover{min-height:220mm;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px 20px}',
+    '.pcover-office{font-size:13px;color:#555;letter-spacing:.08em;margin-bottom:16px}',
+    '.pcover-line{width:60px;height:2px;background:#1D9E75;margin:0 auto 16px}',
+    '.pcover-title{font-size:28px;font-weight:bold;letter-spacing:.15em;color:#111;margin-bottom:8px}',
+    '.pcover-sub{font-size:13px;color:#1D9E75;letter-spacing:.05em;margin-bottom:36px}',
+    '.pcover-card{border:1px solid #ccc;border-radius:6px;padding:16px 32px;margin-bottom:32px;min-width:280px;background:#fafafa}',
+    '.pcover-tbl{border-collapse:collapse;font-size:13px}',
+    '.pcover-tbl td{padding:5px 14px;text-align:left}',
+    '.pcover-tbl td:first-child{color:#555;font-weight:bold;white-space:nowrap}',
+    '.pcover-contents{text-align:left;background:#E1F5EE;border-radius:6px;padding:14px 20px;margin-bottom:28px;min-width:320px}',
+    '.pcover-ctit{font-size:12px;font-weight:bold;color:#0F6E56;margin-bottom:6px}',
+    '.pcover-clist{font-size:12px;color:#111;line-height:1.9}',
+    '.pcover-notice{font-size:10px;color:#888;line-height:1.7;max-width:400px}',
+    '.pnewpage{padding-top:2px;page-break-before:always}',
+    '.psec-hd{font-size:15px;font-weight:bold;text-align:center;padding:8px 0 12px;margin-bottom:10px;border-bottom:2px solid #1D9E75;color:#0F6E56;letter-spacing:.05em}',
+    '.heir-print-wrap{display:flex;justify-content:center;padding:12px 0}',
+    '.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.08em}',
+    '.pmeta{text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px}',
+    '.psec{margin-bottom:11px;page-break-inside:avoid}',
+    '.psh{font-size:11.5px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}',
+    '.enbsh{font-size:11.5px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}',
+    '.ptbl{width:100%;border-collapse:collapse;font-size:10.5px}',
+    '.ptbl th{background:#f0f0f0;border:0.5px solid #bbb;padding:4px 7px;font-weight:bold;text-align:left}',
+    '.ptbl td{border:0.5px solid #ccc;padding:3px 7px}',
+    '.ptbl tr{page-break-inside:avoid}',
+    '.ptbl .num{text-align:right}',
+    '.ptbl .sub td{background:#e8f5f0;font-weight:bold;font-size:11px}',
+    '.ptbl .empty td{color:#aaa;font-style:italic}',
+    '.entbl{width:100%;border-collapse:collapse;font-size:11px}',
+    '.entbl td{border:0.5px solid #ccc;padding:4px 8px;vertical-align:top}',
+    '.entbl tr{page-break-inside:avoid}',
+    '.entbl .el{width:30%;background:#f7f7f7;font-weight:bold;color:#333}',
+    '.cttbl{width:100%;border-collapse:collapse;font-size:10px}',
+    '.cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:3px 5px;font-weight:bold;color:#0c447c;text-align:left}',
+    '.cttbl td{border:0.5px solid #ccc;padding:3px 5px;color:#111;vertical-align:top}',
+    '.cttbl tr{page-break-inside:avoid}',
+    '.cttbl tr:nth-child(even) td{background:#fafafa}',
+    '.cttbl .tp{font-weight:bold;background:#f0f6ff!important}',
+    '.pfooter{margin-top:12px;border-top:2px solid #444;padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;page-break-inside:avoid}',
+    '.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center}',
+    '.pfl{font-size:10px;color:#666;margin-bottom:2px}',
+    '.pfv{font-size:15px;font-weight:bold}',
+    '.pfv.pos{color:#0a5c3d}',
+    '.pfv.neg{color:#C0392B}',
+    '.pnotice{margin-top:10px;font-size:9.5px;color:#999;text-align:center}',
+    '.phr{border:none;border-top:1px solid #ccc;margin:16px 0}',
+    '.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}',
+    '@page{size:A4 portrait;margin:15mm 12mm}',
+    '@media print{body{padding:0}.pnewpage{page-break-before:always}}'
+  ].join('');
   win.document.write('<!DOCTYPE html><html lang="ja"><head>'
     +'<meta charset="UTF-8">'
-    +'<title>'+name+' 終活診断結果</title>'
-    +'<style>'
-    +'*{box-sizing:border-box;margin:0;padding:0}'
-    +'body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}'
-    +'.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px}'
-    +'.pmeta,.enmeta{text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px}'
-    +'.psec{margin-bottom:13px}'
-    +'.psh{font-size:12px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}'
-    +'.enbsh{font-size:12px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}'
-    +'.ptbl{width:100%;border-collapse:collapse;font-size:11px}'
-    +'.ptbl th{background:#f7f7f7;border:0.5px solid #ccc;padding:4px 7px;font-weight:bold;text-align:left}'
-    +'.ptbl td{border:0.5px solid #ccc;padding:4px 7px}'
-    +'.ptbl .num{text-align:right}'
-    +'.ptbl .sub td{background:#f0faf5;font-weight:bold}'
-    +'.ptbl .empty td{color:#aaa;font-style:italic}'
-    +'.entbl{width:100%;border-collapse:collapse;font-size:11px}'
-    +'.entbl td{border:0.5px solid #ccc;padding:4px 8px;vertical-align:top}'
-    +'.entbl .el{width:30%;background:#f7f7f7;font-weight:bold;color:#333}'
-    +'.cttbl{width:100%;border-collapse:collapse;font-size:10px}'
-    +'.cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:4px 6px;font-weight:bold;color:#0c447c;text-align:left}'
-    +'.cttbl td{border:0.5px solid #ccc;padding:4px 6px;color:#111;vertical-align:top}'
-    +'.cttbl tr:nth-child(even) td{background:#fafafa}'
-    +'.cttbl .tp{font-weight:bold;background:#f0f6ff!important}'
-    +'.pfooter{margin-top:14px;border-top:2px solid #555;padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}'
-    +'.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center}'
-    +'.pfl{font-size:10px;color:#666;margin-bottom:2px}'
-    +'.pfv{font-size:15px;font-weight:bold}'
-    +'.pnotice{margin-top:12px;font-size:9.5px;color:#999;text-align:center}'
-    +'.phr{border:none;border-top:1px solid #ccc;margin:18px 0}'
-    +'.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px}'
-    +'@page{size:A4;margin:15mm 10mm}'
-    +'@media print{body{padding:0}}'
-    +'</style>'
+    +'<title>'+name+' 終活診断書</title>'
+    +'<style>'+CSS+'</style>'
     +'</head><body>'
-    +'<div style="padding:20px 24px">'
+    +'<div style="padding:0 12px">'
     +html
     +'</div>'
     +'</body></html>');
   win.document.close();
   win.focus();
-  setTimeout(function(){win.print();},500);
-}
-function closePV(){document.getElementById('pvpanel').style.display='none';}
+  setTimeout(function(){win.print();},600);
+}{document.getElementById('pvpanel').style.display='none';}
 rRadio('r-mar',['未婚','既婚','離婚','死別'],'mar',renderProxy);
 rRadio('r-par',['両方存命','一方存命','両方故人'],'par',renderProxy);
 rChecksDone();rChecks('worry-list','worry',WORRY_OPTS);
@@ -1188,7 +1401,7 @@ rRadioEN('r-life',['希望する','希望しない','家族に任せる'],'life'
 rRadioEN('r-organ',['希望する','希望しない','未定'],'organ');
 rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
 rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave');
-renderAsecs();ctRender();renderPets();renderObits();
+renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();
 checkExistingSave();
 </script>
 
