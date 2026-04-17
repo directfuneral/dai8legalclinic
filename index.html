@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第八終活リーガルクリニック｜終活・相続・遺言書の無料チェックツール｜名古屋・愛知</title>
+<title>終活リーガルクリニック｜終活・相続・遺言書の無料チェックツール｜名古屋・愛知</title>
 <meta name="description" content="終活に必要な手続きを病院の問診票形式でわかりやすくご案内。財産目録・エンディングノート・相続人関係図を自動作成。第八行政書士事務所（名古屋市熱田区）が運営。無料でご利用いただけます。">
 <meta name="keywords" content="終活,相続,遺言書,エンディングノート,財産目録,任意後見,死後事務委任,名古屋,愛知,行政書士">
 <meta name="author" content="第八行政書士事務所">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://directfuneral.github.io/dai8legalclinic/">
 <!-- OGP（SNSシェア用） -->
-<meta property="og:title" content="第八終活リーガルクリニック｜終活・相続の無料チェックツール">
+<meta property="og:title" content="終活リーガルクリニック｜終活・相続の無料チェックツール">
 <meta property="og:description" content="終活に必要な手続きを問診票形式でわかりやすくご案内。財産目録・エンディングノート・相続人関係図を自動作成。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://directfuneral.github.io/dai8legalclinic/">
@@ -98,6 +98,14 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .en-fw textarea{resize:vertical;min-height:70px;line-height:1.6}
 /* contract table */
 .ct-grp-hd{font-size:10.5px;font-weight:700;color:var(--text3);padding:10px 2px 5px;letter-spacing:.06em;border-bottom:0.5px solid var(--border);margin-bottom:4px;text-transform:none}
+/* QR code section */
+.intro-qr-wrap{background:#F0FBF6;border:1px solid #B2E4CF;border-radius:var(--r2);padding:1.2rem 1.2rem 1rem;margin-bottom:1.2rem}
+.intro-qr-title{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--teal2);margin-bottom:6px}
+.intro-qr-desc{font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.7}
+.intro-qr-box{display:flex;flex-direction:column;align-items:center;gap:8px}
+.intro-qr-url{font-size:11px;color:var(--text3);word-break:break-all;text-align:center}
+#qrcode-img canvas,#qrcode-img img{border:4px solid #fff;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+
 .ct-item{border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:5px;overflow:hidden}
 .ct-item-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg2)}
 .ct-item-hd.active{background:var(--teal3)}
@@ -305,7 +313,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   "@context": "https://schema.org",
   "@type": "LegalService",
   "name": "第八行政書士事務所",
-  "alternateName": "第八終活リーガルクリニック",
+  "alternateName": "終活リーガルクリニック",
   "url": "https://ihinseiri-dai8.jp/",
   "sameAs": "https://directfuneral.github.io/dai8legalclinic/",
   "telephone": "052-653-3215",
@@ -328,7 +336,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 <div class="outer" id="mainWrap">
 <div class="chd">
   <div class="chbadge">&#43; 終活リーガルクリニック</div>
-  <div class="chtit">第八 終活リーガルクリニック</div>
+  <div class="chtit">終活リーガルクリニック</div>
   <div class="chsub">問診票に記入して、あなたに必要な終活手続きを確認しましょう</div>
 </div>
 
@@ -337,7 +345,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     <div class="intro-icon">
       <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
     </div>
-    <div class="intro-title">第八 終活リーガルクリニック</div>
+    <div class="intro-title">終活リーガルクリニック</div>
     <div class="intro-lead">終活に必要な手続きを、病院の問診票形式でわかりやすくご案内します。<br>入力するだけで、あなた専用の財産目録・エンディングノート・相続人関係図を無料で作成できます。</div>
   </div>
 
@@ -393,6 +401,18 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
       本ツールの利用により生じた損害・トラブル・不利益について、<strong>第八行政書士事務所および運営者は一切の責任を負いかねます</strong>。掲載情報の正確性・完全性を保証するものでもありません。<br>
       相続・遺言書の作成・任意後見契約など具体的な手続きにつきましては、必ず<strong>専門家（司法書士・行政書士・弁護士・税理士）にご相談ください</strong>。<br>
       ご相談は、運営元の<a href="https://ihinseiri-dai8.jp/" target="_blank" rel="noopener">第八行政書士事務所（052-653-3215）</a>でも承っております。
+    </div>
+  </div>
+
+  <div class="intro-qr-wrap">
+    <div class="intro-qr-title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M17 20h3M20 17v3"/></svg>
+      支援者の方へ：このQRコードをご案内ください
+    </div>
+    <div class="intro-qr-desc">入院中の空き時間などに、スマートフォンでQRコードを読み取るだけで入力を開始できます。入力内容はすべてお手元のブラウザ内に保存されます。</div>
+    <div class="intro-qr-box">
+      <div id="qrcode-img"></div>
+      <div class="intro-qr-url">https://directfuneral.github.io/dai8legalclinic/</div>
     </div>
   </div>
 
@@ -624,7 +644,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     <a class="sbtn sbtn-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://directfuneral.github.io/dai8legalclinic/" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook
     </a>
-    <a class="sbtn sbtn-mail" href="mailto:?subject=第八終活リーガルクリニック｜終活・相続の無料チェックツール&body=終活に必要な手続きを無料でチェックできます。財産目録・エンディングノート・相続人関係図を自動作成。%0A%0Ahttps://directfuneral.github.io/dai8legalclinic/" target="_blank" rel="noopener">
+    <a class="sbtn sbtn-mail" href="mailto:?subject=終活リーガルクリニック｜終活・相続の無料チェックツール&body=終活に必要な手続きを無料でチェックできます。財産目録・エンディングノート・相続人関係図を自動作成。%0A%0Ahttps://directfuneral.github.io/dai8legalclinic/" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>メール
     </a>
     <button class="sbtn sbtn-copy" onclick="copyURL(this)">
@@ -1680,10 +1700,8 @@ function buildPrintHTML(){
 
   /* ===== ① 表紙 ===== */
   var h='<div class="pcover">'
-    +'<div class="pcover-office">第八行政書士事務所</div>'
     +'<div class="pcover-line"></div>'
     +'<div class="pcover-title">終　活　診　断　書</div>'
-    +'<div class="pcover-sub">第八終活リーガルクリニック</div>'
     +'<div class="pcover-card"><table class="pcover-tbl"><tbody>'
     +'<tr><td>氏　　名</td><td>'+esc(name)+'</td></tr>'
     +(birth?'<tr><td>生年月日</td><td>'+esc(birth)+'</td></tr>':'')
@@ -1693,7 +1711,7 @@ function buildPrintHTML(){
     +'<div class="pcover-ctit">■ 収録内容</div>'
     +'<div class="pcover-clist">① 相続人関係図（法定相続人・法定相続分）<br>② 財産目録（不動産・預貯金・有価証券・保険・その他財産・負債）<br>③ エンディングノート（医療・葬儀希望・書類保管場所・専門家連絡先等）<br>④ 生前契約・解約が必要な契約一覧</div>'
     +'</div>'
-    +'<div class="pcover-notice">本書類は参考資料の作成を目的としたものであり、法的効力を持ちません。相続・遺言書作成・任意後見契約等の具体的な手続きについては、専門家（司法書士・行政書士・弁護士・税理士）にご相談ください。<br><br>第八行政書士事務所　名古屋市熱田区　TEL：052-653-3215　ihinseiri-dai8.jp</div>'
+    +'<div class="pcover-notice">本書類は参考資料の作成を目的としたものであり、法的効力を持ちません。相続・遺言書作成・任意後見契約等の具体的な手続きについては、専門家（司法書士・行政書士・弁護士・税理士）にご相談ください。</div>'
     +'</div>';
 
   /* ===== ② 相続人関係図 ===== */
@@ -1937,7 +1955,7 @@ function buildPrintHTML(){
     });
     h+='</tbody></table>';
   }
-  h+='<div class="pnotice" style="margin-top:14px">第八行政書士事務所　名古屋市熱田区　TEL：052-653-3215　ihinseiri-dai8.jp　※本書類は定期的に内容を見直してください。</div>'
+  h+='<div class="pnotice" style="margin-top:14px">※本書類は参考資料です。定期的に内容を見直してください。</div>'
     +'</div>';
   return h;
 }
@@ -2337,6 +2355,28 @@ checkExistingSave();
 </footer>
 <script>document.getElementById('footer-year').textContent=new Date().getFullYear();</script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+(function(){
+  var url='https://directfuneral.github.io/dai8legalclinic/';
+  var container=document.getElementById('qrcode-img');
+  if(!container)return;
+  // QRCode.js が読み込まれていれば使用、なければ Google Charts API で代替
+  function makeQR(){
+    if(typeof QRCode!=='undefined'){
+      new QRCode(container,{text:url,width:160,height:160,colorDark:'#0F6E56',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    } else {
+      var img=document.createElement('img');
+      img.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=0F6E56&data='+encodeURIComponent(url);
+      img.alt='QRコード';
+      img.width=160;img.height=160;
+      container.appendChild(img);
+    }
+  }
+  makeQR();
+})();
+</script>
+
 </body>
 </html>
