@@ -722,12 +722,10 @@ function ctSubscHTML(id){
   var e=CT_STATE[id].entries[0];
   return '<div class="ct-entry">'
     +'<div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px">ログイン情報</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">'
-    +'<div class="en-fw"><span class="en-lbl">メールアドレス・携帯電話番号</span>'
+    +'<div class="en-fw" style="margin-bottom:6px"><span class="en-lbl">メールアドレス・携帯電話番号</span>'
     +'<input type="text" value="'+esc2(e.co||'')+'" placeholder="例：mail@example.com" oninput="CT_STATE[\''+id+'\'].entries[0].co=this.value"></div>'
-    +'<div class="en-fw"><span class="en-lbl">パスワード</span>'
+    +'<div class="en-fw" style="margin-bottom:6px"><span class="en-lbl">パスワード</span>'
     +'<input type="text" value="'+esc2(e.num||'')+'" placeholder="例：パスワードを入力" oninput="CT_STATE[\''+id+'\'].entries[0].num=this.value"></div>'
-    +'</div>'
     +'<div class="en-fw"><span class="en-lbl">普段の視聴状況</span>'
     +'<input type="text" value="'+esc2(e.loc||'')+'" placeholder="例：テレビ・PC・スマホ・タブレット" oninput="CT_STATE[\''+id+'\'].entries[0].loc=this.value"></div>'
     +'</div>';
