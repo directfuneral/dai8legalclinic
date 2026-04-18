@@ -1415,7 +1415,7 @@ function downloadPDF(btn){
   /* レンダリング専用ラッパー（画面外に配置・ユーザーには見えない） */
   var wrapper=document.createElement('div');
   wrapper.id='pdf-render-wrapper';
-  wrapper.style.cssText='position:fixed;left:-9999px;top:0;width:794px;background:white;z-index:-1';
+  wrapper.style.cssText='position:absolute;left:-9999px;top:0;width:794px;background:white;overflow:hidden';
   wrapper.innerHTML=buildPrintHTML()+'<div style="height:20mm"></div>';
   document.body.appendChild(wrapper);
   var opt={
