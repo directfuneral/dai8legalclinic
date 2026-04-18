@@ -1358,7 +1358,7 @@ function downloadPDF(btn){
   var date=new Date();
   var fname=name+'_終活診断書_'+date.getFullYear()+(date.getMonth()+1)+date.getDate()+'.pdf';
   /* printDirectと同じCSSを使う */
-  var CSS='*{box-sizing:border-box;margin:0;padding:0}body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}.pcover{min-height:220mm;display:block;text-align:center;padding:60px 20px 32px}.pcover-office{font-size:13px;color:#555;letter-spacing:.08em;margin-bottom:16px}.pcover-line{width:60px;height:2px;background:#1D9E75;margin:0 auto 16px}.pcover-title{font-size:28px;font-weight:bold;letter-spacing:.15em;color:#111;margin-bottom:44px}.pcover-sub{font-size:13px;color:#1D9E75;letter-spacing:.05em;margin-bottom:36px}.pcover-card{display:inline-block;border:1px solid #ccc;border-radius:6px;padding:16px 32px;margin-bottom:32px;min-width:280px;background:#fafafa;text-align:left}.pcover-tbl{border-collapse:collapse;font-size:13px}.pcover-tbl td{padding:5px 14px;text-align:left}.pcover-tbl td:first-child{color:#555;font-weight:bold;white-space:nowrap}.pcover-contents{display:inline-block;text-align:left;background:#E1F5EE;border-radius:6px;padding:14px 20px;margin-bottom:28px;min-width:320px}.pcover-ctit{font-size:12px;font-weight:bold;color:#0F6E56;margin-bottom:6px}.pcover-clist{font-size:12px;color:#111;line-height:1.9}.pcover-notice{font-size:10px;color:#888;line-height:1.7;max-width:400px;margin:0 auto;text-align:center}.pnewpage{padding-top:2px;page-break-before:always}.psec-hd{font-size:15px;font-weight:bold;text-align:center;padding:8px 0 12px;margin-bottom:10px;border-bottom:2px solid #1D9E75;color:#0F6E56;letter-spacing:.05em}.heir-print-wrap{display:block;text-align:center;padding:12px 0}.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.08em}.pmeta{text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px}.psec{margin-bottom:11px}.psh{font-size:11.5px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}.enbsh{font-size:11.5px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}.ptbl{width:100%;border-collapse:collapse;font-size:10.5px}.ptbl th{background:#f0f0f0;border:0.5px solid #bbb;padding:4px 7px;font-weight:bold;text-align:left}.ptbl td{border:0.5px solid #ccc;padding:3px 7px}.ptbl .num{text-align:right}.ptbl .sub td{background:#e8f5f0;font-weight:bold;font-size:11px}.ptbl .empty td{color:#aaa;font-style:italic}.entbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}.entbl td{border:0.5px solid #ccc;padding:4px 8px;vertical-align:top}.entbl .el{width:140px;background:#f7f7f7;font-weight:bold;color:#333;word-break:break-all}.cttbl{width:100%;border-collapse:collapse;font-size:10px}.cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:3px 5px;font-weight:bold;color:#0c447c;text-align:left}.cttbl td{border:0.5px solid #ccc;padding:3px 5px;color:#111;vertical-align:top}.cttbl tr:nth-child(even) td{background:#fafafa}.cttbl .tp{font-weight:bold;background:#f0f6ff!important}.pfooter{margin-top:12px;border-top:2px solid #444;padding-top:10px;display:table;width:100%}.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center;display:table-cell;width:33.33%}.pfl{font-size:10px;color:#666;margin-bottom:2px}.pfv{font-size:15px;font-weight:bold}.pfv.pos{color:#0a5c3d}.pfv.neg{color:#C0392B}.pnotice{margin-top:10px;font-size:9.5px;color:#999;text-align:center}.phr{border:none;border-top:1px solid #ccc;margin:16px 0}.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}';
+  var CSS='*{box-sizing:border-box;margin:0;padding:0}body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}.pcover{min-height:220mm;display:block;text-align:center;padding:60px 20px 32px}.pcover-office{font-size:13px;color:#555;letter-spacing:.08em;margin-bottom:16px}.pcover-line{width:60px;height:2px;background:#1D9E75;margin:0 auto 16px}.pcover-title{font-size:28px;font-weight:bold;letter-spacing:.15em;color:#111;margin-bottom:44px}.pcover-sub{font-size:13px;color:#1D9E75;letter-spacing:.05em;margin-bottom:36px}.pcover-card{display:inline-block;border:1px solid #ccc;border-radius:6px;padding:16px 32px;margin-bottom:32px;min-width:280px;background:#fafafa;text-align:left}.pcover-tbl{border-collapse:collapse;font-size:13px}.pcover-tbl td{padding:5px 14px;text-align:left}.pcover-tbl td:first-child{color:#555;font-weight:bold;white-space:nowrap}.pcover-contents{display:inline-block;text-align:left;background:#E1F5EE;border-radius:6px;padding:14px 20px;margin-bottom:28px;min-width:320px}.pcover-ctit{font-size:12px;font-weight:bold;color:#0F6E56;margin-bottom:6px}.pcover-clist{font-size:12px;color:#111;line-height:1.9}.pcover-notice{font-size:10px;color:#888;line-height:1.7;max-width:400px;margin:0 auto;text-align:center}.pnewpage{padding-top:2px}.psec-hd{font-size:15px;font-weight:bold;text-align:center;padding:8px 0 12px;margin-bottom:10px;border-bottom:2px solid #1D9E75;color:#0F6E56;letter-spacing:.05em}.heir-print-wrap{display:block;text-align:center;padding:12px 0}.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.08em}.pmeta{text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px}.psec{margin-bottom:11px}.psh{font-size:11.5px;font-weight:bold;background:#e8f5f0;color:#0a5c3d;padding:4px 9px;border-left:3px solid #1D9E75}.enbsh{font-size:11.5px;font-weight:bold;background:#eef4fb;color:#0c447c;padding:4px 9px;border-left:3px solid #185FA5}.ptbl{width:100%;border-collapse:collapse;font-size:10.5px}.ptbl th{background:#f0f0f0;border:0.5px solid #bbb;padding:4px 7px;font-weight:bold;text-align:left}.ptbl td{border:0.5px solid #ccc;padding:3px 7px}.ptbl .num{text-align:right}.ptbl .sub td{background:#e8f5f0;font-weight:bold;font-size:11px}.ptbl .empty td{color:#aaa;font-style:italic}.entbl{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}.entbl td{border:0.5px solid #ccc;padding:4px 8px;vertical-align:top}.entbl .el{width:140px;background:#f7f7f7;font-weight:bold;color:#333;word-break:break-all}.cttbl{width:100%;border-collapse:collapse;font-size:10px}.cttbl th{background:#eef4fb;border:0.5px solid #bbb;padding:3px 5px;font-weight:bold;color:#0c447c;text-align:left}.cttbl td{border:0.5px solid #ccc;padding:3px 5px;color:#111;vertical-align:top}.cttbl tr:nth-child(even) td{background:#fafafa}.cttbl .tp{font-weight:bold;background:#f0f6ff!important}.pfooter{margin-top:12px;border-top:2px solid #444;padding-top:10px;display:table;width:100%}.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center;display:table-cell;width:33.33%}.pfl{font-size:10px;color:#666;margin-bottom:2px}.pfv{font-size:15px;font-weight:bold}.pfv.pos{color:#0a5c3d}.pfv.neg{color:#C0392B}.pnotice{margin-top:10px;font-size:9.5px;color:#999;text-align:center}.phr{border:none;border-top:1px solid #ccc;margin:16px 0}.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}';
   var wrapper=document.createElement('div');
   wrapper.style.cssText='background:white;width:190mm;padding:0 12px;font-family:Hiragino Kaku Gothic Pro,Meiryo,Yu Gothic,sans-serif';
   /* CSSは onclone でクローン文書のheadに注入（html2canvasが確実に適用） */
@@ -1369,15 +1369,20 @@ function downloadPDF(btn){
     margin:[12,8,12,8],
     filename:fname,
     image:{type:'jpeg',quality:.95},
-    html2canvas:{scale:2,useCORS:true,logging:false,windowWidth:794,
+    html2canvas:{scale:2,useCORS:true,logging:false,windowWidth:794,scrollX:0,scrollY:0,
       onclone:function(doc){
+        /* main/intro画面を非表示にしてwrapperをY=0に近づける */
+        var ms=doc.getElementById('main-screen');
+        if(ms)ms.style.display='none';
+        var is=doc.getElementById('intro-screen');
+        if(is)is.style.display='none';
         var s=doc.createElement('style');
         s.textContent=_CSS;
         doc.head.appendChild(s);
       }
     },
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-    pagebreak:{mode:['css'],before:'.pnewpage'}
+    pagebreak:{mode:['legacy'],before:'.pnewpage'}
   };
   html2pdf().set(opt).from(wrapper).save().then(function(){
     document.body.removeChild(wrapper);
@@ -1790,7 +1795,7 @@ function buildPrintHTML(){
     {t:'重要書類の保管場所',rows:[['遺言書',gv('en-will')],['通帳',gv('en-bank-loc')],['介護保険証書・障害者手帳等',gv('en-ins-loc')],['年金手帳',gv('en-pension')],['登記済証（権利書）',gv('en-touki-loc')],['保険証券',gv('en-hoken-loc')],['その他',gv('en-docs')]]},
     {t:'専門家・重要連絡先',rows:[['かかりつけ医',gv('en-doc')+(gv('en-doc-tel')?' TEL:'+gv('en-doc-tel'):'')],['弁護士・司法書士等',gv('en-law')+(gv('en-law-tel')?' TEL:'+gv('en-law-tel'):'')],['税理士',gv('en-tax')+(gv('en-tax-tel')?' TEL:'+gv('en-tax-tel'):'')]]}
   ];
-  enSecs.forEach(function(sec){h+='<div class="psec"><div class="enbsh">■ '+sec.t+'</div><table class="entbl"><tbody>'+sec.rows.map(function(r){return '<tr><td class="el">'+r[0]+'</td><td>'+(esc(r[1])||'　')+'</td></tr>';}).join('')+'</tbody></table></div>';});
+  enSecs.forEach(function(sec){h+='<div class="psec"><div class="enbsh">■ '+sec.t+'</div><table class="entbl"><tbody>'+sec.rows.map(function(r){return '<tr><td class="el" style="width:140px;background:#f7f7f7;font-weight:bold;color:#333;word-break:break-all">'+r[0]+'</td><td style="color:#111">'+(esc(r[1])||'　')+'</td></tr>';}).join('')+'</tbody></table></div>';});
   if(D_OBIT.length>0){
     h+='<div class="psec"><div class="enbsh">■ 訃報をお伝えしたい方</div>'
       +'<table class="cttbl"><thead><tr>'
@@ -1834,13 +1839,13 @@ function buildPrintHTML(){
   h+='<div class="pnewpage">'
     +'<div style="font-size:14px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.06em">生前契約・解約が必要な契約一覧</div>'
     +'<div style="text-align:right;font-size:11px;color:#555;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:8px">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>';
-  var hasAnyCT=CT_DEFS.some(function(d){return CT_STATE[d.id]&&CT_STATE[d.id].active;});
-  if(!hasAnyCT){
-    h+='<div style="font-size:11px;color:#aaa;padding:8px">（未記入）</div>';
-  }else{
-    CT_GROUPS.forEach(function(grp){
-      var actIds=grp.ids.filter(function(id){return CT_STATE[id]&&CT_STATE[id].active;});
-      if(!actIds.length)return;
+  CT_GROUPS.forEach(function(grp){
+    var actIds=grp.ids.filter(function(id){return CT_STATE[id]&&CT_STATE[id].active;});
+    if(!actIds.length){
+      h+='<div class="psh" style="margin-top:4px">■ '+grp.label+'</div>';
+      h+='<div style="font-size:10px;color:#999;padding:3px 9px">（なし）</div>';
+      return;
+    }
       var isDocGrp=actIds.every(function(id){return ctDef(id).type==='doc';});
       var isSubscGrp=actIds.every(function(id){return ctDef(id).type==='subsc';});
       h+='<div class="psh" style="margin-top:6px">■ '+grp.label+'</div>';
@@ -1946,8 +1951,7 @@ function buildPrintHTML(){
         });
         h+='</tbody></table>';
       }
-    });
-  }
+  });
   /* ── 「なし」と確認済みの項目をグループ別にまとめて表示 ── */
   var noneGroups=[];
   CT_GROUPS.forEach(function(grp){
@@ -2209,7 +2213,7 @@ function printDirect(){
     '.pcover-ctit{font-size:12px;font-weight:bold;color:#0F6E56;margin-bottom:6px}',
     '.pcover-clist{font-size:12px;color:#111;line-height:1.9}',
     '.pcover-notice{font-size:10px;color:#888;line-height:1.7;max-width:400px;margin:0 auto;text-align:center}',
-    '.pnewpage{padding-top:2px;page-break-before:always}',
+    '.pnewpage{padding-top:2px}',
     '.psec-hd{font-size:15px;font-weight:bold;text-align:center;padding:8px 0 12px;margin-bottom:10px;border-bottom:2px solid #1D9E75;color:#0F6E56;letter-spacing:.05em}',
     '.heir-print-wrap{display:block;text-align:center;padding:12px 0}',
     '.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.08em}',
