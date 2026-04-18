@@ -2,6 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>終活リーガルクリニック｜終活・相続・遺言書の無料チェックツール｜名古屋・愛知</title>
 <meta name="description" content="終活に必要な手続きを病院の問診票形式でわかりやすくご案内。財産目録・エンディングノート・相続人関係図を自動作成。第八行政書士事務所（名古屋市熱田区）が運営。無料でご利用いただけます。">
@@ -1347,19 +1350,16 @@ function checkExistingSave(){
 
 /* ===== PDFダウンロード ===== */
 function downloadPDF(btn){
+  if(typeof html2pdf==='undefined'){
+    alert('PDFライブラリの読み込み中です。少し待ってから再度お試しください。');
+    return;
+  }
   btn.classList.add('loading');
   var origHTML=btn.innerHTML;
   btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> 生成中...';
   var name=document.getElementById('en-name')&&document.getElementById('en-name').value||'終活';
-  var html=buildPrintHTML();
-  /* ブラウザ印刷エンジン方式（printDirect と同じ仕組み） */
-  var win=window.open('','_blank','width=900,height=700');
-  btn.classList.remove('loading');
-  btn.innerHTML=origHTML;
-  if(!win){
-    alert('ポップアップがブロックされています。\nブラウザのアドレスバー右のポップアップ許可アイコンをクリックしてください。\nまたは「印刷する」ボタンをご利用ください。');
-    return;
-  }
+  var fname=name+'_終活診断書.pdf';
+  /* PDF専用CSS — grid/flex不使用・page-break-beforeはmedia printのみ */
   var CSS=[
     '*{box-sizing:border-box;margin:0;padding:0}',
     'body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}',
@@ -1401,8 +1401,8 @@ function downloadPDF(btn){
     '.cttbl tr{page-break-inside:avoid}',
     '.cttbl tr:nth-child(even) td{background:#fafafa}',
     '.cttbl .tp{font-weight:bold;background:#f0f6ff!important}',
-    '.pfooter{margin-top:12px;border-top:2px solid #444;padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;page-break-inside:avoid}',
-    '.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center}',
+    '.pfooter{margin-top:12px;border-top:2px solid #444;padding-top:10px;display:table;width:100%;page-break-inside:avoid}',
+    '.pfbox{border:0.5px solid #ccc;padding:9px;text-align:center;display:table-cell;width:33.33%}',
     '.pfl{font-size:10px;color:#666;margin-bottom:2px}',
     '.pfv{font-size:15px;font-weight:bold}',
     '.pfv.pos{color:#0a5c3d}',
@@ -1410,31 +1410,59 @@ function downloadPDF(btn){
     '.pnotice{margin-top:10px;font-size:9.5px;color:#999;text-align:center}',
     '.phr{border:none;border-top:1px solid #ccc;margin:16px 0}',
     '.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}',
-    '.pdf-save-guide{background:#E8F5E9;border:1px solid #66BB6A;border-radius:6px;padding:10px 16px;margin:0 12px 18px;font-size:12px;color:#1B5E20;line-height:1.7}',
-    '.pdf-save-guide strong{font-size:13px}',
-    '@media print{.pdf-save-guide{display:none}}',
-    '@page{size:A4 portrait;margin:15mm 12mm}',
-    '@media print{body{padding:0}.pnewpage{page-break-before:always}}'
+    '@media print{.pnewpage{page-break-before:always}}'
   ].join('');
-  var guide='<div class="pdf-save-guide">'
-    +'<strong>📄 PDFとして保存する方法</strong><br>'
-    +'【パソコン】Ctrl+P（Mac: ⌘+P）→ 送信先で「PDFに保存」を選択 → 保存<br>'
-    +'【iPhone/iPad】画面下の共有ボタン → 「PDFを作成」または「プリント」を選択<br>'
-    +'【Android】メニュー → 印刷 → 送信先で「PDFとして保存」を選択'
-    +'</div>';
-  win.document.write('<!DOCTYPE html><html lang="ja"><head>'
-    +'<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    +'<title>'+name+' 終活診断書</title>'
-    +'<style>'+CSS+'</style>'
-    +'</head><body>'
-    +guide
-    +'<div style="padding:0 12px">'
-    +html
-    +'</div>'
-    +'</body></html>');
-  win.document.close();
-  win.focus();
-  setTimeout(function(){win.print();},600);
+  /* レンダリング専用ラッパー（画面外に配置・ユーザーには見えない） */
+  var wrapper=document.createElement('div');
+  wrapper.id='pdf-render-wrapper';
+  wrapper.style.cssText='position:fixed;left:-9999px;top:0;width:794px;background:white;z-index:-1';
+  wrapper.innerHTML=buildPrintHTML()+'<div style="height:20mm"></div>';
+  document.body.appendChild(wrapper);
+  var opt={
+    margin:[12,8,12,8],
+    filename:fname,
+    image:{type:'jpeg',quality:.95},
+    html2canvas:{
+      scale:2,
+      useCORS:true,
+      logging:false,
+      windowWidth:794,
+      onclone:function(doc){
+        /* 全styleタグを除去してCSS汚染を防止 */
+        var allStyles=doc.querySelectorAll('style,link[rel="stylesheet"]');
+        allStyles.forEach(function(s){if(s.parentNode)s.parentNode.removeChild(s);});
+        /* 印刷専用CSSのみ注入 */
+        var st=doc.createElement('style');
+        st.textContent=CSS;
+        doc.head.appendChild(st);
+        /* wrapper以外の全要素を非表示にして白紙1ページ目を防止 */
+        Array.from(doc.body.children).forEach(function(el){
+          if(el.id!=='pdf-render-wrapper')el.style.display='none';
+        });
+        /* wrapperをページ先頭に配置 */
+        var w=doc.getElementById('pdf-render-wrapper');
+        if(w){w.style.cssText='position:static;width:794px;background:white';}
+      }
+    },
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['legacy'],before:'.pnewpage'}
+  };
+  html2pdf()
+    .set(opt)
+    .from(wrapper)
+    .save()
+    .then(function(){
+      if(document.body.contains(wrapper))document.body.removeChild(wrapper);
+      btn.classList.remove('loading');
+      btn.innerHTML=origHTML;
+    })
+    .catch(function(err){
+      console.error('PDF生成エラー:',err);
+      if(document.body.contains(wrapper))document.body.removeChild(wrapper);
+      btn.classList.remove('loading');
+      btn.innerHTML=origHTML;
+      alert('PDF生成に失敗しました。\n「印刷する」ボタンからPDFとして保存することもできます。');
+    });
 }
 function startDiagnosis(){
   document.getElementById('intro-screen').style.display='none';
