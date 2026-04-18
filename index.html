@@ -1359,7 +1359,7 @@ function downloadPDF(btn){
   btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> 生成中...';
   var name=document.getElementById('en-name')&&document.getElementById('en-name').value||'終活';
   var fname=name+'_終活診断書.pdf';
-  /* PDF専用CSS — grid/flex不使用・page-break-beforeはmedia printのみ */
+  /* PDF専用CSS — grid/flex不使用・onclone不要のHTML文字列方式 */
   var CSS=[
     '*{box-sizing:border-box;margin:0;padding:0}',
     'body{background:white;color:#111;font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",sans-serif;padding:0}',
@@ -1376,7 +1376,7 @@ function downloadPDF(btn){
     '.pcover-ctit{font-size:12px;font-weight:bold;color:#0F6E56;margin-bottom:6px}',
     '.pcover-clist{font-size:12px;color:#111;line-height:1.9}',
     '.pcover-notice{font-size:10px;color:#888;line-height:1.7;max-width:400px;margin:0 auto;text-align:center}',
-    '.pnewpage{padding-top:2px}',
+    '.pnewpage{padding-top:2px;page-break-before:always}',
     '.psec-hd{font-size:15px;font-weight:bold;text-align:center;padding:8px 0 12px;margin-bottom:10px;border-bottom:2px solid #1D9E75;color:#0F6E56;letter-spacing:.05em}',
     '.heir-print-wrap{display:block;text-align:center;padding:12px 0}',
     '.ptit,.entit{font-size:18px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.08em}',
@@ -1409,15 +1409,14 @@ function downloadPDF(btn){
     '.pfv.neg{color:#C0392B}',
     '.pnotice{margin-top:10px;font-size:9.5px;color:#999;text-align:center}',
     '.phr{border:none;border-top:1px solid #ccc;margin:16px 0}',
-    '.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}',
-    '@media print{.pnewpage{page-break-before:always}}'
+    '.enmsg{border:0.5px solid #ccc;padding:10px;min-height:60px;font-size:11px;white-space:pre-wrap}'
   ].join('');
-  /* レンダリング専用ラッパー（画面外に配置・ユーザーには見えない） */
-  var wrapper=document.createElement('div');
-  wrapper.id='pdf-render-wrapper';
-  wrapper.style.cssText='position:absolute;left:-9999px;top:0;width:794px;background:white;overflow:hidden';
-  wrapper.innerHTML=buildPrintHTML()+'<div style="height:20mm"></div>';
-  document.body.appendChild(wrapper);
+  /* CSSを埋め込んだHTML文字列を直接渡す（DOM操作・onclone不要） */
+  var htmlStr='<style>'+CSS+'</style>'
+    +'<div style="width:794px;background:white;padding:0 8px">'
+    +buildPrintHTML()
+    +'<div style="height:20mm"></div>'
+    +'</div>';
   var opt={
     margin:[12,8,12,8],
     filename:fname,
@@ -1426,39 +1425,21 @@ function downloadPDF(btn){
       scale:2,
       useCORS:true,
       logging:false,
-      windowWidth:794,
-      onclone:function(doc){
-        /* 全styleタグを除去してCSS汚染を防止 */
-        var allStyles=doc.querySelectorAll('style,link[rel="stylesheet"]');
-        allStyles.forEach(function(s){if(s.parentNode)s.parentNode.removeChild(s);});
-        /* 印刷専用CSSのみ注入 */
-        var st=doc.createElement('style');
-        st.textContent=CSS;
-        doc.head.appendChild(st);
-        /* wrapper以外の全要素を非表示にして白紙1ページ目を防止 */
-        Array.from(doc.body.children).forEach(function(el){
-          if(el.id!=='pdf-render-wrapper')el.style.display='none';
-        });
-        /* wrapperをページ先頭に配置 */
-        var w=doc.getElementById('pdf-render-wrapper');
-        if(w){w.style.cssText='position:static;width:794px;background:white';}
-      }
+      windowWidth:794
     },
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
     pagebreak:{mode:['legacy'],before:'.pnewpage'}
   };
   html2pdf()
     .set(opt)
-    .from(wrapper)
+    .from(htmlStr,'string')
     .save()
     .then(function(){
-      if(document.body.contains(wrapper))document.body.removeChild(wrapper);
       btn.classList.remove('loading');
       btn.innerHTML=origHTML;
     })
     .catch(function(err){
       console.error('PDF生成エラー:',err);
-      if(document.body.contains(wrapper))document.body.removeChild(wrapper);
       btn.classList.remove('loading');
       btn.innerHTML=origHTML;
       alert('PDF生成に失敗しました。\n「印刷する」ボタンからPDFとして保存することもできます。');
