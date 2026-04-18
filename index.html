@@ -1368,8 +1368,11 @@ function downloadPDF(btn){
     filename:fname,
     image:{type:'jpeg',quality:.95},
     html2canvas:{scale:2,useCORS:true,logging:false,windowWidth:794},
-    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['css','legacy'],before:'.pnewpage'}
   };
+  /* 末尾ページが切れないようにバッファを追加 */
+  wrapper.innerHTML+='<div style="height:20mm"></div>';
   html2pdf().set(opt).from(wrapper).save().then(function(){
     document.body.removeChild(wrapper);
     btn.classList.remove('loading');
