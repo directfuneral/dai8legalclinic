@@ -772,10 +772,22 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     <div class="adv-sh">● 献体の意思</div>
     <div class="adv-sec-body">
       <div class="adv-opts" id="adv-body-opts"></div>
+      <div class="adv-other-inp" id="adv-body-wish-wrap">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px">献体希望先の医科大学名</div>
+            <input type="text" id="adv-body-wish-univ" placeholder="例：名古屋大学医学部" oninput="ADV.bodyWishUniv=this.value">
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px">献体希望先の連絡先（電話番号など）</div>
+            <input type="text" id="adv-body-wish-contact" placeholder="例：052-000-0000" oninput="ADV.bodyWishContact=this.value">
+          </div>
+        </div>
+      </div>
       <div class="adv-other-inp" id="adv-body-reg-wrap">
         <div style="display:flex;flex-direction:column;gap:8px">
           <div>
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px">献体先の医科大学名</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px">登録済みの医科大学名</div>
             <input type="text" id="adv-body-reg-univ" placeholder="例：名古屋大学医学部" oninput="ADV.bodyReg=this.value">
           </div>
           <div>
@@ -872,7 +884,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 var D={mar:'既婚',ch:0,par:'両方故人',si:0,deadSib:0,nephews:0,halfSib:0,gpar:'',deadCh:0,grandCh:0,done:[],worry:[],ar:{}};
 var EN={};
 /* ===== 事前指示書（ADV） ===== */
-var ADV={place:'',placeFamily:'',placeOther:'',cpr:'',cprFamily:'',cprOther:'',injection:'',injectionFamily:'',injectionOther:'',nutrition:'',nutritionFamily:'',nutritionOther:'',blood:'',bloodFamily:'',bloodOther:'',organ:'',organPartial:'',organOther:'',body:'',bodyReg:'',bodyRegContact:'',bodyOther:'',other:''};
+var ADV={place:'',placeFamily:'',placeOther:'',cpr:'',cprFamily:'',cprOther:'',injection:'',injectionFamily:'',injectionOther:'',nutrition:'',nutritionFamily:'',nutritionOther:'',blood:'',bloodFamily:'',bloodOther:'',organ:'',organPartial:'',organOther:'',body:'',bodyWishUniv:'',bodyWishContact:'',bodyReg:'',bodyRegContact:'',bodyOther:'',other:''};
 var ADV_OPTS={
   place:['家で最期を迎えたい','病院で治療してください','判断は家族に任せます','判断は担当医師に任せます','その他'],
   cpr:['救急蘇生処置をしないでください','蘇生処置はしても人工呼吸器につながないでください','積極的に蘇生処置をしてください','判断は家族に任せます','判断は担当医師に任せます','その他'],
@@ -901,7 +913,7 @@ function advShowSub(sec){
   var ow=document.getElementById('adv-'+sec+'-other-wrap');
   if(fw){
     var show=v==='判断は家族に任せます';
-    fw.style.display=show?'':'none';
+    fw.style.display=show?'block':'none';
     if(!show){ADV[sec+'Family']='';var fi=document.getElementById('adv-'+sec+'-family');if(fi)fi.value='';}
   }
   /* 臓器提供「一部のみ」専用欄 */
@@ -909,23 +921,29 @@ function advShowSub(sec){
     var pw=document.getElementById('adv-organ-partial-wrap');
     if(pw){
       var showP=(v==='臓器提供を希望します（一部のみ）');
-      pw.style.display=showP?'':'none';
+      pw.style.display=showP?'block':'none';
       if(!showP){ADV.organPartial='';var pi=document.getElementById('adv-organ-partial');if(pi)pi.value='';}
     }
   }
   /* 献体登録済み専用欄 */
   if(sec==='body'){
+    var ww=document.getElementById('adv-body-wish-wrap');
+    if(ww){
+      var showW=(v==='献体を希望します');
+      ww.style.display=showW?'block':'none';
+      if(!showW){ADV.bodyWishUniv='';ADV.bodyWishContact='';var wu=document.getElementById('adv-body-wish-univ');if(wu)wu.value='';var wc=document.getElementById('adv-body-wish-contact');if(wc)wc.value='';}
+    }
     var rw=document.getElementById('adv-body-reg-wrap');
     if(rw){
       var showR=(v==='既に献体登録済みです');
-      rw.style.display=showR?'':'none';
+      rw.style.display=showR?'block':'none';
       if(!showR){ADV.bodyReg='';ADV.bodyRegContact='';var ui=document.getElementById('adv-body-reg-univ');if(ui)ui.value='';var ci=document.getElementById('adv-body-reg-contact');if(ci)ci.value='';}
     }
   }
   /* その他（全セクション共通） */
   if(ow){
     var show2=(v==='その他');
-    ow.style.display=show2?'':'none';
+    ow.style.display=show2?'block':'none';
     if(!show2){ADV[sec+'Other']='';var oi=document.getElementById('adv-'+sec+'-other');if(oi)oi.value='';}
   }
 }
@@ -939,6 +957,11 @@ function printADV(){
     else if(v==='判断は家族に任せます'&&ADV[sec+'Family'])v+='（'+ADV[sec+'Family']+'）';
     else if(v==='その他'&&ADV[sec+'Other'])v+='：'+ADV[sec+'Other'];
     else if(sec==='organ'&&v==='臓器提供を希望します（一部のみ）'&&ADV.organPartial)v+='（希望臓器：'+ADV.organPartial+'）';
+    else if(sec==='body'&&v==='献体を希望します'){
+      if(ADV.bodyWishUniv)v+='（希望先：'+ADV.bodyWishUniv;
+      if(ADV.bodyWishContact)v+=(ADV.bodyWishUniv?'　':' （')+'連絡先：'+ADV.bodyWishContact;
+      if(ADV.bodyWishUniv||ADV.bodyWishContact)v+='）';
+    }
     else if(sec==='body'&&v==='既に献体登録済みです'){
       if(ADV.bodyReg)v+='（大学名：'+ADV.bodyReg;
       if(ADV.bodyRegContact)v+=(ADV.bodyReg?'　':' （')+'連絡先：'+ADV.bodyRegContact;
