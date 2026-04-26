@@ -1548,7 +1548,7 @@ function buildHeirSVG(){
   function dbl(cx1,cx2,cy){return ln(cx1+NW/2,cy-2.5,cx2-NW/2,cy-2.5,'#444',1)+ln(cx1+NW/2,cy+2.5,cx2-NW/2,cy+2.5,'#444',1);}
   /* ★修正3: 被代襲者の相続分(sibNum/sibDen)を受け取り、甥姪1人分を正確に表示 */
   function subTNamed(dsCX,ry1,ryN,nephews,sibNum,sibDen){
-    var NNS=Math.min(nephews,4),nTW=NNS*NW+(NNS-1)*HG,nSt=dsCX-nTW/2+NW/2,nbky=ryN-NH/2-14;
+    var NNS=Math.min(nephews,6),nTW=NNS*NW+(NNS-1)*HG,nSt=dsCX-nTW/2+NW/2,nbky=ryN-NH/2-14;
     if(NNS===0)return;
     p.push(ln(dsCX,ry1+NH/2,dsCX,nbky));if(NNS>1)p.push(ln(nSt,nbky,nSt+(NNS-1)*(NW+HG),nbky));
     for(var ni=0;ni<NNS;ni++){
@@ -1608,44 +1608,52 @@ function buildHeirSVG(){
     p.push(ln(sCXB,ry1B+NH/2,sCXB,ry2B-NH/2));p.push(bx(sCXB,ry2B,'本人','','self'));p.push(bx(spCXB,ry2B,'配偶者',fr(2,3),'heir'));p.push(dbl(sCXB,spCXB,ry2B));
     note='配偶者'+fr(2,3)+'　直系尊属'+fr(1,3)+(parB?'（父母各'+fr(1,6)+'）':gparBoth?'（祖父・祖母 各'+fr(1,6)+'）':gparAlive?'（'+gparLabel+'）':'');
   } else if(sp&&nk===0&&np===0&&ns>0&&(nl>0||(nd>0&&nn>0))){
-    /* 兄弟姉妹リスト（名前付き） */
-    var showLivSibs=_livingSibs.slice(0,4);
-    var showDeadSibs=_deadSibsWithData.filter(function(d){return d.nephews>0;}).slice(0,Math.max(1,4-showLivSibs.length));
+    /* ── 配偶者あり＋兄弟姉妹 ── 動的列幅レイアウト */
+    var showLivSibs=_livingSibs.slice(0,6);
+    var showDeadSibs=_deadSibsWithData.filter(function(d){return d.nephews>0;}).slice(0,6);
     var hasNephews=showDeadSibs.length>0&&nn>0;
-    var gap=36;
-    var sCXC=PAD+NW/2,spCXC=sCXC+NW+MG,sibSt=spCXC+NW/2+gap+NW/2;
-    /* 亡兄弟の位置: 存命の次 */
-    var totalSibBoxes=showLivSibs.length+showDeadSibs.length;
-    if(totalSibBoxes===0)totalSibBoxes=1;
-    var lastSibX=sibSt+(totalSibBoxes-1)*(NW+HG);
+    var gap=36,MAX_NEP=6;
+    var denC=2*ns-nHalfSib;
+    /* 各兄弟の列幅を計算 */
+    var sibCols=[];
+    showLivSibs.forEach(function(s){sibCols.push({type:'live',sib:s,colW:NW});});
+    showDeadSibs.forEach(function(ds){
+      var nShow=Math.min(ds.nephews,MAX_NEP);
+      var nephW=nShow>0?nShow*NW+(nShow-1)*HG:NW;
+      sibCols.push({type:'dead',sib:ds,colW:Math.max(NW,nephW),nephShow:nShow});
+    });
+    /* X座標を計算（各列の中心） */
+    var sCXC=PAD+NW/2,spCXC=sCXC+NW+MG;
+    var sibStartX=spCXC+NW/2+gap;
+    var curX=sibStartX;
+    sibCols.forEach(function(col,i){
+      col.cx=curX+col.colW/2;
+      curX+=col.colW+(i<sibCols.length-1?HG:0);
+    });
+    var lastSibX=sibCols.length>0?sibCols[sibCols.length-1].cx:sibStartX;
+    var totalRightEdge=curX;
     var bkyC=PAD+16,ry1C=bkyC+26;
-    W=Math.max(lastSibX+NW/2+PAD,spCXC+NW/2+PAD);if(W<320)W=320;
+    W=Math.max(totalRightEdge+PAD,spCXC+NW/2+PAD);if(W<320)W=320;
     H=ry1C+NH/2+LBL+PAD+14;if(hasNephews)H+=VG+NH/2+LBL;
-    /* 横線（横軸） */
+    /* 横線 */
     p.push(ln(sCXC,bkyC,lastSibX,bkyC,'#888',1));
     p.push(ln(sCXC,bkyC,sCXC,ry1C-NH/2,'#555',1.5));
     p.push(bx(sCXC,ry1C,'本人','','self'));p.push(bx(spCXC,ry1C,'配偶者',fr(3,4),'heir'));p.push(dbl(sCXC,spCXC,ry1C));
-    var denC=2*ns-nHalfSib; /* nHalfSib = nHalfSibAll（全半血数） */
-    /* 存命兄弟 */
-    for(var siC=0;siC<showLivSibs.length;siC++){
-      var scC=sibSt+siC*(NW+HG);
-      var sib=showLivSibs[siC];
-      p.push(ln(scC,bkyC,scC,ry1C-NH/2,'#555',1.5));
-      p.push(bx(scC,ry1C,sib.label,fr(sib.isHalf?1:2,4*denC),sib.isHalf?'half':'heir'));
-    }
-    if(_livingSibs.length>4)p.push('<text x="'+(sibSt+4*(NW+HG))+'" y="'+(ry1C+4)+'" font-size="10" fill="#888">他'+(_livingSibs.length-4)+'人</text>');
-    /* 亡兄弟（代襲あり）*/
-    for(var di=0;di<showDeadSibs.length;di++){
-      var deadSib=showDeadSibs[di];
-      var dxC=sibSt+(showLivSibs.length+di)*(NW+HG);
-      p.push(ln(dxC,bkyC,dxC,ry1C-NH/2,'#888',1,'4,3'));
-      p.push(bx(dxC,ry1C,'亡'+deadSib.label,'','dead'));
-      /* ★修正3: 被代襲者の取り分(分子/分母)を渡す */
-      if(deadSib.nephews>0){
-        var sw=svgSibWeight(deadSib.key);
-        subTNamed(dxC,ry1C,ry1C+VG,deadSib.nephews,sw,4*denC);
+    /* 各兄弟を描画 */
+    sibCols.forEach(function(col){
+      if(col.type==='live'){
+        p.push(ln(col.cx,bkyC,col.cx,ry1C-NH/2,'#555',1.5));
+        p.push(bx(col.cx,ry1C,col.sib.label,fr(col.sib.isHalf?1:2,4*denC),col.sib.isHalf?'half':'heir'));
+      }else{
+        p.push(ln(col.cx,bkyC,col.cx,ry1C-NH/2,'#888',1,'4,3'));
+        p.push(bx(col.cx,ry1C,'亡'+col.sib.label,'','dead'));
+        if(col.sib.nephews>0){
+          var sw=svgSibWeight(col.sib.key);
+          subTNamed(col.cx,ry1C,ry1C+VG,col.sib.nephews,sw,4*denC);
+        }
       }
-    }
+    });
+    if(_livingSibs.length>6)p.push('<text x="'+(totalRightEdge+8)+'" y="'+(ry1C+4)+'" font-size="10" fill="#888">他'+(_livingSibs.length-6)+'人</text>');
     note='配偶者'+fr(3,4)+'　兄弟姉妹で'+fr(1,4)+'を分割'+(nHalfSib>0?' ※半血は全血の½':'')+'　※遺留分なし';
   } else if(!sp&&nk>0){
     var showLiveD=Math.min(nLiveCh,4),showDeadD=Math.min(nDeadCh,4-showLiveD>0?4-showLiveD:0);
@@ -1682,40 +1690,51 @@ function buildHeirSVG(){
     p.push(ln(cxE,ry1E+NH/2,cxE,ry2E-NH/2));p.push(bx(cxE,ry2E,'本人','','self'));
     note=parB?'両親が相続　父'+fr(1,2)+'母'+fr(1,2):gparBoth?'祖父・祖母が相続　各'+fr(1,2):gparAlive?gparLabel+'が全部相続（直系尊属）':'直系尊属が全部相続';
   } else if(!sp&&nk===0&&np===0&&ns>0&&(nl>0||(nd>0&&nn>0))){
-    var showLivSibsF=_livingSibs.slice(0,4);
-    var showDeadSibsF=_deadSibsWithData.filter(function(d){return d.nephews>0;}).slice(0,Math.max(1,4-showLivSibsF.length));
+    /* ── 配偶者なし＋兄弟姉妹のみ ── 動的列幅レイアウト */
+    var showLivSibsF=_livingSibs.slice(0,6);
+    var showDeadSibsF=_deadSibsWithData.filter(function(d){return d.nephews>0;}).slice(0,6);
     var hasNephewsF=showDeadSibsF.length>0&&nn>0;
-    var gapF=36;
-    var sCXF=PAD+NW/2,sibStF=sCXF+gapF+NW/2;
-    var totalSibBoxesF=showLivSibsF.length+showDeadSibsF.length;
-    if(totalSibBoxesF===0)totalSibBoxesF=1;
-    var lastXF=sibStF+(totalSibBoxesF-1)*(NW+HG);
-    W=Math.max(lastXF+NW/2+PAD,200);if(W<280)W=280;
+    var gapF=36,MAX_NEP_F=6;
+    var denF=2*ns-nHalfSib;
+    /* 各兄弟の列幅を計算 */
+    var sibColsF=[];
+    showLivSibsF.forEach(function(s){sibColsF.push({type:'live',sib:s,colW:NW});});
+    showDeadSibsF.forEach(function(ds){
+      var nShowF=Math.min(ds.nephews,MAX_NEP_F);
+      var nephWF=nShowF>0?nShowF*NW+(nShowF-1)*HG:NW;
+      sibColsF.push({type:'dead',sib:ds,colW:Math.max(NW,nephWF),nephShow:nShowF});
+    });
+    /* X座標を計算 */
+    var sCXF=PAD+NW/2;
+    var sibStartXF=sCXF+gapF;
+    var curXF=sibStartXF;
+    sibColsF.forEach(function(col,i){
+      col.cx=curXF+col.colW/2;
+      curXF+=col.colW+(i<sibColsF.length-1?HG:0);
+    });
+    var lastXF=sibColsF.length>0?sibColsF[sibColsF.length-1].cx:sCXF;
+    var totalRightEdgeF=curXF;
+    W=Math.max(totalRightEdgeF+PAD,200);if(W<280)W=280;
     var bkyF=PAD+16,ry1F=bkyF+26;H=ry1F+NH/2+LBL+PAD+14;if(hasNephewsF)H+=VG+NH/2+LBL;
+    /* 横線 */
     p.push(ln(sCXF,bkyF,lastXF,bkyF,'#888',1));
     p.push(ln(sCXF,bkyF,sCXF,ry1F-NH/2,'#555',1.5));
     p.push(bx(sCXF,ry1F,'本人','','self'));
-    var denF=2*ns-nHalfSib; /* nHalfSib = nHalfSibAll（全半血数） */
-    /* 存命兄弟 */
-    for(var siF=0;siF<showLivSibsF.length;siF++){
-      var scF=sibStF+siF*(NW+HG);
-      var sibF=showLivSibsF[siF];
-      p.push(ln(scF,bkyF,scF,ry1F-NH/2,'#555',1.5));
-      p.push(bx(scF,ry1F,sibF.label,fr(sibF.isHalf?1:2,denF),sibF.isHalf?'half':'heir'));
-    }
-    if(_livingSibs.length>4)p.push('<text x="'+(sibStF+4*(NW+HG))+'" y="'+(ry1F+4)+'" font-size="10" fill="#888">他'+(_livingSibs.length-4)+'人</text>');
-    /* 亡兄弟（代襲あり）*/
-    for(var diF=0;diF<showDeadSibsF.length;diF++){
-      var deadSibF=showDeadSibsF[diF];
-      var dxF=sibStF+(showLivSibsF.length+diF)*(NW+HG);
-      p.push(ln(dxF,bkyF,dxF,ry1F-NH/2,'#888',1,'4,3'));
-      p.push(bx(dxF,ry1F,'亡'+deadSibF.label,'','dead'));
-      /* ★修正3: 被代襲者の取り分(分子/分母)を渡す */
-      if(deadSibF.nephews>0){
-        var swF=svgSibWeight(deadSibF.key);
-        subTNamed(dxF,ry1F,ry1F+VG,deadSibF.nephews,swF,denF);
+    /* 各兄弟を描画 */
+    sibColsF.forEach(function(col){
+      if(col.type==='live'){
+        p.push(ln(col.cx,bkyF,col.cx,ry1F-NH/2,'#555',1.5));
+        p.push(bx(col.cx,ry1F,col.sib.label,fr(col.sib.isHalf?1:2,denF),col.sib.isHalf?'half':'heir'));
+      }else{
+        p.push(ln(col.cx,bkyF,col.cx,ry1F-NH/2,'#888',1,'4,3'));
+        p.push(bx(col.cx,ry1F,'亡'+col.sib.label,'','dead'));
+        if(col.sib.nephews>0){
+          var swF=svgSibWeight(col.sib.key);
+          subTNamed(col.cx,ry1F,ry1F+VG,col.sib.nephews,swF,denF);
+        }
       }
-    }
+    });
+    if(_livingSibs.length>6)p.push('<text x="'+(totalRightEdgeF+8)+'" y="'+(ry1F+4)+'" font-size="10" fill="#888">他'+(_livingSibs.length-6)+'人</text>');
     note='兄弟姉妹'+ns+'人で分割'+(nHalfSib>0?' うち半血'+nHalfSib+'人（相続分は全血の½）':'　均等')+(hasNephewsF?' 代襲あり':'')+'　※遺留分なし';
   } else{W=260;H=80;p.push(bx(130,40,'本人','','self'));p.push('<text x="130" y="74" text-anchor="middle" font-size="10" fill="#A32D2D">法定相続人がいない可能性があります</text>');}
   if(note)p.push('<text x="'+(W/2)+'" y="'+(H-5)+'" text-anchor="middle" font-size="9.5" fill="#888">'+note+'</text>');
