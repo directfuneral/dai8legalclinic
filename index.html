@@ -883,7 +883,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   </div>
 </div>
 <button class="print-btn" onclick="printDirect()">📄 診断書を印刷する</button>
-  <div style="font-size:12px;color:#888;text-align:center;margin-top:5px">表紙 → 相続関係図 → 財産目録 → エンディングノート → 契約一覧の順で印刷されます（ポップアップ許可が必要）</div>
+  <div style="font-size:12px;color:#888;text-align:center;margin-top:5px">表紙 → 相続関係図 → 財産目録 → エンディングノート → 契約一覧 → 処方箋の順で印刷されます（ポップアップ許可が必要）</div>
   <div style="font-size:12px;color:#555;text-align:center;margin-top:8px;padding:8px 12px;background:#f0f6ff;border-radius:6px;border:1px solid #c5d9f5">💡 <strong>PDFで保存したい場合：</strong>印刷画面が開いたら、送信先（プリンター）を「<strong>PDFに保存</strong>」に変更してください。</div>
   <button class="btn-prev" style="margin-top:8px" onclick="go(5)">← 入力内容を修正する</button>
 </div>
@@ -2259,7 +2259,7 @@ function buildPrintHTML(){
     +'</tbody></table></div>'
     +'<div class="pcover-contents">'
     +'<div class="pcover-ctit">■ 収録内容</div>'
-    +'<div class="pcover-clist">① 相続人関係図（法定相続人・法定相続分）<br>② 財産目録（不動産・預貯金・有価証券・保険・その他財産・負債）<br>③ エンディングノート（医療・葬儀希望・書類保管場所・デジタル遺品・形見分け等）<br>④ 生前契約・解約が必要な契約一覧<br>⑤ 医療に関する希望（事前指示書／臓器提供・献体含む）</div>'
+    +'<div class="pcover-clist">① 相続人関係図（法定相続人・法定相続分）<br>② 財産目録（不動産・預貯金・有価証券・保険・その他財産・負債）<br>③ エンディングノート（医療・葬儀希望・書類保管場所・デジタル遺品・形見分け等）<br>④ 生前契約・解約が必要な契約一覧<br>⑤ 医療に関する希望（事前指示書／臓器提供・献体含む）<br>⑥ 処方箋（必要な終活対策のアドバイス）</div>'
     +'</div>'
     +'<div class="pcover-notice">本書類は参考資料の作成を目的としたものであり、法的効力を持ちません。相続・遺言書作成・任意後見契約等の具体的な手続きについては、専門家（司法書士・行政書士・弁護士・税理士）にご相談ください。</div>'
     +'</div>';
@@ -2609,6 +2609,37 @@ function buildPrintHTML(){
     +'</td>'
     +'</tr>'
     +'</table>'
+    +'</div>'
+    +'</div>';
+
+  /* ===== ⑥ 処方箋（アドバイス） ===== */
+  var advItems=buildAdvice();
+  h+='<div class="pnewpage">'
+    +'<div class="psec-hd">処 方 箋 ― 必 要 な 対 策</div>'
+    +'<div class="pmeta">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>'
+    +'<div style="margin-bottom:14px;font-size:11px;color:#555;line-height:1.7;background:#f8faff;border-left:3px solid #185FA5;padding:8px 12px;border-radius:0 4px 4px 0">'
+    +'入力内容をもとに、あなたに必要な終活対策をご案内します。優先度の高い項目から専門家にご相談ください。'
+    +'</div>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:11px">'
+    +'<thead><tr>'
+    +'<th style="background:#e8f0fb;border:0.5px solid #bbb;padding:5px 8px;width:18%;color:#0c447c;font-weight:bold;text-align:center">優先度</th>'
+    +'<th style="background:#e8f0fb;border:0.5px solid #bbb;padding:5px 8px;color:#0c447c;font-weight:bold">対策内容</th>'
+    +'</tr></thead>'
+    +'<tbody>'
+    +advItems.map(function(a){
+      var bgTd=a.p==='phi'?'#fff5f3':a.p==='pme'?'#fffbf0':'#f2fbf7';
+      var bgBadge=a.p==='phi'?'#FAECE7':a.p==='pme'?'#FAEEDA':'#E1F5EE';
+      var fgBadge=a.p==='phi'?'#993C1D':a.p==='pme'?'#854F0B':'#0F6E56';
+      return '<tr style="page-break-inside:avoid">'
+        +'<td style="border:0.5px solid #ccc;padding:7px 8px;text-align:center;vertical-align:middle;background:'+bgTd+'">'
+        +'<span style="display:inline-block;background:'+bgBadge+';color:'+fgBadge+';font-size:10px;font-weight:bold;padding:3px 7px;border-radius:10px;white-space:nowrap">'+a.l+'</span>'
+        +'</td>'
+        +'<td style="border:0.5px solid #ccc;padding:7px 10px;line-height:1.7;color:#222;background:'+bgTd+'">'+esc(a.t)+'</td>'
+        +'</tr>';
+    }).join('')
+    +'</tbody></table>'
+    +'<div style="margin-top:20px;padding:10px 14px;background:#f8f8f8;border:0.5px solid #ccc;border-radius:4px;font-size:9.5px;color:#888;line-height:1.7">'
+    +'本処方箋の内容はあくまで参考情報であり、法的効力を持ちません。具体的な手続きについては第八行政書士事務所（TEL: 052-653-3215 / ihinseiri-dai8.jp）または各専門家にご相談ください。'
     +'</div>'
     +'</div>';
 
