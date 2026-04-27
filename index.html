@@ -1119,12 +1119,9 @@ var CT_DEFS=[
   {id:'milk',    label:'牛乳・配達弁当',         type:'normal', coPh:'〇〇販売店',         noLoc:true},
   {id:'teiki',   label:'定期購入物',             type:'normal', locLbl:'購入物', locPh:'雑誌・化粧品・健康食品', noLoc:true},
   {id:'ktTel',   label:'固定電話',               type:'normal', coPh:'NTT・KDDI等',       noLoc:true, numLbl:'自宅の電話番号', numPh:'0000-00-0000'},
-  {id:'keitai',  label:'携帯電話',               type:'multi',  coLbl:'販売店', numLbl:'自分の携帯電話番号', numPh:'090-0000-0000', noLoc:true},
   {id:'net',     label:'インターネット',         type:'normal', coPh:'ドコモ光・BIGLOBE等'},
   {id:'catv',    label:'ＣＡＴＶ・ＢＳ・ＣＳ', type:'normal', coPh:'J:COM・スターキャット等'},
   {id:'card',    label:'クレジットカード',       type:'card'},
-  {id:'hoken',   label:'保険・共済契約等',       type:'hoken'},
-  {id:'shoken',  label:'証券会社',               type:'shoken'},
   {id:'jaf',     label:'ＪＡＦ',                type:'normal', noCo:true, noLoc:true},
   {id:'rental',  label:'レンタル品',             type:'normal', locLbl:'レンタルしている物', locPh:'車イス・介護ベット等'},
   {id:'kaiken',  label:'会員権等',               type:'normal', coPh:'〇〇スポーツ倶楽部等', locLbl:'会員の種類', locPh:'スポーツクラブ・ゴルフ会員等'},
@@ -1147,8 +1144,8 @@ var CT_DEFS=[
 ];
 var CT_GROUPS=[
   {label:'公共・生活インフラ', ids:['denki','gasu','suido','nhk','shinbun','milk','teiki']},
-  {label:'通信',               ids:['ktTel','keitai','net','catv']},
-  {label:'金融・保険',         ids:['card','hoken','shoken']},
+  {label:'通信',               ids:['ktTel','net','catv']},
+  {label:'クレジットカード',   ids:['card']},
   {label:'サービス・その他',   ids:['jaf','rental','kaiken']},
   {label:'サブスクリプション', ids:['amazon','netflix','disney','hulu','unext','appletv','youtube','sub1','sub2']},
   {label:'書類・証明書',       ids:['menkyo','passport','mynum','nenkin','hanko','kenri','keiro']}
@@ -1312,8 +1309,6 @@ function ctSubscHTML(id){
     +'<div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px">ログイン情報</div>'
     +'<div class="en-fw" style="margin-bottom:6px"><span class="en-lbl">メールアドレス・携帯電話番号</span>'
     +'<input type="text" value="'+esc2(e.co||'')+'" placeholder="例：mail@example.com" oninput="CT_STATE[\''+id+'\'].entries[0].co=this.value"></div>'
-    +'<div class="en-fw" style="margin-bottom:6px"><span class="en-lbl">パスワード</span>'
-    +'<input type="text" value="'+esc2(e.num||'')+'" placeholder="例：パスワードを入力" oninput="CT_STATE[\''+id+'\'].entries[0].num=this.value"></div>'
     +'<div class="en-fw"><span class="en-lbl">普段の視聴状況</span>'
     +'<input type="text" value="'+esc2(e.loc||'')+'" placeholder="例：テレビ・PC・スマホ・タブレット" oninput="CT_STATE[\''+id+'\'].entries[0].loc=this.value"></div>'
     +'</div>';
@@ -2464,12 +2459,12 @@ function buildPrintHTML(){
         h+='<table class="cttbl"><thead><tr>'
           +'<th style="width:18%">サービス名</th>'
           +'<th style="width:32%">メールアドレス・電話番号</th>'
-          +'<th style="width:22%">パスワード</th>'
+          +'<th style="width:22%">パスワード（手書き）</th>'
           +'<th style="width:26%">視聴状況</th>'
           +'</tr></thead><tbody>';
         actIds.forEach(function(id){
           var def=ctDef(id),st=CT_STATE[id],e=st.entries[0];
-          h+='<tr><td style="font-weight:bold">'+esc(def.label)+'</td><td>'+esc(e.co)+'</td><td>'+esc(e.num)+'</td><td>'+esc(e.loc)+'</td></tr>';
+          h+='<tr><td style="font-weight:bold">'+esc(def.label)+'</td><td>'+esc(e.co)+'</td><td style="border-bottom:1px solid #aaa">&nbsp;</td><td>'+esc(e.loc)+'</td></tr>';
         });
         h+='</tbody></table>';
       }else if(actIds.some(function(id){return ctDef(id).type==='card';})){
