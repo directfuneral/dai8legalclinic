@@ -141,11 +141,20 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .lgd{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
 .lgd span{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
 .alist{list-style:none}
-.ai{display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
-.ai:last-child{border-bottom:none}
+.ai{display:flex;gap:12px;padding:13px 12px;border-bottom:0.5px solid var(--border);align-items:flex-start;border-radius:var(--r);margin-bottom:6px;border:0.5px solid var(--border)}
+.ai:last-child{margin-bottom:0}
+.ai--high{border-left:4px solid var(--red);background:#fff9f9;border-color:#f9c8c8}
+.ai--med{border-left:4px solid var(--amber);background:#fffdf5;border-color:#f5e3b0}
+.ai--low{border-left:4px solid var(--teal);background:#f7fffc;border-color:#b3e8d4}
+.ai-icon{font-size:18px;flex-shrink:0;margin-top:1px;line-height:1.4;width:24px;text-align:center}
+.ai-body{flex:1;min-width:0}
+.ai-hed{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.5}
+.ai-foot{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px}
+.ai-contracts{display:flex;flex-wrap:wrap;gap:4px}
+.ai-contract{font-size:11px;color:var(--teal2);background:var(--teal3);border:0.5px solid rgba(29,158,117,.35);border-radius:10px;padding:2px 8px;white-space:nowrap}
 .adot{width:7px;height:7px;border-radius:50%;background:var(--teal);margin-top:6px;flex-shrink:0}
-.atxt{font-size:13px;color:var(--text);line-height:1.6}
-.apri{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:4px;display:inline-block}
+.atxt{font-size:13px;color:var(--text2);line-height:1.7}
+.apri{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
 .phi{background:#FAECE7;color:#993C1D}.pme{background:#FAEEDA;color:#854F0B}.plo{background:var(--teal3);color:var(--teal2)}
 .explist{display:flex;flex-direction:column;gap:7px}
 .expitem{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg2);border-radius:var(--r)}
@@ -2228,7 +2237,20 @@ function buildResult(){
   document.getElementById('hchart').innerHTML=buildHeirSVG();
   document.getElementById('dist-cont').innerHTML=buildDistribution();
   var adv=buildAdvice();
-  document.getElementById('alist').innerHTML=adv.map(function(a){return '<li class="ai"><div class="adot"></div><div><div class="atxt">'+a.t+'</div><span class="apri '+a.p+'">'+a.l+'</span></div></li>';}).join('');
+  document.getElementById('alist').innerHTML=adv.map(function(a){
+    var priClass=a.p==='phi'?'ai--high':a.p==='pme'?'ai--med':'ai--low';
+    var contractHtml='';
+    if(a.contracts&&a.contracts.length){
+      contractHtml='<div class="ai-contracts">'+a.contracts.map(function(c){return '<span class="ai-contract">📌 '+c+'</span>';}).join('')+'</div>';
+    }
+    return '<li class="ai '+priClass+'">'
+      +'<div class="ai-icon">'+(a.icon||'●')+'</div>'
+      +'<div class="ai-body">'
+      +(a.h?'<div class="ai-hed">'+a.h+'</div>':'')
+      +'<div class="atxt">'+a.t+'</div>'
+      +'<div class="ai-foot"><span class="apri '+a.p+'">'+a.l+'</span>'+contractHtml+'</div>'
+      +'</div></li>';
+  }).join('');
   document.getElementById('explist').innerHTML=buildExperts().map(function(e){return '<div class="expitem"><span class="expbadge '+e.cls+'">'+e.type+'</span><div><div style="font-size:13px;font-weight:600">'+e.type+'</div><div style="font-size:11px;color:#555">'+e.desc+'</div></div></div>';}).join('');
 }
 function buildAdvice(){
@@ -2251,8 +2273,15 @@ function buildAdvice(){
   var insTot=stot('ins'),dbTot=stot('db');
   var totalAssets=reTot+bkTot+scTot+vcTot+otTot;
   var netAssets=totalAssets-dbTot;
+  var financialTot=bkTot+scTot;
   var hasIndiv=reTot>0||vcTot>0||otTot>0;
   var hasJitaku=D.ar['re'].some(function(r){return r.use==='自宅'&&(parseFloat(r.val)||0)>0;});
+
+  /* ── デジタル資産フラグ ── */
+  var digitalBankKw=['ネット','PayPay','楽天','SBI','住信','LINE','GMO','UI銀行','オリックス','あおぞら','ソニー銀行','イオン','セブン','ジャパンネット','みんなの銀行','auじぶん'];
+  var hasNetBank=D.ar['bk'].some(function(r){return digitalBankKw.some(function(k){return (r.bank||'').indexOf(k)>-1;});});
+  var hasCrypto=D.ar['ot'].some(function(r){var d=r.desc||'';return ['暗号','仮想通貨','ビットコイン','Bitcoin','NFT','ポイント','マイル','電子マネー'].some(function(k){return d.indexOf(k)>-1;});});
+  var hasDigital=hasNetBank||hasCrypto;
 
   /* ── 相続人フラグ ── */
   var heirs=getHeirShares();
@@ -2263,138 +2292,296 @@ function buildAdvice(){
   var sibHir=!sp&&nk===0&&np===0&&ns>0;
   var sibWithSp=sp&&nk===0&&np===0&&ns>0;
 
+  /* ── 悩みフラグ ── */
+  var wDementia=worry.indexOf('認知症になった場合が心配')>-1;
+  var wAfterDeath=worry.indexOf('葬儀・納骨などの死後手続')>-1;
+  var wGuarantor=worry.indexOf('身元保証人がいない')>-1;
+  var wBurden=worry.indexOf('子供や親戚に負担をかけたくない')>-1;
+  var wNoSib=worry.indexOf('死後の手続で兄妹を頼りたくない')>-1;
+  var wNoSibProp=worry.indexOf('兄妹へ財産を渡したくない')>-1;
+  var wSpecific=worry.indexOf('特定の家族への手当てをしたい')>-1;
+  var wTax=worry.indexOf('相続税が心配')>-1;
+  var wDebt=worry.indexOf('借金を相続させたくない')>-1;
+  var wPet=worry.indexOf('自分の死後のペットのこと')>-1;
+  var wRelics=worry.indexOf('遺品整理をどうするか')>-1;
+  var wHeir=worry.indexOf('遺産の行き先が心配')>-1;
+
+  /* ━━ [組合せ①] 生前〜死後 一体型サポート ━━ */
+  var needsFullSupport=(wDementia&&wAfterDeath)||(wDementia&&wGuarantor)||(wAfterDeath&&wGuarantor);
+  if(needsFullSupport&&(done.indexOf('任意後見契約を締結済')===-1||done.indexOf('死後事務委任契約を締結済')===-1)){
+    var supportC=[];
+    if(wDementia)supportC.push('任意後見契約');
+    if(wAfterDeath||wNoSib||wBurden)supportC.push('死後事務委任契約');
+    if(wGuarantor)supportC.push('身元保証サービス');
+    adv.push({
+      h:'生前〜死後をまとめてカバーする包括的な契約が必要です',
+      icon:'🛡️',
+      t:'複数の不安をお持ちの場合は、'+supportC.join('・')+'を組み合わせた包括対策が最も効果的です。認知症になってからでは任意後見契約を結ぶことができなくなります。早めのご相談を強くお勧めします。第八行政書士事務所ではワンストップでのサポート体制をご提供しています。',
+      p:'phi',l:'優先度高',contracts:supportC
+    });
+  }
+
+  /* ━━ [組合せ②] 認知症 × 不動産 → 家族信託 ━━ */
+  var hasTrustNeeds=wDementia&&reTot>0&&done.indexOf('家族信託を設定済')===-1;
+  if(hasTrustNeeds){
+    adv.push({
+      h:'認知症 × 不動産 → 家族信託による管理が有効です',
+      icon:'🏡',
+      t:'認知症になると不動産（約'+reTot.toLocaleString()+'円）の売却・賃貸・担保設定が法的にできなくなります。任意後見では対応できない部分を家族信託が補完します。信頼できるご家族を受託者に設定し、判断能力があるうちに財産管理の権限を移す仕組みです。任意後見契約と組み合わせることで生前から死後まで継続的な保護が可能になります。',
+      p:'phi',l:'優先度高',contracts:['家族信託','任意後見契約（補完）']
+    });
+  }
+
+  /* ━━ [組合せ③] 遺産の行き先 × 特定の家族への手当て → 公正証書遺言 ━━ */
+  if((wHeir&&wSpecific)&&!hasWill){
+    adv.push({
+      h:'「誰に」「何を」「どれだけ」渡すか — 公正証書遺言で確実に',
+      icon:'📜',
+      t:'遺産の行き先への不安と、特定の方への手当てのご希望が重なっています。公正証書遺言は公証人が作成するため法的安全性が高く、紛失・偽造リスクもありません。遺留分（法定相続分の1/2）を配慮しながら、ご希望の分配をしっかり文書に残しましょう。',
+      p:'phi',l:'優先度高',contracts:['公正証書遺言','遺留分侵害額への対応策']
+    });
+  }
+
   /* ━━ 1. 未対策 ━━ */
   if(noAction){
-    adv.push({t:'終活対策がまだ何も行われていません。まずはエンディングノートの作成と財産目録の整理から始めましょう。'+(totalAssets>0?'総資産約'+totalAssets.toLocaleString()+'円の財産がある場合、相続人への明確な意思表示が特に重要です。':''),p:'phi',l:'優先度高'});
+    adv.push({
+      h:'終活対策がまだ何も始まっていません',
+      icon:'📋',
+      t:'まずはエンディングノートの作成と財産目録の整理から始めましょう。'+(totalAssets>0?'総資産約'+totalAssets.toLocaleString()+'円の財産がある場合、相続人への明確な意思表示が特に重要です。':'')+'小さな一歩から始めることが、ご家族への最大の思いやりになります。',
+      p:'phi',l:'優先度高',contracts:['エンディングノート作成','財産目録の整理']
+    });
   }
 
   /* ━━ 2. 遺言書（家族構成別） ━━ */
-  if(!hasWill){
-    var wt;
+  if(!hasWill&&!(wHeir&&wSpecific)){
+    var wt,wtc=['遺言書作成'];
     if(heirCount===0){
       wt='法定相続人がいない可能性があります。遺言書がなければ財産は最終的に国庫へ帰属します。信頼できる方への遺贈や公益団体への寄附を遺言書で定めることができます。';
+      wtc=['公正証書遺言（遺贈）'];
     }else if(sibWithSp){
       wt='お子さんがいない場合、配偶者の他に兄弟姉妹も相続人になります（兄弟姉妹の取り分：遺産の1/4）。配偶者にすべての財産を遺したい場合は遺言書が必須です。兄弟姉妹に遺留分はないため遺言書で自由に指定できます。';
     }else if(sibHir){
-      wt='兄弟姉妹が相続人になる場合、遺留分（最低限の相続権）がないため遺言書で相続先を自由に指定できます。遺言書がないと意図しない相手への財産分配が生じやすくなります。';
+      wt='兄弟姉妹が相続人になる場合、遺留分がないため遺言書で相続先を自由に指定できます。遺言書がないと意図しない相手への財産分配が生じやすくなります。';
     }else if(!sp&&nk===0&&np>0){
       wt='配偶者がいない場合、財産は両親・祖父母が相続します。特定の方に財産を遺したい場合は遺言書で明確にしておきましょう。';
     }else{
       wt='遺言書の作成をお勧めします。相続人への財産分配を明確にしておくことで、遺産分割をめぐるトラブルを防ぎます。';
     }
-    adv.push({t:wt,p:'phi',l:'優先度高'});
+    adv.push({h:'遺言書の作成をお勧めします',icon:'📜',t:wt,p:'phi',l:'優先度高',contracts:wtc});
   }
 
-  /* ━━ 3. 不可分財産の共有リスク ━━ */
+  /* ━━ 3. 【財産状況】不動産偏重による流動性リスク ━━ */
+  if(reTot>3000000&&(financialTot===0||reTot>financialTot*2.5)){
+    adv.push({
+      h:'【資産偏重リスク】不動産に資産が集中しています',
+      icon:'⚠️',
+      t:'不動産評価額（約'+reTot.toLocaleString()+'円）が金融資産（約'+financialTot.toLocaleString()+'円）を大きく上回っています。不動産は現金化に時間がかかるため、相続税の納付（申告期限：相続開始から10ヶ月）や代償分割の資金が不足するリスクがあります。生命保険の非課税枠活用や、代償金準備のための預貯金を意識的に確保することをお勧めします。',
+      p:'phi',l:'優先度高',contracts:['遺言書（代償分割の指定）','生命保険の活用','税理士への相談']
+    });
+  }
+
+  /* ━━ 4. 不可分財産の共有リスク ━━ */
   if(hasIndiv&&heirCount>1&&!hasWill){
-    adv.push({t:'不動産・車両等の財産が相続人'+heirCount+'人で共有になると、売却・処分には全員の同意と印鑑証明書が必要となり、一人でも連絡が取れない・反対する場合は手続きが止まります。遺言書で特定の相続人に帰属させることで共有状態を防げます。',p:'phi',l:'優先度高'});
+    adv.push({
+      h:'不動産・動産の「共有状態」を防いでください',
+      icon:'🔒',
+      t:'不動産・車両等の財産が相続人'+heirCount+'人で共有になると、売却・処分には全員の同意と印鑑証明書が必要となります。一人でも連絡が取れない・反対する場合は手続きが止まってしまいます。遺言書で特定の相続人に帰属させることで共有状態を防ぎ、後のトラブルを回避できます。',
+      p:'phi',l:'優先度高',contracts:['遺言書（特定相続分の指定）']
+    });
   }
 
-  /* ━━ 4. 配偶者居住権 ━━ */
+  /* ━━ 5. 配偶者居住権 ━━ */
   if(sp&&nk>0&&hasJitaku&&!hasWill){
-    adv.push({t:'配偶者が自宅（約'+reTot.toLocaleString()+'円）に住み続けられるよう「配偶者居住権」の設定をご検討ください。遺言書で自宅を配偶者に帰属させるか配偶者居住権を設定することで、お子さんとの遺産分割においても配偶者の住まいを確保できます。',p:'pme',l:'優先度中'});
+    adv.push({
+      h:'配偶者が自宅に住み続けるための「配偶者居住権」を',
+      icon:'🏠',
+      t:'配偶者が自宅（約'+reTot.toLocaleString()+'円）に住み続けられるよう「配偶者居住権」の設定をご検討ください。遺言書で自宅を配偶者に帰属させるか配偶者居住権を設定することで、お子さんとの遺産分割においても配偶者の住まいを確保できます。',
+      p:'pme',l:'優先度中',contracts:['遺言書（配偶者居住権の設定）']
+    });
   }
 
-  /* ━━ 5. 相続税リスク ━━ */
-  if(totalAssets>0&&(totalAssets>basicDeduction||worry.indexOf('相続税が心配')>-1)){
+  /* ━━ 6. 相続税リスク ━━ */
+  if(totalAssets>0&&(totalAssets>basicDeduction||wTax)){
     var taxTxt;
     if(totalAssets>basicDeduction){
-      taxTxt='財産総額（約'+totalAssets.toLocaleString()+'円）が相続税の基礎控除（3,000万＋600万×法定相続人'+heirCount+'人＝'+basicDeduction.toLocaleString()+'円）を超えています。申告が必要になる可能性が高く、税理士への早期相談と生前贈与・生命保険の活用をお勧めします。';
+      taxTxt='財産総額（約'+totalAssets.toLocaleString()+'円）が相続税の基礎控除（3,000万＋600万×法定相続人'+heirCount+'人＝'+basicDeduction.toLocaleString()+'円）を超えています。申告期限は相続開始から10ヶ月です。税理士への早期相談と生前贈与（年110万円の暦年贈与）・生命保険の活用をお勧めします。';
     }else{
-      taxTxt='ご心配の通り、財産規模によっては相続税の申告が必要になる場合があります。税理士への相談と生前贈与の活用をご検討ください。';
+      taxTxt='財産規模によっては相続税の申告が必要になる場合があります。税理士への相談と生前贈与の活用をご検討ください。';
     }
-    adv.push({t:taxTxt,p:'phi',l:'優先度高'});
+    adv.push({h:'相続税の申告・節税対策が必要です',icon:'💰',t:taxTxt,p:'phi',l:'優先度高',contracts:['税理士への相談','生前贈与・暦年贈与の活用']});
   }
 
-  /* ━━ 6. 債務超過・負債 ━━ */
+  /* ━━ 7. 【財産状況】負債 + 相続放棄期限3ヶ月 ━━ */
   if(dbTot>0){
     if(netAssets<0){
-      adv.push({t:'負債（'+dbTot.toLocaleString()+'円）が資産（'+totalAssets.toLocaleString()+'円）を上回っています（純資産：'+netAssets.toLocaleString()+'円）。相続人は相続開始を知った日から3ヶ月以内に相続放棄または限定承認を申請できます。財産目録を整備し、相続人が早期に判断できる情報を残しておきましょう。',p:'phi',l:'優先度高'});
+      adv.push({
+        h:'⏰ 負債超過：相続放棄の期限（3ヶ月）を必ず伝えてください',
+        icon:'🚨',
+        t:'負債（'+dbTot.toLocaleString()+'円）が資産（'+totalAssets.toLocaleString()+'円）を上回っています（純資産：'+netAssets.toLocaleString()+'円）。相続人は「相続開始を知った日から3ヶ月以内」に家庭裁判所へ相続放棄または限定承認を申述しなければなりません。財産目録に負債の全容を明記し、相続人が早期に判断できる情報を残しておくことが最優先です。',
+        p:'phi',l:'優先度高',contracts:['財産目録の整備（負債含む）','相続放棄・限定承認の準備']
+      });
     }else{
-      adv.push({t:'負債（'+dbTot.toLocaleString()+'円）があります。相続人が相続放棄・限定承認を検討できるよう、財産目録で正確な純資産（現在：約'+netAssets.toLocaleString()+'円）を把握しておくことが重要です。',p:'pme',l:'優先度中'});
+      adv.push({
+        h:'負債あり：相続放棄の期限（3ヶ月）を相続人に周知を',
+        icon:'📅',
+        t:'負債（'+dbTot.toLocaleString()+'円）があります。相続人が相続放棄・限定承認を検討できるよう、財産目録で正確な純資産（現在：約'+netAssets.toLocaleString()+'円）を把握しておくことが重要です。相続人は相続開始を知った日から3ヶ月以内に家庭裁判所へ申述が必要です。この期限を知らずに過ごすと相続放棄の権利を失う場合があります。',
+        p:'pme',l:'優先度中',contracts:['財産目録の整備（負債含む）']
+      });
     }
   }
 
-  /* ━━ 7. 認知症 + 任意後見・家族信託 ━━ */
-  if(worry.indexOf('認知症になった場合が心配')>-1&&done.indexOf('任意後見契約を締結済')===-1){
-    var dTxt='任意後見契約の締結をお勧めします。認知症になった場合に備え、信頼できる人に財産管理を委任しておきましょう。';
-    if(reTot>0)dTxt+='不動産（約'+reTot.toLocaleString()+'円）は認知症後に売却・管理が法的に困難になります。家族信託との組み合わせも有効です。';
-    adv.push({t:dTxt,p:'phi',l:'優先度高'});
-  }else if(reTot>0&&done.indexOf('任意後見契約を締結済')===-1&&done.indexOf('家族信託を設定済')===-1){
-    adv.push({t:'不動産（約'+reTot.toLocaleString()+'円）をお持ちの場合、認知症等で判断能力が低下すると売却・担保設定・管理が法的にできなくなります。任意後見契約または家族信託の設定で事前に備えることをお勧めします。',p:'pme',l:'優先度中'});
+  /* ━━ 8. 【財産状況】デジタル遺産対策 ━━ */
+  if(hasDigital){
+    var digitalDesc=[];
+    if(hasNetBank)digitalDesc.push('ネットバンク口座');
+    if(hasCrypto)digitalDesc.push('暗号資産・ポイント等');
+    adv.push({
+      h:'デジタル遺産への対策が必要です',
+      icon:'💻',
+      t:digitalDesc.join('・')+'のご入力があります。ネット口座・暗号資産・ポイントは通帳や証書が存在せず、相続人が存在を把握できないまま消滅・失効するリスクがあります。エンディングノートに「口座名・金融機関名・問い合わせ先（カスタマーサポート等）」を記録し、信頼できる方に開示の方法を伝えておきましょう。※パスワードは直接書かず「管理ツール名」や「保管場所」にとどめることをお勧めします。',
+      p:'pme',l:'優先度中',contracts:['エンディングノートへのデジタル資産記録','死後事務委任契約（デジタル整理を含む）']
+    });
   }
 
-  /* ━━ 8. 死後事務委任 ━━ */
-  if(worry.indexOf('葬儀・納骨などの死後手続')>-1&&done.indexOf('死後事務委任契約を締結済')===-1){
-    adv.push({t:'死後事務委任契約の締結をご検討ください。葬儀・納骨・各種行政手続きを専門家に委任でき、ご家族の負担を大きく軽減できます。',p:'pme',l:'優先度中'});
+  /* ━━ 9. 認知症 + 任意後見・家族信託（単体） ━━ */
+  if(wDementia&&!hasTrustNeeds&&!needsFullSupport&&done.indexOf('任意後見契約を締結済')===-1){
+    adv.push({
+      h:'認知症に備えた財産管理の準備を',
+      icon:'🧠',
+      t:'任意後見契約の締結をお勧めします。認知症になった後では新たに契約を結ぶことが法的にできなくなります。信頼できる方を任意後見人として指定し、財産管理・身上保護の権限を事前に設定しておきましょう。',
+      p:'phi',l:'優先度高',contracts:['任意後見契約']
+    });
+  }else if(reTot>0&&!wDementia&&!hasTrustNeeds&&done.indexOf('任意後見契約を締結済')===-1&&done.indexOf('家族信託を設定済')===-1){
+    adv.push({
+      h:'不動産をお持ちの方への認知症リスク対策',
+      icon:'🏘️',
+      t:'不動産（約'+reTot.toLocaleString()+'円）をお持ちの場合、認知症等で判断能力が低下すると売却・担保設定・管理が法的にできなくなります。任意後見契約または家族信託の設定で事前に備えることをお勧めします。',
+      p:'pme',l:'優先度中',contracts:['任意後見契約','家族信託（不動産）']
+    });
   }
 
-  /* ━━ 9. 兄弟姉妹への希望 ━━ */
-  if(worry.indexOf('兄妹へ財産を渡したくない')>-1){
-    adv.push({t:'兄弟姉妹への相続を避けたい場合は遺言書の作成が有効です。兄弟姉妹に遺留分はないため、遺言書で相続先を自由に指定できます。',p:'phi',l:'優先度高'});
-  }
-  if(worry.indexOf('死後の手続で兄妹を頼りたくない')>-1){
-    adv.push({t:'死後事務委任契約を締結することで、葬儀・納骨・行政手続きを専門家に一任でき、兄弟姉妹に頼らない仕組みを作ることができます。',p:'phi',l:'優先度高'});
+  /* ━━ 10. 死後事務委任（単体） ━━ */
+  if((wAfterDeath||wNoSib||wBurden||wRelics)&&!needsFullSupport&&done.indexOf('死後事務委任契約を締結済')===-1){
+    var afterTxt='死後事務委任契約の締結をご検討ください。葬儀・納骨・各種行政手続き';
+    if(wRelics)afterTxt+='・遺品整理';
+    afterTxt+=wNoSib?'を専門家に委任でき、兄弟姉妹に頼らない仕組みを作ることができます。':'を専門家に委任でき、ご家族の負担を大きく軽減できます。';
+    if(wRelics)afterTxt+='第八行政書士事務所では遺品整理業者との連携サービスも提供しています。';
+    adv.push({
+      h:'死後の手続きを専門家に委任しましょう',
+      icon:'📝',
+      t:afterTxt,
+      p:'pme',l:'優先度中',contracts:['死後事務委任契約']
+    });
   }
 
-  /* ━━ 10. 複雑化リスク（半血・代襲・子多数） ━━ */
+  /* ━━ 11. 兄弟姉妹への希望 ━━ */
+  if(wNoSibProp){
+    adv.push({
+      h:'兄弟姉妹への相続を防ぐには遺言書が有効です',
+      icon:'🚫',
+      t:'兄弟姉妹への相続を避けたい場合は遺言書の作成が有効です。兄弟姉妹には遺留分（最低限の相続権）がないため、遺言書で相続先を自由に指定できます。ただし配偶者・子・親には遺留分（法定相続分の1/2）があります。',
+      p:'phi',l:'優先度高',contracts:['遺言書（公正証書推奨）']
+    });
+  }
+  if(wNoSib&&!wAfterDeath&&!needsFullSupport&&done.indexOf('死後事務委任契約を締結済')===-1){
+    adv.push({
+      h:'兄弟姉妹に頼らない死後手続の体制を',
+      icon:'🤝',
+      t:'死後事務委任契約を締結することで、葬儀・納骨・行政手続きを専門家に一任でき、兄弟姉妹に頼らない仕組みを作ることができます。',
+      p:'phi',l:'優先度高',contracts:['死後事務委任契約']
+    });
+  }
+
+  /* ━━ 12. 複雑化リスク（半血・代襲・子多数） ━━ */
   if(nHalf>0&&heirCount>1&&!hasWill){
-    adv.push({t:'半血の兄弟姉妹（'+nHalf+'人）がいる場合、相続分が全血と異なるため遺産分割協議が複雑になることがあります。遺言書で各相続人への分配を具体的に指定することでトラブルを防げます。',p:'pme',l:'優先度中'});
+    adv.push({h:'半血の兄弟姉妹がいる場合の相続分に注意を',icon:'👨‍👩‍👧',t:'半血の兄弟姉妹（'+nHalf+'人）がいる場合、相続分が全血と異なるため遺産分割協議が複雑になることがあります。遺言書で各相続人への分配を具体的に指定することでトラブルを防げます。',p:'pme',l:'優先度中',contracts:['遺言書']});
   }
   if(hasProxy&&reTot>0&&!hasWill){
-    adv.push({t:'甥・姪が代襲相続人になる場合、不動産が多人数の共有になる可能性があります。遺言書で帰属先を明確にしておくことをお勧めします。',p:'pme',l:'優先度中'});
+    adv.push({h:'代襲相続人（甥・姪）がいる場合の不動産共有リスク',icon:'👨‍👩‍👧‍👦',t:'甥・姪が代襲相続人になる場合、不動産が多人数の共有になる可能性があります。遺言書で帰属先を明確にしておくことをお勧めします。',p:'pme',l:'優先度中',contracts:['遺言書（不動産の帰属指定）']});
   }
   if(nk>=3&&reTot>0&&!hasWill){
-    adv.push({t:'お子さんが'+nk+'人いる場合、不動産（約'+reTot.toLocaleString()+'円）の遺産分割には全員の合意が必要で複雑になりやすい状況です。遺言書で具体的な分配先を指定しておくことで協議をスムーズにできます。',p:'pme',l:'優先度中'});
+    adv.push({h:'お子さん'+nk+'人での不動産遺産分割リスク',icon:'👨‍👩‍👧‍👦',t:'お子さんが'+nk+'人いる場合、不動産（約'+reTot.toLocaleString()+'円）の遺産分割には全員の合意が必要で複雑になりやすい状況です。遺言書で具体的な分配先を指定しておくことで協議をスムーズにできます。',p:'pme',l:'優先度中',contracts:['遺言書（分割方法の指定）']});
   }
 
-  /* ━━ 11. 生命保険の非課税枠確認 ━━ */
+  /* ━━ 13. 生命保険の非課税枠確認 ━━ */
   if(insTot>0&&heirCount>0){
     var insEx=5000000*heirCount;
     if(insTot>insEx){
-      adv.push({t:'生命保険金（'+insTot.toLocaleString()+'円）が非課税枠（500万×相続人'+heirCount+'人＝'+insEx.toLocaleString()+'円）を超えています。超過分は相続税課税対象となる可能性があるため、受取人の設定や保険内容の見直しをご検討ください。',p:'pme',l:'優先度中'});
+      adv.push({h:'生命保険金が非課税枠を超えています',icon:'📊',t:'生命保険金（'+insTot.toLocaleString()+'円）が非課税枠（500万×相続人'+heirCount+'人＝'+insEx.toLocaleString()+'円）を超えています。超過分は相続税課税対象となる可能性があるため、受取人の設定や保険内容の見直しをご検討ください。',p:'pme',l:'優先度中',contracts:['保険内容の見直し（税理士相談）']});
     }else if(insEx-insTot>5000000&&totalAssets>basicDeduction){
-      adv.push({t:'生命保険の非課税枠（500万×'+heirCount+'人＝'+insEx.toLocaleString()+'円）にまだ余裕があります（現在：'+insTot.toLocaleString()+'円）。財産規模から相続税対策として生命保険の追加活用が有効な場合があります。',p:'plo',l:'確認推奨'});
+      adv.push({h:'生命保険の非課税枠をさらに活用できます',icon:'💡',t:'生命保険の非課税枠（500万×'+heirCount+'人＝'+insEx.toLocaleString()+'円）にまだ余裕があります（現在：'+insTot.toLocaleString()+'円）。財産規模から相続税対策として生命保険の追加活用が有効な場合があります。',p:'plo',l:'確認推奨',contracts:['追加生命保険の検討（税理士相談）']});
     }
   }
 
-  /* ━━ 12. 身元保証 ━━ */
-  if(worry.indexOf('身元保証人がいない')>-1){
-    adv.push({t:'身元保証人がいない場合、入院・介護施設入居の際に手続きが困難になることがあります。死後事務委任契約・任意後見契約と合わせて、専門家による身元保証サービスの利用もご検討ください。',p:'phi',l:'優先度高'});
+  /* ━━ 14. 身元保証 ━━ */
+  if(wGuarantor&&!needsFullSupport){
+    adv.push({
+      h:'身元保証人がいない場合の対策',
+      icon:'🤝',
+      t:'身元保証人がいない場合、入院・介護施設入居の際に手続きが困難になることがあります。死後事務委任契約・任意後見契約と合わせて、専門家による身元保証サービスの利用もご検討ください。',
+      p:'phi',l:'優先度高',contracts:['身元保証サービス','任意後見契約','死後事務委任契約']
+    });
   }
 
-  /* ━━ 13. 遺品整理 ━━ */
-  if(worry.indexOf('遺品整理をどうするか')>-1){
-    adv.push({t:'遺品整理の希望がある場合、死後事務委任契約に「遺品整理の委任」を含めることで専門家に一任できます。第八行政書士事務所では遺品整理業者との連携サービスも提供しています。',p:'pme',l:'優先度中'});
+  /* ━━ 15. 特定の家族への手当て（単体） ━━ */
+  if(wSpecific&&!wHeir){
+    adv.push({
+      h:'特定の方への財産承継を遺言書で確実に',
+      icon:'💝',
+      t:'特定の相続人に多く遺したい場合は、遺言書での指定が有効です。遺留分（法定相続分の1/2）を侵害しない範囲で自由に分配を指定できます。遺言書に「附言事項」として想いを綴ることで、ご家族への大切なメッセージを残すこともできます。',
+      p:'phi',l:'優先度高',contracts:['遺言書（公正証書推奨）']
+    });
   }
 
-  /* ━━ 14. 特定の家族への手当て ━━ */
-  if(worry.indexOf('特定の家族への手当てをしたい')>-1){
-    adv.push({t:'特定の相続人に多く遺したい・逆に遺留分を意識した公平な分配をしたい場合は、遺言書での指定が有効です。遺留分（法定相続分の1/2）を侵害しない範囲で自由に分配を指定できます。',p:'phi',l:'優先度高'});
+  /* ━━ 16. 借金の相続 ━━ */
+  if(wDebt){
+    adv.push({
+      h:'相続人への負債承継を防ぐ準備を',
+      icon:'💳',
+      t:'相続人に借金を引き継がせたくない場合、財産目録で純資産（資産−負債）を明確にし、相続人が相続放棄を検討できる情報を残しておきましょう。生命保険の受取人指定で一定の生活資金を確保しながら相続放棄を選択する方法もあります。相続放棄の申述期限は相続開始を知った日から3ヶ月以内です。',
+      p:'phi',l:'優先度高',contracts:['財産目録の整備','生命保険の受取人指定']
+    });
   }
 
-  /* ━━ 15. 借金の相続 ━━ */
-  if(worry.indexOf('借金を相続させたくない')>-1){
-    adv.push({t:'相続人に借金を引き継がせたくない場合、財産目録で純資産（資産−負債）を明確にし、相続人が相続放棄を検討できる情報を残しておきましょう。生命保険の受取人指定で一定の生活資金を確保しながら相続放棄を選択する方法もあります。',p:'phi',l:'優先度高'});
-  }
-
-  /* ━━ 16. 収骨しない ━━ */
+  /* ━━ 17. 収骨しない ━━ */
   if(EN['grave']==='収骨しない'){
-    adv.push({t:'「収骨しない」を希望されているようですが、火葬後に遺骨を引き取らない選択ができる地域は限られています。自治体・火葬場によって対応が異なり、収骨を義務付けている地域では選択できない場合があります。ご利用予定の火葬場に事前にご確認いただくことをお勧めします。',p:'pme',l:'確認推奨'});
+    adv.push({
+      h:'「収骨しない」選択は火葬場への事前確認が必要です',
+      icon:'⚠️',
+      t:'火葬後に遺骨を引き取らない選択ができる地域は限られています。自治体・火葬場によって対応が異なり、収骨を義務付けている地域では選択できない場合があります。ご利用予定の火葬場に事前にご確認いただくことをお勧めします。',
+      p:'pme',l:'確認推奨',contracts:['火葬場への事前確認']
+    });
   }
 
-  /* ━━ 17. ペット ━━ */
-  if(worry.indexOf('自分の死後のペットのこと')>-1){
-    adv.push({t:'ペットの行く末については、死後事務委任契約や遺言書に引き取り先と飼育内容（餌・通院先など）を明記しておきましょう。信頼できる引き取り先を生前に確認・合意しておくことが最も重要です。',p:'phi',l:'優先度高'});
+  /* ━━ 18. ペット ━━ */
+  if(wPet){
+    adv.push({
+      h:'ペットの引き取り先を生前に確保しましょう',
+      icon:'🐾',
+      t:'ペットの行く末については、死後事務委任契約や遺言書に引き取り先と飼育内容（餌・通院先など）を明記しておきましょう。法律上ペットは「物」として扱われるため、遺産として承継先を指定することが必要です。信頼できる引き取り先を生前に確認・合意しておくことが最も重要です。',
+      p:'phi',l:'優先度高',contracts:['死後事務委任契約（ペット対応）','遺言書（附言事項）']
+    });
   }
 
-  /* ━━ 17. エンディングノート ━━ */
+  /* ━━ 19. エンディングノート ━━ */
   if(done.indexOf('エンディングノートを作成済')===-1){
-    adv.push({t:'エンディングノートの作成をお勧めします。財産・連絡先・医療希望・葬儀の意向などをまとめておくと、万が一の際の家族の負担を大きく軽減できます。',p:'plo',l:'確認推奨'});
+    adv.push({
+      h:'エンディングノートの作成をお勧めします',
+      icon:'📔',
+      t:'財産・連絡先・医療希望・葬儀の意向などをまとめておくと、万が一の際のご家族の負担を大きく軽減できます。法的効力はありませんが、遺言書と組み合わせることで最も効果的な終活対策になります。',
+      p:'plo',l:'確認推奨',contracts:['エンディングノート作成']
+    });
   }
 
   /* ━━ 全対策済み ━━ */
-  if(adv.length===0){adv.push({t:'現在の対策は十分に整っています。定期的な内容の見直しと更新をお勧めします。なお、家族構成や財産状況に変化があった場合は専門家への相談もご検討ください。',p:'plo',l:'良好'});}
+  if(adv.length===0){
+    adv.push({
+      h:'現在の対策は十分に整っています',
+      icon:'✅',
+      t:'定期的な内容の見直しと更新をお勧めします。家族構成や財産状況に変化があった場合は、ぜひ専門家へのご相談もご検討ください。',
+      p:'plo',l:'良好',contracts:['定期的な内容見直し']
+    });
+  }
   return adv;
 }
 function buildExperts(){
