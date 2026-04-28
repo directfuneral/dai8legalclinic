@@ -1117,21 +1117,40 @@ function printADV(){
   function escH(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
   function advRow(label,sec){
     var v=ADV[sec]||'';
-    if(!v)v='（未回答）';
-    else if(v==='判断は家族に任せます'&&ADV[sec+'Family'])v+='（'+ADV[sec+'Family']+'）';
-    else if(v==='その他'&&ADV[sec+'Other'])v+='：'+ADV[sec+'Other'];
-    else if(sec==='organ'&&v==='臓器提供を希望します（一部のみ）'&&ADV.organPartial)v+='（希望臓器：'+ADV.organPartial+'）';
-    else if(sec==='body'&&v==='献体を希望します'){
-      if(ADV.bodyWishUniv)v+='（希望先：'+ADV.bodyWishUniv;
-      if(ADV.bodyWishContact)v+=(ADV.bodyWishUniv?'　':' （')+'連絡先：'+ADV.bodyWishContact;
-      if(ADV.bodyWishUniv||ADV.bodyWishContact)v+='）';
+    var opts=ADV_OPTS[sec]||[];
+    var rows='';
+    if(!v){
+      rows='<div style="font-size:12px;color:#aaa;font-style:italic">（未回答）</div>';
+    } else {
+      opts.forEach(function(o){
+        var isSel=(v===o);
+        var suffix='';
+        if(isSel){
+          if(o==='判断は家族に任せます'&&ADV[sec+'Family'])suffix=' （'+ADV[sec+'Family']+'）';
+          else if(o==='その他'&&ADV[sec+'Other'])suffix='：'+ADV[sec+'Other'];
+          else if(sec==='organ'&&o==='臓器提供を希望します（一部のみ）'&&ADV.organPartial)suffix=' （希望臓器：'+ADV.organPartial+'）';
+          else if(sec==='body'&&o==='献体を希望します'){
+            if(ADV.bodyWishUniv)suffix+=' （希望先：'+ADV.bodyWishUniv;
+            if(ADV.bodyWishContact)suffix+=(ADV.bodyWishUniv?'　':' （')+'連絡先：'+ADV.bodyWishContact;
+            if(ADV.bodyWishUniv||ADV.bodyWishContact)suffix+='）';
+          }
+          else if(sec==='body'&&o==='既に献体登録済みです'){
+            if(ADV.bodyReg)suffix+=' （大学名：'+ADV.bodyReg;
+            if(ADV.bodyRegContact)suffix+=(ADV.bodyReg?'　':' （')+'連絡先：'+ADV.bodyRegContact;
+            if(ADV.bodyReg||ADV.bodyRegContact)suffix+='）';
+          }
+        }
+        var rowBg=isSel?'background:#f0fbf5;':'';
+        var markColor=isSel?'color:#1D9E75;font-size:15px':'color:#ccc;font-size:15px';
+        var textStyle=isSel?'font-size:13px;font-weight:bold;color:#0a5c3d':'font-size:12px;color:#666';
+        rows+='<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 6px;border-radius:3px;'+rowBg+'">'
+          +'<span style="'+markColor+';flex-shrink:0;line-height:1.4">'+(isSel?'☑':'☐')+'</span>'
+          +'<span style="'+textStyle+';line-height:1.5">'+escH(o)+escH(suffix)+'</span>'
+          +'</div>';
+      });
     }
-    else if(sec==='body'&&v==='既に献体登録済みです'){
-      if(ADV.bodyReg)v+='（大学名：'+ADV.bodyReg;
-      if(ADV.bodyRegContact)v+=(ADV.bodyReg?'　':' （')+'連絡先：'+ADV.bodyRegContact;
-      if(ADV.bodyReg||ADV.bodyRegContact)v+='）';
-    }
-    return '<tr><td style="padding:8px 12px;font-size:13px;color:#555;white-space:nowrap;border-bottom:1px solid #eee;width:35%">'+label+'</td><td style="padding:8px 12px;font-size:13px;color:#222;border-bottom:1px solid #eee">'+escH(v)+'</td></tr>';
+    return '<tr><td style="padding:8px 12px;font-size:13px;font-weight:bold;color:#444;white-space:nowrap;border-bottom:1px solid #eee;width:32%;vertical-align:top;background:#fafafa">'+label+'</td>'
+      +'<td style="padding:6px 10px;border-bottom:1px solid #eee">'+rows+'</td></tr>';
   }
   var CSS='body{font-family:"Hiragino Kaku Gothic Pro","Meiryo",sans-serif;margin:0;padding:0;color:#222}@media print{@page{margin:20mm 15mm}}';
   var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>私の診療に関する希望書（事前指示書）</title><style>'+CSS+'</style></head><body>'
@@ -3259,10 +3278,40 @@ function buildPrintHTML(){
   /* ===== ⑥ 医療に関する希望（事前指示書） ===== */
   function advRow(label,sec){
     var v=ADV[sec]||'';
-    if(!v)v='（未回答）';
-    else if(v==='判断は家族に任せます'&&ADV[sec+'Family'])v+='（'+ADV[sec+'Family']+'）';
-    else if(v==='その他'&&ADV[sec+'Other'])v+='：'+ADV[sec+'Other'];
-    return '<tr><td style="padding:7px 10px;font-size:11px;color:#555;white-space:nowrap;border-bottom:1px solid #eee;width:35%;background:#f7f7f7;font-weight:bold">'+label+'</td><td style="padding:7px 10px;font-size:11px;color:#222;border-bottom:1px solid #eee">'+esc(v)+'</td></tr>';
+    var opts=ADV_OPTS[sec]||[];
+    var rows='';
+    if(!v){
+      rows='<div style="font-size:10.5px;color:#aaa;font-style:italic">（未回答）</div>';
+    } else {
+      opts.forEach(function(o){
+        var isSel=(v===o);
+        var suffix='';
+        if(isSel){
+          if(o==='判断は家族に任せます'&&ADV[sec+'Family'])suffix=' （'+ADV[sec+'Family']+'）';
+          else if(o==='その他'&&ADV[sec+'Other'])suffix='：'+ADV[sec+'Other'];
+          else if(sec==='organ'&&o==='臓器提供を希望します（一部のみ）'&&ADV.organPartial)suffix=' （希望臓器：'+ADV.organPartial+'）';
+          else if(sec==='body'&&o==='献体を希望します'){
+            if(ADV.bodyWishUniv)suffix+=' （希望先：'+ADV.bodyWishUniv;
+            if(ADV.bodyWishContact)suffix+=(ADV.bodyWishUniv?'　':' （')+'連絡先：'+ADV.bodyWishContact;
+            if(ADV.bodyWishUniv||ADV.bodyWishContact)suffix+='）';
+          }
+          else if(sec==='body'&&o==='既に献体登録済みです'){
+            if(ADV.bodyReg)suffix+=' （大学名：'+ADV.bodyReg;
+            if(ADV.bodyRegContact)suffix+=(ADV.bodyReg?'　':' （')+'連絡先：'+ADV.bodyRegContact;
+            if(ADV.bodyReg||ADV.bodyRegContact)suffix+='）';
+          }
+        }
+        var rowBg=isSel?'background:#f0fbf5;':'';
+        var markColor=isSel?'color:#1D9E75;font-size:13px':'color:#ccc;font-size:13px';
+        var textStyle=isSel?'font-size:11px;font-weight:bold;color:#0a5c3d':'font-size:10.5px;color:#666';
+        rows+='<div style="display:flex;align-items:flex-start;gap:6px;padding:3px 5px;border-radius:2px;'+rowBg+'">'
+          +'<span style="'+markColor+';flex-shrink:0;line-height:1.4">'+(isSel?'☑':'☐')+'</span>'
+          +'<span style="'+textStyle+';line-height:1.5">'+esc(o)+esc(suffix)+'</span>'
+          +'</div>';
+      });
+    }
+    return '<tr><td style="padding:6px 10px;font-size:11px;font-weight:bold;color:#444;white-space:nowrap;border-bottom:1px solid #eee;width:32%;vertical-align:top;background:#f7f7f7">'+label+'</td>'
+      +'<td style="padding:4px 8px;border-bottom:1px solid #eee">'+rows+'</td></tr>';
   }
   h+='<div class="pnewpage">'
     +'<div style="font-size:14px;font-weight:bold;text-align:center;margin-bottom:5px;letter-spacing:.06em">私の診療に関する希望書（事前指示書）</div>'
