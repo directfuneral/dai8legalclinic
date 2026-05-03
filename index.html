@@ -640,6 +640,13 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
       <div class="sec-lbl">現在のお墓の管理者</div>
       <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名</span><input type="text" id="en-grave-mgr-name" placeholder="例：山田 太郎"></div><div class="en-fw"><span class="en-lbl">連絡先</span><input type="text" id="en-grave-mgr-tel" placeholder="090-0000-0000"></div><div class="en-fw"><span class="en-lbl">関係</span><input type="text" id="en-grave-mgr-rel" placeholder="例：長男・親族"></div></div>
     </div>
+    <!-- 納骨堂 -->
+    <div id="grave-detail-ossuary" class="detail-card" style="display:none">
+      <div class="sec-lbl sec-lbl--teal sec-lbl--lg">納骨堂について</div>
+      <div class="fg" style="margin-bottom:8px"><span class="fl fl--sm">事前契約</span><div class="rg" id="r-ossuary-contract"></div></div>
+      <div class="en-g g1 mb-6"><div class="en-fw"><span class="en-lbl">契約先・希望先の名称</span><input type="text" id="en-ossuary-co" placeholder="例：〇〇納骨堂、△△霊廟"></div></div>
+      <div class="en-g g2 mb-6"><div class="en-fw"><span class="en-lbl">住所</span><input type="text" id="en-ossuary-addr" placeholder="例：愛知県名古屋市…"></div><div class="en-fw"><span class="en-lbl">連絡先（電話番号）</span><input type="text" id="en-ossuary-tel" placeholder="052-000-0000"></div></div>
+    </div>
     <!-- 樹木葬・散骨 -->
     <div id="grave-detail-nature" class="detail-card" style="display:none">
       <div class="sec-lbl sec-lbl--teal sec-lbl--lg" id="nature-type-lbl">樹木葬について</div>
@@ -1881,7 +1888,7 @@ function lookupZip(){
 
 /* ===== 一時保存 ===== */
 var SAVE_KEY='dai8_clinic_save';
-var EN_FIELDS=["en-name","en-birth","en-gender","en-blood","en-tel","en-date","en-zip","en-addr","en-ec1n","en-ec1r","en-ec1t","en-ec2n","en-ec2r","en-ec2t","en-fun-note","en-temple","en-temple-addr","en-temple-tel","en-grave-mgr-name","en-grave-mgr-tel","en-grave-mgr-rel","en-nature-co","en-nature-addr","en-nature-tel","en-sea-area","en-grave-other","en-funeral-co","en-funeral-branch","en-funeral-tel","en-funeral-cost","en-mutual-detail","en-coffin-items","en-portrait-loc","en-portrait-photo","en-will","en-bank-loc","en-ins-loc","en-pension","en-touki-loc","en-hoken-loc","en-docs","en-digi-sp-model","en-digi-sp-lock","en-digi-pc-model","en-digi-netbank","en-digi-email","en-digi-sns","en-digi-note","en-doc","en-doc-tel","en-law","en-law-tel","en-tax","en-tax-tel","en-msg"];
+var EN_FIELDS=["en-name","en-birth","en-gender","en-blood","en-tel","en-date","en-zip","en-addr","en-ec1n","en-ec1r","en-ec1t","en-ec2n","en-ec2r","en-ec2t","en-fun-note","en-temple","en-temple-addr","en-temple-tel","en-grave-mgr-name","en-grave-mgr-tel","en-grave-mgr-rel","en-ossuary-co","en-ossuary-addr","en-ossuary-tel","en-nature-co","en-nature-addr","en-nature-tel","en-sea-area","en-grave-other","en-funeral-co","en-funeral-branch","en-funeral-tel","en-funeral-cost","en-mutual-detail","en-coffin-items","en-portrait-loc","en-portrait-photo","en-will","en-bank-loc","en-ins-loc","en-pension","en-touki-loc","en-hoken-loc","en-docs","en-digi-sp-model","en-digi-sp-lock","en-digi-pc-model","en-digi-netbank","en-digi-email","en-digi-sns","en-digi-note","en-doc","en-doc-tel","en-law","en-law-tel","en-tax","en-tax-tel","en-msg"];
 
 function collectENFields(){
   var obj={};
@@ -2009,7 +2016,8 @@ function loadSave(){
     rChecksDone();
     rChecks('worry-list','worry',WORRY_OPTS);
     rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
-    rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+    rRadioEN('r-grave',['先祖の墓','新規購入','納骨堂','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+    rRadioEN('r-ossuary-contract',['契約済み','契約予定あり','まだない'],'ossuaryContract');
     rRadioEN('r-nature-contract',['契約済み','契約予定あり','まだない'],'natureContract');
     rRadioEN('r-estimate',['あり','なし','検討中'],'estimate');
     rRadioEN('r-mutual',['加入あり','加入なし','検討中'],'mutual');
@@ -2091,7 +2099,8 @@ function resumeFromSave(){
     renderAsecs();
     rChecksDone();rChecks('worry-list','worry',WORRY_OPTS);
     rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
-    rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+    rRadioEN('r-grave',['先祖の墓','新規購入','納骨堂','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+    rRadioEN('r-ossuary-contract',['契約済み','契約予定あり','まだない'],'ossuaryContract');
     rRadioEN('r-nature-contract',['契約済み','契約予定あり','まだない'],'natureContract');
     rRadioEN('r-estimate',['あり','なし','検討中'],'estimate');
     rRadioEN('r-mutual',['加入あり','加入なし','検討中'],'mutual');
@@ -3036,6 +3045,7 @@ function buildPrintHTML(){
       ['菩提寺',gv('en-temple')?(gv('en-temple')+(gv('en-temple-addr')?' 住所：'+gv('en-temple-addr'):'')+(gv('en-temple-tel')?' TEL:'+gv('en-temple-tel'):'')):'（記載なし）'],
       ['お墓の管理者',gv('en-grave-mgr-name')?(gv('en-grave-mgr-name')+(gv('en-grave-mgr-rel')?' （'+gv('en-grave-mgr-rel')+'）':'')+(gv('en-grave-mgr-tel')?' TEL:'+gv('en-grave-mgr-tel'):'')):'（記載なし）'],
       ['樹木葬・散骨',EN['grave']==='樹木葬'||EN['grave']==='散骨'?(EN['natureContract']||'')+(gv('en-nature-co')?' 先：'+gv('en-nature-co'):'')+(gv('en-nature-addr')?' 住所：'+gv('en-nature-addr'):'')+(gv('en-nature-tel')?' TEL:'+gv('en-nature-tel'):'')+(gv('en-sea-area')?' 希望海域：'+gv('en-sea-area'):''):'（該当なし）'],
+      ['納骨堂',EN['grave']==='納骨堂'?(EN['ossuaryContract']||'')+(gv('en-ossuary-co')?' 先：'+gv('en-ossuary-co'):'')+(gv('en-ossuary-addr')?' 住所：'+gv('en-ossuary-addr'):'')+(gv('en-ossuary-tel')?' TEL:'+gv('en-ossuary-tel'):''):'（該当なし）'],
       ['焼骨その他希望',EN['grave']==='その他'?gv('en-grave-other')||'（詳細未記入）':'（該当なし）']
     ]},
     {t:'重要書類の保管場所',rows:[['遺言書',gv('en-will')],['通帳',gv('en-bank-loc')],['介護保険証書・障害者手帳等',gv('en-ins-loc')],['年金手帳',gv('en-pension')],['登記済証（権利書）',gv('en-touki-loc')],['保険証券',gv('en-hoken-loc')],['その他',gv('en-docs')]]},
@@ -3748,7 +3758,8 @@ rRadio('r-par',['両方存命','一方存命','両方故人'],'par',function(){r
 renderSibTypeCounters();
 rChecksDone();rChecks('worry-list','worry',WORRY_OPTS);
 rRadioEN('r-fun',['一般葬','家族葬','直葬（火葬のみ）','お任せ'],'fun');
-rRadioEN('r-grave',['先祖の墓','新規購入','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+rRadioEN('r-grave',['先祖の墓','新規購入','納骨堂','樹木葬','散骨','収骨しない','その他'],'grave',renderGraveDetail);
+    rRadioEN('r-ossuary-contract',['契約済み','契約予定あり','まだない'],'ossuaryContract');
     rRadioEN('r-nature-contract',['契約済み','契約予定あり','まだない'],'natureContract');
     rRadioEN('r-estimate',['あり','なし','検討中'],'estimate');
 rRadioEN('r-mutual',['加入あり','加入なし','検討中'],'mutual');
@@ -3764,10 +3775,12 @@ rRadioEN('r-portrait',['準備済み','未準備','遺影の必要なし'],'port
 function renderGraveDetail(){
   var g=EN['grave']||'先祖の墓';
   var secTemple=document.getElementById('grave-detail-temple');
+  var secOssuary=document.getElementById('grave-detail-ossuary');
   var secNature=document.getElementById('grave-detail-nature');
   var secOther=document.getElementById('grave-detail-other');
   var secNobone=document.getElementById('grave-detail-nobone');
   if(secTemple)secTemple.style.display=(g==='先祖の墓')?'':'none';
+  if(secOssuary)secOssuary.style.display=(g==='納骨堂')?'':'none';
   if(secNature)secNature.style.display=(g==='樹木葬'||g==='散骨')?'':'none';
   if(secOther)secOther.style.display=(g==='その他')?'':'none';
   if(secNobone)secNobone.style.display=(g==='収骨しない')?'':'none';
@@ -3778,6 +3791,7 @@ function renderGraveDetail(){
   var lbl=document.getElementById('nature-type-lbl');
   if(lbl)lbl.textContent=(g==='散骨'?'散骨':'樹木葬')+'について';
 }
+(function(){renderGraveDetail();})();
 function updateMutualDetail(){var w=document.getElementById('en-mutual-detail-wrap');if(w)w.style.display=EN['mutual']==='加入あり'?'':'none';}
 /* 互助会詳細の初期非表示 */
 (function(){var w=document.getElementById('en-mutual-detail-wrap');if(w)w.style.display='none';})();
