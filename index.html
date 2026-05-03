@@ -18,6 +18,17 @@
 <meta property="og:locale" content="ja_JP">
 <!-- Google Search Console所有権確認タグ（Search Consoleから取得したタグをここに貼り付け） -->
 <meta name="google-site-verification" content="QLwZIZWfbYf60gd1mYy1ziZBozd6SCq3Hx784EHJlpg" />
+<!-- ===== コンテンツセキュリティポリシー ===== -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https://api.qrserver.com;
+  connect-src 'self' https://zipcloud.ibsnet.co.jp;
+  font-src 'self';
+  object-src 'none';
+  base-uri 'self';
+">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#fff;--bg2:#f8f9fa;--bg3:#f0f2f5;--border:#e0e0e0;--border2:#c8c8c8;--text:#111;--text2:#555;--text3:#888;--teal:#1D9E75;--teal2:#0F6E56;--teal3:#E1F5EE;--blue:#185FA5;--blue2:#0C447C;--blue3:#E6F1FB;--amber:#EF9F27;--red:#E24B4A;--r:8px;--r2:12px}
@@ -2017,7 +2028,8 @@ function loadSave(){
 
 function clearSave(){
   if(!localStorage.getItem(SAVE_KEY)){alert('保存データがありません。');return;}
-  if(!confirm('保存データを消去しますか？'))return;
+  if(!confirm('保存データを消去しますか？\n（共有PCをご利用の場合は必ず消去してください）'))return;
+  /* SAVE_KEY のみ削除（他サイトのデータを巻き込まないよう localStorage.clear() は使用しない） */
   localStorage.removeItem(SAVE_KEY);
   document.getElementById('save-time').textContent='';
   document.getElementById('load-btn').style.display='none';
@@ -2948,7 +2960,7 @@ function buildExperts(){
   return list;
 }
 function gv(id){var e=document.getElementById(id);return e?e.value:'';}
-function esc(s){if(!s)return '&nbsp;';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function esc(s){if(!s)return '&nbsp;';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function buildPrintHTML(){
   var name=gv('en-name')||'　　　　　';var date=gv('en-date')||'　　年　月　日';
   var birth=gv('en-birth');
@@ -3620,6 +3632,11 @@ function renderPets(){
   });
 }
 
+/* ===== XSS対策：HTML出力エスケープ関数群 =====
+ *  esc2(s)  : input value="..." 属性用（&<>"をエスケープ）
+ *  esc(s)   : 印刷HTML テキストコンテンツ用（&<>"をエスケープ、空値→&nbsp;）
+ *  escH(s)  : printADV() 内ローカル定義（\n→<br>変換付き）
+ * ============================================ */
 function esc2(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function copyURL(btn){
@@ -3814,7 +3831,7 @@ checkExistingSave();
 </footer>
 <script>document.getElementById('footer-year').textContent=new Date().getFullYear();</script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha384-rRoXxn2yHlrZYB587Ki9RO1tONhLdM6XfORg7Rw4uwH4/Fh/5nP7IUX91bkaKUgs" crossorigin="anonymous"></script>
 
 <script>
 (function(){
