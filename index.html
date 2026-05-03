@@ -3974,35 +3974,76 @@ checkExistingSave();
 <script>
 /* ===== 印刷レポートをCanvasに変換（LINE共有・画像保存の共通処理） ===== */
 function _captureReport(callback){
-  // 印刷用HTMLを生成して一時コンテナに挿入
-  var html=buildPrintHTML();
-  var wrap=document.createElement('div');
-  // .ppage クラスで既存の印刷スタイルを適用
-  wrap.className='ppage';
-  wrap.style.cssText='position:fixed;top:0;left:-9999px;width:794px;background:#ffffff;z-index:-9999;padding:20px 28px;box-sizing:border-box;';
-  wrap.innerHTML=html;
+  var RENDER_W = 794; // A4相当のCSS論理幅（px）
+
+  // 印刷用HTMLを生成して一時コンテナに挿入（画面外）
+  var html = buildPrintHTML();
+  var wrap = document.createElement('div');
+  wrap.className = 'ppage';
+  // 画面外に固定配置。CSSサイズはRENDER_Wで固定し、html2canvasが正確に幅を取得できるようにする
+  wrap.style.cssText = [
+    'position:fixed',
+    'top:0',
+    'left:-9999px',
+    'width:' + RENDER_W + 'px',
+    'background:#ffffff',
+    'z-index:-9999',
+    'padding:20px 28px',
+    'box-sizing:border-box',
+    'overflow:visible',
+    // フォントレンダリングを鮮明にするためサブピクセルを有効化
+    '-webkit-font-smoothing:antialiased',
+    'text-rendering:geometricPrecision'
+  ].join(';') + ';';
+  wrap.innerHTML = html;
   document.body.appendChild(wrap);
 
-  // SVGなどのレンダリングを待ってからキャプチャ
+  // ── スケール算出 ──────────────────────────────────────
+  // devicePixelRatio を考慮し「最低3倍」「Retinaでは4倍以上」を保証する
+  // 例: DPR=1(標準) → scale=3 (出力幅 2382px)
+  //     DPR=2(Retina) → scale=4 (出力幅 3176px)
+  //     DPR=3(高精細モバイル) → scale=6 (出力幅 4764px)
+  var dpr   = window.devicePixelRatio || 1;
+  var scale = Math.max(Math.ceil(dpr) * 2, 3);
+
+  // ── レンダリング待機後にキャプチャ ─────────────────────
   requestAnimationFrame(function(){
     setTimeout(function(){
-      html2canvas(wrap,{
-        scale:2,
-        useCORS:true,
-        allowTaint:false,
-        backgroundColor:'#ffffff',
-        scrollX:0,
-        scrollY:0,
-        width:794,
-        logging:false
-      }).then(function(canvas){
-        if(wrap.parentNode)document.body.removeChild(wrap);
-        callback(null,canvas);
+      html2canvas(wrap, {
+        scale         : scale,
+        useCORS       : true,
+        allowTaint    : false,
+        backgroundColor: '#ffffff',
+        scrollX       : 0,
+        scrollY       : 0,
+        width         : RENDER_W,
+        logging       : false,
+        imageTimeout  : 0        // 埋め込み画像のタイムアウトを無効化
+      }).then(function(rawCanvas){
+        if(wrap.parentNode) document.body.removeChild(wrap);
+
+        // ── 高解像度Canvasに転写 ────────────────────────
+        // rawCanvas.width/height はすでに RENDER_W × scale の物理ピクセル数
+        // 新Canvasに 1:1 で描画することでビットマップデータをそのまま維持する
+        var out    = document.createElement('canvas');
+        out.width  = rawCanvas.width;   // 物理ピクセル（例: 2382px〜）
+        out.height = rawCanvas.height;
+        // CSSサイズをCSS論理幅に収める
+        //   → 表示時は794px相当に見えるが、保存/共有は高解像度データのまま
+        out.style.width  = RENDER_W + 'px';
+        out.style.height = Math.round(rawCanvas.height / scale) + 'px';
+
+        var ctx = out.getContext('2d');
+        ctx.imageSmoothingEnabled  = true;
+        ctx.imageSmoothingQuality  = 'high';
+        ctx.drawImage(rawCanvas, 0, 0);
+
+        callback(null, out);
       }).catch(function(err){
-        if(wrap.parentNode)document.body.removeChild(wrap);
-        callback(err,null);
+        if(wrap.parentNode) document.body.removeChild(wrap);
+        callback(err, null);
       });
-    },120);
+    }, 200); // SVG・テーブルのレイアウト完了を待つ
   });
 }
 
