@@ -109,8 +109,10 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .en-fw input,.en-fw select,.en-fw textarea{font-size:13px;padding:6px 8px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);width:100%}
 .en-fw input:focus,.en-fw select:focus,.en-fw textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px rgba(29,158,117,.12)}
 .en-fw textarea{resize:vertical;min-height:70px;line-height:1.6}
-/* ===== #en-birth: モバイルフレンドリー対応 ===== */
-#en-birth{font-size:16px;padding:10px 8px;min-height:44px;cursor:pointer;-webkit-appearance:none;appearance:none}
+/* ===== en-birth: セレクト3つによるモバイルフレンドリー対応 ===== */
+.birth-sel-wrap{display:flex;gap:6px;align-items:center}
+.birth-sel{font-size:16px;padding:9px 4px;min-height:44px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);cursor:pointer;flex:1;width:0}
+.birth-sel:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px rgba(29,158,117,.12)}
 .en-hint{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
 /* ===== ユーティリティ: セクション小見出し (旧: inline font-size:12px;font-weight:600;color:...) ===== */
 .sec-lbl{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px}
@@ -610,7 +612,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="snum">STEP 5 / 5</div><div class="stit">エンディングノート</div>
   <div class="sdesc">大切な情報を記録しておきましょう。印刷時に財産目録と合わせて出力されます。</div>
   <div class="en-sec"><div class="en-sh">あなたの基本情報</div>
-    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名（フリガナ）</span><input type="text" id="en-name" placeholder="例：ヤマダ タロウ"></div><div class="en-fw"><span class="en-lbl">生年月日</span><input type="date" id="en-birth" max=""><span class="en-hint">生年月日を選択してください</span></div><div class="en-fw"><span class="en-lbl">性別</span><select id="en-gender"><option>男性</option><option>女性</option><option>その他</option><option>回答しない</option></select></div></div>
+    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名（フリガナ）</span><input type="text" id="en-name" placeholder="例：ヤマダ タロウ"></div><div class="en-fw"><span class="en-lbl">生年月日</span><div class="birth-sel-wrap"><select id="en-birth-y" class="birth-sel" aria-label="年"></select><select id="en-birth-m" class="birth-sel" aria-label="月"></select><select id="en-birth-d" class="birth-sel" aria-label="日"></select></div><input type="hidden" id="en-birth"><span class="en-hint">生年月日を選択してください</span></div><div class="en-fw"><span class="en-lbl">性別</span><select id="en-gender"><option>男性</option><option>女性</option><option>その他</option><option>回答しない</option></select></div></div>
     <div class="en-g g3"><div class="en-fw"><span class="en-lbl">血液型</span><select id="en-blood"><option>A型</option><option>B型</option><option>O型</option><option>AB型</option><option>不明</option></select></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-tel" placeholder="090-0000-0000"></div><div class="en-fw"><span class="en-lbl">作成日</span><input type="text" id="en-date" placeholder="令和7年4月13日"></div></div>
     <div class="en-fw">
       <span class="en-lbl">郵便番号 → 住所自動入力</span>
@@ -1896,6 +1898,7 @@ function restoreENFields(obj){
     var el=document.getElementById(id);
     if(el&&obj[id]!==undefined)el.value=obj[id];
   });
+  if(typeof window._syncBirthSelects==='function')window._syncBirthSelects();
 }
 
 function doSave(btn){
@@ -3790,16 +3793,69 @@ renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();renderKeim
     el.value=wareki+'年'+m+'月'+day+'日';
   }
 })();
-/* ④ en-birth: 今日の日付を max 属性に動的セット（未来日付を選択不可にする） */
+/* ④ en-birth: セレクト3つで生年月日入力（iOS/Android ドラムロール対応） */
 (function(){
-  var el=document.getElementById('en-birth');
-  if(el){
-    var d=new Date();
-    var yyyy=d.getFullYear();
-    var mm=d.getMonth()+1;
-    var dd=d.getDate();
-    el.max=yyyy+'-'+(mm<10?'0':'')+mm+'-'+(dd<10?'0':'')+dd;
+  var selY=document.getElementById('en-birth-y');
+  var selM=document.getElementById('en-birth-m');
+  var selD=document.getElementById('en-birth-d');
+  var hidden=document.getElementById('en-birth');
+  if(!selY||!selM||!selD||!hidden)return;
+
+  /* 年の選択肢：今年〜1900年 */
+  var thisYear=new Date().getFullYear();
+  var fY=document.createDocumentFragment();
+  var bY=document.createElement('option');bY.value='';bY.textContent='年';fY.appendChild(bY);
+  for(var y=thisYear;y>=1900;y--){
+    var oy=document.createElement('option');oy.value=y;oy.textContent=y+'年';fY.appendChild(oy);
   }
+  selY.appendChild(fY);
+
+  /* 月の選択肢：1〜12月 */
+  var fM=document.createDocumentFragment();
+  var bM=document.createElement('option');bM.value='';bM.textContent='月';fM.appendChild(bM);
+  for(var mo=1;mo<=12;mo++){
+    var om=document.createElement('option');om.value=mo;om.textContent=mo+'月';fM.appendChild(om);
+  }
+  selM.appendChild(fM);
+
+  /* 日の選択肢を年・月に合わせて動的更新（うるう年対応） */
+  function updateDays(){
+    var vy=parseInt(selY.value)||0;
+    var vm=parseInt(selM.value)||0;
+    var prevD=selD.value;
+    var maxD=(vy&&vm)?new Date(vy,vm,0).getDate():31;
+    var fD=document.createDocumentFragment();
+    var bD=document.createElement('option');bD.value='';bD.textContent='日';fD.appendChild(bD);
+    for(var d=1;d<=maxD;d++){
+      var od=document.createElement('option');od.value=d;od.textContent=d+'日';fD.appendChild(od);
+    }
+    selD.innerHTML='';selD.appendChild(fD);
+    if(prevD&&parseInt(prevD)<=maxD)selD.value=prevD;
+  }
+  updateDays();
+
+  /* 3つの値が揃ったら hidden input に「YYYY年M月D日」形式で書き込む */
+  function syncHidden(){
+    var vy=selY.value,vm=selM.value,vd=selD.value;
+    hidden.value=(vy&&vm&&vd)?(vy+'年'+vm+'月'+vd+'日'):'';
+  }
+
+  selY.addEventListener('change',function(){updateDays();syncHidden();});
+  selM.addEventListener('change',function(){updateDays();syncHidden();});
+  selD.addEventListener('change',syncHidden);
+
+  /* localStorage 復元後にセレクトへ反映（restoreENFields から呼ばれる） */
+  window._syncBirthSelects=function(){
+    var val=hidden.value;
+    if(!val)return;
+    /* 「YYYY年M月D日」と「YYYY-MM-DD」の両形式に対応 */
+    var r=val.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/)||val.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if(!r)return;
+    selY.value=parseInt(r[1]);
+    selM.value=parseInt(r[2]);
+    updateDays();
+    selD.value=parseInt(r[3]);
+  };
 })();
 checkExistingSave();
 </script>
