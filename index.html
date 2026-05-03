@@ -134,7 +134,6 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .stit{position:relative}
 .stit-dept{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--teal2);border-radius:3px;padding:1px 7px;margin-right:7px;vertical-align:middle;letter-spacing:.05em}
 /* ===== 和暦ヘルパー ===== */
-.en-wareki{display:inline-block;font-size:11px;color:var(--teal2);background:var(--teal3);border-radius:3px;padding:1px 7px;margin-top:3px;font-weight:600;min-height:1em}
 /* ===== detail-card: grave-detail-* などの inline スタイルを代替 ===== */
 .detail-card{margin-top:10px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 12px}
 .detail-card--warn{margin-top:10px;background:#FFF8E1;border:0.5px solid #FFD54F;border-radius:var(--r);padding:10px 14px}
@@ -622,7 +621,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="snum">STEP 5 / 5</div><div class="stit"><span class="stit-dept">終活科</span>エンディングノート</div>
   <div class="sdesc">大切な情報を記録しておきましょう。印刷時に財産目録と合わせて出力されます。</div>
   <div class="en-sec"><div class="en-sh">あなたの基本情報</div>
-    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名（フリガナ）</span><input type="text" id="en-name" placeholder="例：ヤマダ タロウ"></div><div class="en-fw"><span class="en-lbl">生年月日</span><div class="birth-sel-wrap"><select id="en-birth-y" class="birth-sel" aria-label="年"></select><select id="en-birth-m" class="birth-sel" aria-label="月"></select><select id="en-birth-d" class="birth-sel" aria-label="日"></select></div><input type="hidden" id="en-birth"><span class="en-hint">生年月日を選択してください</span><span id="en-wareki" class="en-wareki"></span></div><div class="en-fw"><span class="en-lbl">性別</span><select id="en-gender"><option>男性</option><option>女性</option><option>その他</option><option>回答しない</option></select></div></div>
+    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名（フリガナ）</span><input type="text" id="en-name" placeholder="例：ヤマダ タロウ"></div><div class="en-fw"><span class="en-lbl">生年月日</span><div class="birth-sel-wrap"><select id="en-birth-y" class="birth-sel" aria-label="年"></select><select id="en-birth-m" class="birth-sel" aria-label="月"></select><select id="en-birth-d" class="birth-sel" aria-label="日"></select></div><input type="hidden" id="en-birth"><span class="en-hint">生年月日を選択してください</span></div><div class="en-fw"><span class="en-lbl">性別</span><select id="en-gender"><option>男性</option><option>女性</option><option>その他</option><option>回答しない</option></select></div></div>
     <div class="en-g g3"><div class="en-fw"><span class="en-lbl">血液型</span><select id="en-blood"><option>A型</option><option>B型</option><option>O型</option><option>AB型</option><option>不明</option></select></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-tel" placeholder="090-0000-0000"></div><div class="en-fw"><span class="en-lbl">作成日</span><input type="text" id="en-date" placeholder="令和7年4月13日"></div></div>
     <div class="en-fw">
       <span class="en-lbl">郵便番号 → 住所自動入力</span>
@@ -3818,22 +3817,6 @@ renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();renderKeim
   }
 })();
 
-/* ===== 和暦ヘルパー ===== */
-function toWareki(y){
-  if(!y)return'';
-  if(y>=2019)return'令和'+(y-2018)+'年';
-  if(y>=1989)return'平成'+(y-1988)+'年';
-  if(y>=1926)return'昭和'+(y-1925)+'年';
-  if(y>=1912)return'大正'+(y-1911)+'年';
-  if(y>=1868)return'明治'+(y-1867)+'年';
-  return'';
-}
-function updateWareki(){
-  var el=document.getElementById('en-wareki');
-  if(!el)return;
-  var y=parseInt(document.getElementById('en-birth-y').value)||0;
-  el.textContent=y?toWareki(y):'';
-}
 /* ④ en-birth: セレクト3つで生年月日入力（iOS/Android ドラムロール対応） */
 (function(){
   var selY=document.getElementById('en-birth-y');
@@ -3842,12 +3825,21 @@ function updateWareki(){
   var hidden=document.getElementById('en-birth');
   if(!selY||!selM||!selD||!hidden)return;
 
-  /* 年の選択肢：今年〜1900年 */
+  /* 和暦変換 */
+  function getEraName(year){
+    if(year>=2019)return '令和'+(year===2019?'元':year-2018);
+    if(year>=1989)return '平成'+(year===1989?'元':year-1988);
+    if(year>=1926)return '昭和'+(year===1926?'元':year-1925);
+    if(year>=1912)return '大正'+(year===1912?'元':year-1911);
+    return '明治'+(year-1867);
+  }
+
+  /* 年の選択肢：今年〜1900年（西暦＋和暦併記） */
   var thisYear=new Date().getFullYear();
   var fY=document.createDocumentFragment();
   var bY=document.createElement('option');bY.value='';bY.textContent='年';fY.appendChild(bY);
   for(var y=thisYear;y>=1900;y--){
-    var oy=document.createElement('option');oy.value=y;oy.textContent=y+'年';fY.appendChild(oy);
+    var oy=document.createElement('option');oy.value=y;oy.textContent=y+'年（'+getEraName(y)+'年）';fY.appendChild(oy);
   }
   selY.appendChild(fY);
 
@@ -3881,7 +3873,7 @@ function updateWareki(){
     hidden.value=(vy&&vm&&vd)?(vy+'年'+vm+'月'+vd+'日'):'';
   }
 
-  selY.addEventListener('change',function(){updateDays();syncHidden();updateWareki();});
+  selY.addEventListener('change',function(){updateDays();syncHidden();});
   selM.addEventListener('change',function(){updateDays();syncHidden();});
   selD.addEventListener('change',syncHidden);
 
