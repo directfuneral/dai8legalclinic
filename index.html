@@ -3972,71 +3972,123 @@ checkExistingSave();
 <div id="img-save-toast">📷 画像を保存しました</div>
 
 <script>
-/* ===== LINE共有 ===== */
-function shareToLINE(){
-  // 処方箋アドバイスの見出しを収集
-  var items=document.querySelectorAll('#alist .ai-hed');
-  var lines=[];
-  items.forEach(function(el,i){
-    if(i<5)lines.push('・'+el.textContent.trim());
+/* ===== 印刷レポートをCanvasに変換（LINE共有・画像保存の共通処理） ===== */
+function _captureReport(callback){
+  // 印刷用HTMLを生成して一時コンテナに挿入
+  var html=buildPrintHTML();
+  var wrap=document.createElement('div');
+  // .ppage クラスで既存の印刷スタイルを適用
+  wrap.className='ppage';
+  wrap.style.cssText='position:fixed;top:0;left:-9999px;width:794px;background:#ffffff;z-index:-9999;padding:20px 28px;box-sizing:border-box;';
+  wrap.innerHTML=html;
+  document.body.appendChild(wrap);
+
+  // SVGなどのレンダリングを待ってからキャプチャ
+  requestAnimationFrame(function(){
+    setTimeout(function(){
+      html2canvas(wrap,{
+        scale:2,
+        useCORS:true,
+        allowTaint:false,
+        backgroundColor:'#ffffff',
+        scrollX:0,
+        scrollY:0,
+        width:794,
+        logging:false
+      }).then(function(canvas){
+        if(wrap.parentNode)document.body.removeChild(wrap);
+        callback(null,canvas);
+      }).catch(function(err){
+        if(wrap.parentNode)document.body.removeChild(wrap);
+        callback(err,null);
+      });
+    },120);
   });
-  var name='';
-  try{name=document.getElementById('en-name').value||'';}catch(e){}
-  var msg='【終活リーガルクリニック 診断結果】\n';
-  if(name)msg+=name+'様の診断結果です。\n\n';
-  msg+='主な検討事項:\n'+lines.join('\n');
-  msg+='\n\n詳細をご確認の上、ご相談いただければ幸いです。\n第八行政書士事務所\nhttps://ihinseiri-dai8.jp/';
-  var url='https://line.me/R/msg/text/?'+encodeURIComponent(msg);
-  window.open(url,'_blank','noopener,noreferrer');
 }
 
-/* ===== 画像保存 ===== */
+/* ===== 画像として保存 ===== */
+var _IMG_BTN_HTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 画像として保存';
+var _LINE_BTN_HTML='<svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;flex-shrink:0"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg> LINEで相談・共有';
+
 function saveAsImage(){
   var btn=document.getElementById('imgSaveBtn');
-  if(btn.classList.contains('saving'))return;
+  if(!btn||btn.classList.contains('saving'))return;
   btn.classList.add('saving');
   btn.textContent='⏳ 生成中...';
 
-  var target=document.getElementById('s6');
-  var opt={
-    scale:2,
-    useCORS:true,
-    allowTaint:false,
-    backgroundColor:'#ffffff',
-    scrollX:0,
-    scrollY:-window.scrollY,
-    windowWidth:document.documentElement.scrollWidth,
-    windowHeight:document.documentElement.scrollHeight,
-    ignoreElements:function(el){
-      // 共有バー・ボタン類・保存バーを除外
-      return el.classList&&(
-        el.classList.contains('share-result-wrap')||
-        el.classList.contains('share-action-row')||
-        el.classList.contains('btn-prev')||
-        el.classList.contains('btn-next')
-      );
+  _captureReport(function(err,canvas){
+    btn.classList.remove('saving');
+    btn.innerHTML=_IMG_BTN_HTML;
+    if(err){
+      console.error('画像生成エラー:',err);
+      alert('画像の生成に失敗しました。\nブラウザの設定またはCORSを確認してください。');
+      return;
     }
-  };
-
-  html2canvas(target,opt).then(function(canvas){
-    var link=document.createElement('a');
     var d=new Date();
-    var ts=d.getFullYear()+''+(d.getMonth()+1+'').padStart(2,'0')+(d.getDate()+'').padStart(2,'0');
-    link.download='終活診断結果_'+ts+'.png';
+    var ts=d.getFullYear()+''+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+    var link=document.createElement('a');
+    link.download='終活診断書_'+ts+'.png';
     link.href=canvas.toDataURL('image/png');
     link.click();
 
-    // フィードバック表示
     var toast=document.getElementById('img-save-toast');
     toast.style.display='block';
     setTimeout(function(){toast.style.display='none';},3000);
-  }).catch(function(err){
-    console.error('画像生成エラー:',err);
-    alert('画像の生成に失敗しました。ブラウザの設定をご確認ください。');
-  }).finally(function(){
-    btn.classList.remove('saving');
-    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 画像として保存';
   });
+}
+
+/* ===== LINEで共有 ===== */
+function shareToLINE(){
+  var btn=document.querySelector('.btn-line-share');
+  if(!btn||btn.classList.contains('saving'))return;
+  btn.classList.add('saving');
+  btn.textContent='⏳ 準備中...';
+
+  _captureReport(function(err,canvas){
+    btn.classList.remove('saving');
+    btn.innerHTML=_LINE_BTN_HTML;
+    if(err){
+      console.error('画像生成エラー:',err);
+      alert('画像の生成に失敗しました。');
+      return;
+    }
+
+    canvas.toBlob(function(blob){
+      var d=new Date();
+      var ts=d.getFullYear()+''+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+      var fileName='終活診断書_'+ts+'.png';
+      var file=new File([blob],fileName,{type:'image/png'});
+
+      // Web Share API（iOS Safari / Android Chrome 対応 — LINEへネイティブ共有）
+      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+        navigator.share({
+          files:[file],
+          title:'終活診断書',
+          text:'終活リーガルクリニックの診断結果です。'
+        }).catch(function(e){
+          if(e.name!=='AbortError')_lineFallback(blob,fileName);
+        });
+      } else {
+        _lineFallback(blob,fileName);
+      }
+    },'image/png');
+  });
+}
+
+/* ===== LINE共有フォールバック（PCなどWeb Share非対応環境） ===== */
+function _lineFallback(blob,fileName){
+  // ①画像を先にダウンロード
+  var objUrl=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=objUrl;a.download=fileName;a.click();
+  setTimeout(function(){URL.revokeObjectURL(objUrl);},6000);
+
+  // ②LINEを開くか確認
+  setTimeout(function(){
+    if(confirm('診断書画像（'+fileName+'）を保存しました。\n\nLINEを開いて、トーク画面から画像を添付してお送りください。\n\n今すぐLINEを開きますか？')){
+      window.open('https://line.me/','_blank','noopener,noreferrer');
+    }
+  },400);
 }
 </script>
 
