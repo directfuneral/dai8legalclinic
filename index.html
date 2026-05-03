@@ -23,7 +23,7 @@
   default-src 'self';
   script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline';
-  img-src 'self' data: https://api.qrserver.com;
+  img-src 'self' data: blob: https://api.qrserver.com;
   connect-src 'self' https://zipcloud.ibsnet.co.jp;
   font-src 'self';
   object-src 'none';
@@ -178,6 +178,15 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .bt{background:#9FE1CB;color:#085041}.bb{background:#B5D4F4;color:#0C447C}.ba{background:#FAC775;color:#633806}
 .print-btn{width:100%;padding:12px;background:var(--blue);color:white;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;margin-top:1rem}
 .print-btn:hover{background:var(--blue2)}
+/* ===== 共有・保存ボタン行 ===== */
+.share-action-row{display:flex;gap:8px;margin-top:.6rem}
+.share-action-row .btn-line-share{flex:1;padding:12px 8px;background:#06C755;color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s}
+.share-action-row .btn-line-share:hover{opacity:.85}
+.share-action-row .btn-img-save{flex:1;padding:12px 8px;background:#534AB7;color:white;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s}
+.share-action-row .btn-img-save:hover{opacity:.85}
+.share-action-row .btn-img-save.saving{opacity:.65;cursor:wait}
+/* ===== 保存フィードバックバナー ===== */
+#img-save-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:1002;background:rgba(15,110,86,.96);color:#fff;padding:14px 22px;border-radius:var(--r2);font-size:15px;font-weight:600;box-shadow:0 3px 14px rgba(0,0,0,.28);display:none;white-space:nowrap;pointer-events:none}
 .pvpanel{margin-top:1.5rem;border:0.5px solid var(--border);border-radius:var(--r2);overflow:hidden;display:none}
 .pvtb{background:var(--bg2);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border)}
 .pvtbtit{font-size:13px;font-weight:600;color:var(--text)}
@@ -438,6 +447,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   "serviceType": ["遺言書作成", "相続手続", "遺品整理", "死後事務委任", "任意後見契約", "終活サポート"]
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div class="outer" id="mainWrap">
@@ -971,6 +981,16 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   </div>
 </div>
 <button class="print-btn" onclick="printDirect()">📄 診断書を印刷する</button>
+  <div class="share-action-row">
+    <button class="btn-line-share" onclick="shareToLINE()">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;flex-shrink:0"><path d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+      LINEで相談・共有
+    </button>
+    <button class="btn-img-save" id="imgSaveBtn" onclick="saveAsImage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      画像として保存
+    </button>
+  </div>
   <div style="font-size:12px;color:#888;text-align:center;margin-top:5px">表紙 → 相続関係図 → 財産目録 → エンディングノート → 契約一覧 → 処方箋の順で印刷されます（ポップアップ許可が必要）</div>
   <div style="font-size:12px;color:#555;text-align:center;margin-top:8px;padding:8px 12px;background:#f0f6ff;border-radius:6px;border:1px solid #c5d9f5">💡 <strong>PDFで保存したい場合：</strong>印刷画面が開いたら、送信先（プリンター）を「<strong>PDFに保存</strong>」に変更してください。</div>
   <button class="btn-prev" style="margin-top:8px" onclick="go(5)">← 入力内容を修正する</button>
@@ -3948,6 +3968,77 @@ checkExistingSave();
   ✅ 保存しました
   <span class="toast-sub">次回もこの続きから始められます</span>
 </div>
+<!-- 画像保存フィードバックトースト -->
+<div id="img-save-toast">📷 画像を保存しました</div>
+
+<script>
+/* ===== LINE共有 ===== */
+function shareToLINE(){
+  // 処方箋アドバイスの見出しを収集
+  var items=document.querySelectorAll('#alist .ai-hed');
+  var lines=[];
+  items.forEach(function(el,i){
+    if(i<5)lines.push('・'+el.textContent.trim());
+  });
+  var name='';
+  try{name=document.getElementById('en-name').value||'';}catch(e){}
+  var msg='【終活リーガルクリニック 診断結果】\n';
+  if(name)msg+=name+'様の診断結果です。\n\n';
+  msg+='主な検討事項:\n'+lines.join('\n');
+  msg+='\n\n詳細をご確認の上、ご相談いただければ幸いです。\n第八行政書士事務所\nhttps://ihinseiri-dai8.jp/';
+  var url='https://line.me/R/msg/text/?'+encodeURIComponent(msg);
+  window.open(url,'_blank','noopener,noreferrer');
+}
+
+/* ===== 画像保存 ===== */
+function saveAsImage(){
+  var btn=document.getElementById('imgSaveBtn');
+  if(btn.classList.contains('saving'))return;
+  btn.classList.add('saving');
+  btn.textContent='⏳ 生成中...';
+
+  var target=document.getElementById('s6');
+  var opt={
+    scale:2,
+    useCORS:true,
+    allowTaint:false,
+    backgroundColor:'#ffffff',
+    scrollX:0,
+    scrollY:-window.scrollY,
+    windowWidth:document.documentElement.scrollWidth,
+    windowHeight:document.documentElement.scrollHeight,
+    ignoreElements:function(el){
+      // 共有バー・ボタン類・保存バーを除外
+      return el.classList&&(
+        el.classList.contains('share-result-wrap')||
+        el.classList.contains('share-action-row')||
+        el.classList.contains('btn-prev')||
+        el.classList.contains('btn-next')
+      );
+    }
+  };
+
+  html2canvas(target,opt).then(function(canvas){
+    var link=document.createElement('a');
+    var d=new Date();
+    var ts=d.getFullYear()+''+(d.getMonth()+1+'').padStart(2,'0')+(d.getDate()+'').padStart(2,'0');
+    link.download='終活診断結果_'+ts+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+
+    // フィードバック表示
+    var toast=document.getElementById('img-save-toast');
+    toast.style.display='block';
+    setTimeout(function(){toast.style.display='none';},3000);
+  }).catch(function(err){
+    console.error('画像生成エラー:',err);
+    alert('画像の生成に失敗しました。ブラウザの設定をご確認ください。');
+  }).finally(function(){
+    btn.classList.remove('saving');
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 画像として保存';
+  });
+}
+</script>
 
 </body>
 </html>
