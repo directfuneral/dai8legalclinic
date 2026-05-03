@@ -109,6 +109,9 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .en-fw input,.en-fw select,.en-fw textarea{font-size:13px;padding:6px 8px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);width:100%}
 .en-fw input:focus,.en-fw select:focus,.en-fw textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px rgba(29,158,117,.12)}
 .en-fw textarea{resize:vertical;min-height:70px;line-height:1.6}
+/* ===== #en-birth: モバイルフレンドリー対応 ===== */
+#en-birth{font-size:16px;padding:10px 8px;min-height:44px;cursor:pointer;-webkit-appearance:none;appearance:none}
+.en-hint{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
 /* ===== ユーティリティ: セクション小見出し (旧: inline font-size:12px;font-weight:600;color:...) ===== */
 .sec-lbl{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px}
 .sec-lbl--teal{color:var(--teal2)}
@@ -607,7 +610,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="snum">STEP 5 / 5</div><div class="stit">エンディングノート</div>
   <div class="sdesc">大切な情報を記録しておきましょう。印刷時に財産目録と合わせて出力されます。</div>
   <div class="en-sec"><div class="en-sh">あなたの基本情報</div>
-    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名（フリガナ）</span><input type="text" id="en-name" placeholder="例：ヤマダ タロウ"></div><div class="en-fw"><span class="en-lbl">生年月日</span><input type="text" id="en-birth" placeholder="例：昭和30年5月1日"></div><div class="en-fw"><span class="en-lbl">性別</span><select id="en-gender"><option>男性</option><option>女性</option><option>その他</option><option>回答しない</option></select></div></div>
+    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名（フリガナ）</span><input type="text" id="en-name" placeholder="例：ヤマダ タロウ"></div><div class="en-fw"><span class="en-lbl">生年月日</span><input type="date" id="en-birth" max=""><span class="en-hint">生年月日を選択してください</span></div><div class="en-fw"><span class="en-lbl">性別</span><select id="en-gender"><option>男性</option><option>女性</option><option>その他</option><option>回答しない</option></select></div></div>
     <div class="en-g g3"><div class="en-fw"><span class="en-lbl">血液型</span><select id="en-blood"><option>A型</option><option>B型</option><option>O型</option><option>AB型</option><option>不明</option></select></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-tel" placeholder="090-0000-0000"></div><div class="en-fw"><span class="en-lbl">作成日</span><input type="text" id="en-date" placeholder="令和7年4月13日"></div></div>
     <div class="en-fw">
       <span class="en-lbl">郵便番号 → 住所自動入力</span>
@@ -3785,6 +3788,17 @@ renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();renderKeim
     var d=new Date(),y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate();
     var wareki='';if(y>=2019){wareki='令和'+(y-2018);}else if(y>=1989){wareki='平成'+(y-1988);}else{wareki=y+'年';}
     el.value=wareki+'年'+m+'月'+day+'日';
+  }
+})();
+/* ④ en-birth: 今日の日付を max 属性に動的セット（未来日付を選択不可にする） */
+(function(){
+  var el=document.getElementById('en-birth');
+  if(el){
+    var d=new Date();
+    var yyyy=d.getFullYear();
+    var mm=d.getMonth()+1;
+    var dd=d.getDate();
+    el.max=yyyy+'-'+(mm<10?'0':'')+mm+'-'+(dd<10?'0':'')+dd;
   }
 })();
 checkExistingSave();
