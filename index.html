@@ -113,6 +113,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .birth-sel-wrap{display:flex;gap:6px;align-items:center}
 .birth-sel{font-size:16px;padding:9px 4px;min-height:44px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);cursor:pointer;flex:1;width:0}
 .birth-sel:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px rgba(29,158,117,.12)}
+.en-age-disp{font-size:14px;color:var(--teal2);white-space:nowrap;font-weight:600;padding:2px 6px;background:var(--teal3);border-radius:var(--r)}
 .en-hint{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
 /* ===== ユーティリティ: セクション小見出し (旧: inline font-size:12px;font-weight:600;color:...) ===== */
 .sec-lbl{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px}
@@ -622,7 +623,7 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   <div class="sdesc">大切な情報を記録しておきましょう。印刷時に財産目録と合わせて出力されます。</div>
   <div class="en-sec"><div class="en-sh">あなたの基本情報</div>
     <div class="en-g g3"><div class="en-fw"><span class="en-lbl">氏名（フリガナ）</span><input type="text" id="en-name" placeholder="例：ヤマダ タロウ"></div><div class="en-fw"><span class="en-lbl">生年月日</span><div class="birth-sel-wrap"><select id="en-birth-y" class="birth-sel" aria-label="年"></select><select id="en-birth-m" class="birth-sel" aria-label="月"></select><select id="en-birth-d" class="birth-sel" aria-label="日"></select></div><input type="hidden" id="en-birth"><span class="en-hint">生年月日を選択してください</span></div><div class="en-fw"><span class="en-lbl">性別</span><select id="en-gender"><option>男性</option><option>女性</option><option>その他</option><option>回答しない</option></select></div></div>
-    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">血液型</span><select id="en-blood"><option>A型</option><option>B型</option><option>O型</option><option>AB型</option><option>不明</option></select></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-tel" placeholder="090-0000-0000"></div><div class="en-fw"><span class="en-lbl">作成日</span><input type="text" id="en-date" placeholder="令和7年4月13日"></div></div>
+    <div class="en-g g3"><div class="en-fw"><span class="en-lbl">血液型</span><select id="en-blood"><option>A型</option><option>B型</option><option>O型</option><option>AB型</option><option>不明</option></select></div><div class="en-fw"><span class="en-lbl">電話番号</span><input type="text" id="en-tel" placeholder="090-0000-0000"></div><div class="en-fw"><span class="en-lbl">作成日</span><div style="display:flex;align-items:center;gap:8px"><input type="text" id="en-date" placeholder="令和7年4月13日"><span id="en-age-display" class="en-age-disp">満 -- 歳</span></div></div></div>
     <div class="en-fw">
       <span class="en-lbl">郵便番号 → 住所自動入力</span>
       <div class="zip-row">
@@ -3873,9 +3874,24 @@ renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();renderKeim
     hidden.value=(vy&&vm&&vd)?(vy+'年'+vm+'月'+vd+'日'):'';
   }
 
-  selY.addEventListener('change',function(){updateDays();syncHidden();});
-  selM.addEventListener('change',function(){updateDays();syncHidden();});
-  selD.addEventListener('change',syncHidden);
+  /* 生年月日から現在の満年齢を計算して表示 */
+  function updateAge(){
+    var vy=parseInt(selY.value)||0;
+    var vm=parseInt(selM.value)||0;
+    var vd=parseInt(selD.value)||0;
+    var disp=document.getElementById('en-age-display');
+    if(!disp)return;
+    if(!vy||!vm||!vd){disp.textContent='満 -- 歳';return;}
+    var today=new Date();
+    var age=today.getFullYear()-vy;
+    var mDiff=(today.getMonth()+1)-vm;
+    if(mDiff<0||(mDiff===0&&today.getDate()<vd))age--;
+    disp.textContent='満 '+age+' 歳';
+  }
+
+  selY.addEventListener('change',function(){updateDays();syncHidden();updateAge();});
+  selM.addEventListener('change',function(){updateDays();syncHidden();updateAge();});
+  selD.addEventListener('change',function(){syncHidden();updateAge();});
 
   /* localStorage 復元後にセレクトへ反映（restoreENFields から呼ばれる） */
   window._syncBirthSelects=function(){
@@ -3888,6 +3904,7 @@ renderAsecs();ctRender();renderPets();renderObits();renderFunGuests();renderKeim
     selM.value=parseInt(r[2]);
     updateDays();
     selD.value=parseInt(r[3]);
+    updateAge();
   };
 })();
 checkExistingSave();
