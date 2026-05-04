@@ -2990,6 +2990,13 @@ function esc(s){if(!s)return '&nbsp;';return String(s).replace(/&/g,'&amp;').rep
 function buildPrintHTML(){
   var name=gv('en-name')||'　　　　　';var date=gv('en-date')||'　　年　月　日';
   var birth=gv('en-birth');
+  /* 満年齢：画面上の計算済み表示値を取得（未入力時は空文字） */
+  var ageDisp=(function(){
+    var disp=document.getElementById('en-age-display');
+    if(!disp)return '';
+    var t=disp.textContent||'';
+    return t.indexOf('--')===-1?t:'';
+  })();
 
   /* ===== ① 表紙 ===== */
   var h='<div class="pcover">'
@@ -2997,7 +3004,7 @@ function buildPrintHTML(){
     +'<div class="pcover-title">終　活　診　断　書</div>'
     +'<div class="pcover-card"><table class="pcover-tbl"><tbody>'
     +'<tr><td>氏　　名</td><td>'+esc(name)+'</td></tr>'
-    +(birth?'<tr><td>生年月日</td><td>'+esc(birth)+'</td></tr>':'')
+    +(birth?'<tr><td>生年月日</td><td>'+esc(birth)+(ageDisp?' （'+esc(ageDisp)+'）':'')+'</td></tr>':'')
     +'<tr><td>作 成 日</td><td>'+esc(date)+'</td></tr>'
     +'</tbody></table></div>'
     +'<div class="pcover-contents">'
@@ -3040,7 +3047,7 @@ function buildPrintHTML(){
     +'<div class="entit">エンディングノート</div>'
     +'<div class="pmeta">氏名：'+esc(name)+'　　作成日：'+esc(date)+'</div>';
   var enSecs=[
-    {t:'基本情報',rows:[['氏名（フリガナ）',gv('en-name')],['生年月日',gv('en-birth')],['性別',gv('en-gender')],['血液型',gv('en-blood')],['電話番号',gv('en-tel')],['現住所',gv('en-addr')]]},
+    {t:'基本情報',rows:[['氏名（フリガナ）',gv('en-name')],['生年月日',gv('en-birth')+(ageDisp?' （'+ageDisp+'）':'')],['性別',gv('en-gender')],['血液型',gv('en-blood')],['電話番号',gv('en-tel')],['現住所',gv('en-addr')]]},
     {t:'緊急連絡先',rows:[['氏名①・続柄',gv('en-ec1n')+'　'+gv('en-ec1r')],['電話①',gv('en-ec1t')],['氏名②・続柄',gv('en-ec2n')+'　'+gv('en-ec2r')],['電話②',gv('en-ec2t')]]},
     {t:'葬儀・お骨の希望',rows:[
       ['葬儀の形式',EN['fun']||'（未回答）'],
