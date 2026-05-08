@@ -160,6 +160,8 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
 .btn-next:hover{background:var(--teal2)}
 .btn-prev{width:100%;padding:9px;background:var(--bg2);color:var(--text2);border:0.5px solid var(--border);border-radius:var(--r);font-size:13px;cursor:pointer;margin-top:7px}
 .btn-prev:hover{background:var(--bg)}
+.btn-line-share{width:100%;padding:12px;background:#06C755;color:white;border:none;border-radius:var(--r);font-size:15px;cursor:pointer;margin-top:1.2rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+.btn-line-share:hover{background:#05b34c}
 /* result */
 .shl{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin:1.2rem 0 8px}
 .dist-sh{font-size:12px;font-weight:600;color:var(--text2);padding:3px 0 5px;border-bottom:0.5px solid var(--border);margin-bottom:8px}
@@ -932,6 +934,11 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
     印刷は「診察結果」ページの印刷ボタンから行えます。
   </div>
 
+  <button class="btn-line-share" onclick="shareAdvToLine()" title="医療に関する希望をLINEで家族に共有">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-right:6px"><path d="M12 2C6.48 2 2 5.83 2 10.5c0 3.44 2.78 6.36 6.72 7.41-.09.82-.5 3.05-.53 3.22 0 0-.01.1.05.14.06.03.13.01.13.01.17-.02 2.02-1.33 2.94-1.96.88.13 1.79.18 2.69.18 5.52 0 10-3.83 10-8.5S17.52 2 12 2z"/></svg>
+    このセクション（医療指示）をLINEで送る
+  </button>
+
   <button class="btn-next" onclick="go(6)">診察結果を見る →</button>
   <button class="btn-prev" onclick="go(4)">← 戻る</button>
 </div>
@@ -1092,6 +1099,58 @@ var ADV_OPTS={
   organ:['臓器提供を希望します（全臓器）','臓器提供を希望します（一部のみ）','臓器提供を希望しません','意思表示カードに記載しています','判断は家族に任せます','その他'],
   body:['献体を希望します','献体を希望しません','既に献体登録済みです','判断は家族に任せます','その他']
 };
+
+/* ===== LINE共有機能 ===== */
+function shareAdvToLine(){
+  var labels={
+    place:'最期を迎える場所の希望',
+    cpr:'心肺蘇生（心臓マッサージなど）',
+    injection:'注射（中心静脈栄養・高カロリー輸液）',
+    nutrition:'栄養（食事が口から入らなくなったとき）',
+    blood:'輸血',
+    organ:'臓器提供の意思',
+    body:'献体の意思'
+  };
+  var secs=['place','cpr','injection','nutrition','blood','organ','body'];
+  var lines=['【医療に関する事前指示書】',''];
+  secs.forEach(function(sec){
+    var val=ADV[sec]||'';
+    var display=val||'未回答';
+    /* 補足情報の付加 */
+    if(sec==='organ'&&val==='臓器提供を希望します（一部のみ）'&&ADV.organPartial){
+      display+='（希望臓器：'+ADV.organPartial+'）';
+    }
+    if(sec==='body'&&val==='献体を希望します'&&ADV.bodyWishUniv){
+      display+='（希望先：'+ADV.bodyWishUniv+'）';
+    }
+    if(sec==='body'&&val==='既に献体登録済みです'&&ADV.bodyReg){
+      display+='（登録先：'+ADV.bodyReg+'）';
+    }
+    /* 「その他」選択時の詳細 */
+    var otherKey=sec+'Other';
+    if(val==='その他'&&ADV[otherKey]){
+      display+='（'+ADV[otherKey]+'）';
+    }
+    /* 家族委任時の家族名 */
+    var famKey=sec+'Family';
+    if(val&&val.indexOf('家族に任せます')>-1&&ADV[famKey]){
+      display+='（家族：'+ADV[famKey]+'）';
+    }
+    lines.push('■ '+labels[sec]);
+    lines.push('→ '+display);
+    lines.push('');
+  });
+  /* その他の希望 */
+  lines.push('■ その他の希望');
+  lines.push('→ '+(ADV.other||'未回答'));
+  lines.push('');
+  lines.push('※終活リーガルクリニックで作成');
+
+  var msg=lines.join('\n');
+  var url='https://line.me/R/share?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+}
+
 function advRadio(sec){
   var opts=ADV_OPTS[sec];
   var container=document.getElementById('adv-'+sec+'-opts');
