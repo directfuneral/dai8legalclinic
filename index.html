@@ -450,6 +450,14 @@ body{font-family:"Hiragino Kaku Gothic Pro","Meiryo","Yu Gothic",system-ui,sans-
   "serviceType": ["遺言書作成", "相続手続", "遺品整理", "死後事務委任", "任意後見契約", "終活サポート"]
 }
 </script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LVMFSBNV1C"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LVMFSBNV1C');
+</script>
 </head>
 <body>
 <div class="outer" id="mainWrap">
@@ -4041,6 +4049,45 @@ checkExistingSave();
   ✅ 保存しました
   <span class="toast-sub">次回もこの続きから始められます</span>
 </div>
+
+<!-- GA4 イベント計測（診断ステップ・電話・保存・URLコピー） -->
+<script>
+(function(){
+  if(typeof gtag!=='function')return;
+  var STEP_NAMES=['家族構成','財産目録','対策状況','お悩み','ノート','医療の希望','診察結果'];
+  var lastStep=null;
+  function wrap(name,fn){
+    var orig=window[name];
+    if(typeof orig!=='function')return;
+    window[name]=function(){
+      try{fn.apply(this,arguments);}catch(e){}
+      return orig.apply(this,arguments);
+    };
+  }
+  // ステップ移動（どこまで進んだか・どこで離脱したか）
+  wrap('go',function(n){
+    if(n===lastStep)return;
+    lastStep=n;
+    gtag('event','step_view',{step_number:n+1,step_name:STEP_NAMES[n]||String(n)});
+    if(n===6)gtag('event','diagnosis_complete');
+  });
+  // 保存・URLコピー
+  wrap('doSave',function(){gtag('event','save_click',{save_type:'manual'});});
+  wrap('floatSave',function(){gtag('event','save_click',{save_type:'float_button'});});
+  wrap('copyURL',function(){gtag('event','url_copy');});
+  // 電話・公式サイトへのリンク
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href]');
+    if(!a)return;
+    var h=a.getAttribute('href')||'';
+    if(h.indexOf('tel:')===0)gtag('event','phone_click',{phone_number:h.slice(4)});
+    else if(h.indexOf('ihinseiri-dai8.jp')!==-1)gtag('event','official_site_click',{link_url:h});
+  },true);
+  // 最初の画面（STEP1）を記録
+  lastStep=0;
+  gtag('event','step_view',{step_number:1,step_name:STEP_NAMES[0]});
+})();
+</script>
 
 </body>
 </html>
